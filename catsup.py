@@ -90,5 +90,9 @@ application = tornado.web.Application([
 ], posts = posts, autoescape=None, **config.settings)
 
 if __name__ == '__main__':
-    application.listen(8888)
+    import sys
+    if len(sys.argv) > 1:
+        application.listen(sys.argv[1])
+    else:
+        application.listen(8888)
     tornado.ioloop.IOLoop.instance().start()
