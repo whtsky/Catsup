@@ -53,8 +53,9 @@ def load_posts():
     post_files = os.listdir(config.posts_path)
     posts = []
     for file_name in post_files:
-        post = load_post(file_name)
-        posts.append(post)
+        if '.md' in file_name:
+            post = load_post(file_name)
+            posts.append(post)
     posts.sort(key=lambda x: x['updated'], reverse=True)
     return posts
 
