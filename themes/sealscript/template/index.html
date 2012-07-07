@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<ul id="article_list">
+    {% for post in posts[p:p+3] %}
+    <li class="list_item">
+        <div class="article">
+            <div class="inner">
+                <h2 class="article_title title"><a href="/{{ post['file_name'] }}">{{post['title']}}</a></h2>
+                <div class="article_meta">
+                    <span>on</span>
+
+                    {{ post['date'] }}
+                </div>
+
+                <div class="text">
+                    {{ post['content'] }}
+                </div>
+            </div>
+        </div>
+        <div class="sep"></div>
+    </li>
+    {% end %}
+</ul>
+{% if p >= 3 %}
+<a id="prev" href="/?p={{ p-3 }}" class="v_nav" >
+    <span class="icon">Prev</span>
+</a>
+{% end %}
+{% if len(posts) > (p+3) %}
+<a id="next" href="/?p={{ p+3 }}" class="v_nav" >
+    <span class="icon">Next</span>
+</a>
+{% end %}
+{% end %}

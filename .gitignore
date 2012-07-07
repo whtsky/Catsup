@@ -1,3 +1,11 @@
+
+#catsup
+config.py
+_posts/*
+
+#PyCharm
+.idea
+
 *.py[co]
 
 # Packages
