@@ -141,6 +141,9 @@ input[type="text"]:focus, textarea:focus {
 #nav .right a:hover {
 	color: white;
 }
+#nav .right li:last-child{
+    visibility:hidden;
+}
 #social {
 	right: 0;
 	top: 0;

@@ -1,6 +1,7 @@
 #coding=utf-8
 
 import os
+import time
 import config
 import tornado.web
 import tornado.ioloop
@@ -43,6 +44,8 @@ def load_post(file_name):
             post['content'] = md.render(content)
             break
     post['updated'] = os.stat(path).st_mtime
+    updated_xml = time.gmtime(post['updated'])
+    post['updated_xml'] = time.strftime('%Y-%m-%dT%H:%M:%SZ', updated_xml)
     return post
 
 
@@ -83,10 +86,16 @@ class ArticleHandler(BaseHandler):
         self.render('article.html', post=post)
 
 
+class FeedHandler(BaseHandler):
+    def get(self):
+        posts = self.settings['posts'][:3]
+        self.render('feed.xml', posts=posts)
+
 posts = load_posts()
 
 application = tornado.web.Application([
     (r'/', MainHandler),
+    (r'/feed', FeedHandler),
     (r'/(.*)', ArticleHandler),
 ], posts = posts, autoescape=None, **config.settings)
 

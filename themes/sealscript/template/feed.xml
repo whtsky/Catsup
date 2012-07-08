@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>{{ handler.settings['site_title'] }}</title>
+    <link href="{{ handler.settings['feed'] }}" rel="self" />
+    <link href="{{ handler.settings['site_url'] }}" />
+    <updated>{{ posts[0]['updated_xml'] }}</updated>
+    <id>{{ handler.settings['site_url'] }}</id>
+    {% for post in posts %}
+    <entry>
+        <title type="html"><![CDATA[{{ post['title'] }}]]></title>
+        <link href="{{ handler.settings['site_url'] }}/{{ post['file_name'] }}"/>
+        <updated>{{ post['updated_xml'] }}</updated>
+        <published>{{ post['updated_xml'] }}</published>
+        <id>{{ handler.settings['site_url'] }}/{{ post['file_name'] }}</id>
+        <content type="html" xml:base="{{ handler.settings['site_url'] }}" xml:lang="en">
+            <![CDATA[ {{ post['content'] }} ]]>
+        </content>
+    </entry>
+    {% end %}
+</feed>

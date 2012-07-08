@@ -14,9 +14,10 @@
                 <h1 id="title"><a href="/">{{ handler.settings['site_title'] }}</a></h1>
                 <div id="description" class="seal">{{ handler.settings['site_description'] }}</div>
                 <ul class="right">
-                    <li><a href="/">Home</a></li>
+                    {% for link in handler.settings['links'] %}
+                    <li><a href="{{ link[1] }}" title="{{ link[2] }}">{{ link[0].capitalize() }}</a></li>
                     <li class="dot">&bull;</a>
-                    <li><a href="https://github.com/whtsky/catsup">Source</a></li>
+                    {% end %}
                 </ul>
             </div>
         </div>
