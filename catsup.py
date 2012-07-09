@@ -3,10 +3,16 @@
 import os
 import time
 import config
+import tornado.httpserver
 import tornado.web
 import tornado.ioloop
+import tornado.options
 import tornado.escape
 import misaka as m
+
+from tornado.options import define, options
+
+define("port", default=8888, help="run on the given port", type=int)
 
 from pygments import highlight
 from pygments.formatters import HtmlFormatter
@@ -91,18 +97,30 @@ class FeedHandler(BaseHandler):
         posts = self.settings['posts'][:3]
         self.render('feed.xml', posts=posts)
 
+
+class ReloadHandler(BaseHandler):
+    def post(self):
+        """Github
+        """
+        if not self.request.remote_ip in config.github_ips:
+            pass
+        payload = self.get_argument('payload')
+        payload = tornado.escape.json_decode(payload)
+        if not payload['owner']['name'] == config.github:
+            pass
+        self.settings['posts'] = load_posts()
+
 posts = load_posts()
 
 application = tornado.web.Application([
     (r'/', MainHandler),
     (r'/feed', FeedHandler),
+    (r'/reload', ReloadHandler),
     (r'/(.*)', ArticleHandler),
 ], posts = posts, autoescape=None, **config.settings)
 
 if __name__ == '__main__':
-    import sys
-    if len(sys.argv) > 1:
-        application.listen(sys.argv[1])
-    else:
-        application.listen(8888)
+    tornado.options.parse_command_line()
+    http_server = tornado.httpserver.HTTPServer(application, xheaders=True)
+    http_server.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()
