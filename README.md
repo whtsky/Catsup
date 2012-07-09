@@ -2,7 +2,7 @@
 
 ##Install
 ```bash
-git clone git@github.com:whtsky/catsup.git
+git clone git://github.com/whtsky/catsup.git
 cd catsup
 pip install -r requirements.txt
 cp config-sample.py config.py

@@ -106,7 +106,7 @@ class ReloadHandler(BaseHandler):
             pass
         payload = self.get_argument('payload')
         payload = tornado.escape.json_decode(payload)
-        if payload['owner']['name'] != config.github:
+        if payload['repository']['owner']['name'] != config.github:
             pass
         os.chdir(config.posts_path)
         os.system('git pull')
