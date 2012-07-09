@@ -47,6 +47,8 @@ def load_post(file_name):
             post['date'] = line.split(':')[-1].replace(' ', '')
         elif line.startswith('---'):
             content = '\n'.join(file.readlines())
+            if isinstance(content, str):
+                content = content.decode('utf-8')
             post['content'] = md.render(content)
             break
     post['updated'] = os.stat(path).st_mtime
