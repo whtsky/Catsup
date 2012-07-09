@@ -14,8 +14,8 @@ github = 'whtsky'
 feed = '/feed'
 
 links = (
-    ('whtsky','http://whouz.com','I write catsup'),
-    ('catsup','https://github.com/whtsky/catsup','the source of this blog'),
+    ('whtsky', 'http://whouz.com', 'I write catsup'),
+    ('catsup', 'https://github.com/whtsky/catsup', 'the source of this blog'),
 )
 
 if site_url.endswith('/'):
