@@ -100,14 +100,16 @@ class FeedHandler(BaseHandler):
 
 class ReloadHandler(BaseHandler):
     def post(self):
-        """Github
+        """Github Post-Receive Hooks support.
         """
-        if not self.request.remote_ip in config.github_ips:
+        if self.request.remote_ip not in config.github_ips:
             pass
         payload = self.get_argument('payload')
         payload = tornado.escape.json_decode(payload)
-        if not payload['owner']['name'] == config.github:
+        if payload['owner']['name'] != config.github:
             pass
+        os.chdir(config.posts_path)
+        os.system('git pull')
         self.settings['posts'] = load_posts()
 
 posts = load_posts()
