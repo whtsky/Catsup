@@ -5,6 +5,7 @@ site_description = 'a blog'
 site_url = 'https://github.com/whtsky/catsup'
 static_url = '/static'
 theme_name = 'sealscript'
+google_analytics = ''#optional
 
 catsup_path = os.path.dirname(__file__)
 posts_path = os.path.join(catsup_path, '_posts')
@@ -38,4 +39,5 @@ settings = dict(static_path = os.path.join(theme_path, 'static'),
     feed = feed,
     links = links,
     static_url = static_url,
+    google_analytics = google_analytics,
 )
