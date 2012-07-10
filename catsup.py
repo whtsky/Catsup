@@ -51,7 +51,7 @@ def load_post(file_name):
                 content = content.decode('utf-8')
             post['content'] = md.render(content)
             break
-    post['updated'] = os.stat(path).st_mtime
+    post['updated'] = os.stat(path).st_ctime
     updated_xml = time.gmtime(post['updated'])
     post['updated_xml'] = time.strftime('%Y-%m-%dT%H:%M:%SZ', updated_xml)
     return post
