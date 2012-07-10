@@ -13,4 +13,14 @@ Then go to http://localhost:8888 to take a look at your own catsup:)
 
 ##How to write
 catsup uses Markdown to write posts.
-You can find a example at [_posts/post_sample.md](https://github.com/whtsky/catsup/blob/master/_posts/post_sample.md)
+Example:
+
+	#Title
+	- date: 2012-7-6
+	
+	----
+	
+	Content
+	```python
+	print "hi,I'm coding."
+	```
