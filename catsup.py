@@ -87,9 +87,10 @@ class MainHandler(BaseHandler):
 class ArticleHandler(BaseHandler):
     def get(self, file_name):
         file_name += '.md'
-        try:
-            post = load_post(file_name)
-        except IOError:
+        for post in self.settings['posts']:
+            if post['file_name'] == file_name:
+                break
+        if not post:
             raise tornado.web.HTTPError(404)
         self.render('article.html', post=post)
 
