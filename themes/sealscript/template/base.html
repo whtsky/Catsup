@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{ handler.settings['static_url'] }}/css/pygments_style.css" type="text/css" />
     <link rel="alternate" type="application/rss+xml" href="{{ handler.settings['feed'] }}" title="{{ handler.settings['site_title'] }}" />
     {% if handler.settings['google_analytics'] %}
+    {% block head %}{% end %}
     <script type="text/javascript">
 
         var _gaq = _gaq || [];

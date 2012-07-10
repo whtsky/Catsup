@@ -13,7 +13,7 @@ theme_path = os.path.join(catsup_path, 'themes', theme_name)
 
 twitter = 'whouz'
 github = 'whtsky'
-feed = '/feed'
+feed = '/feed.xml'
 
 links = (
     ('whtsky', 'http://whouz.com', 'I write catsup'),
