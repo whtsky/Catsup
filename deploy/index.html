@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>whtsky</title>
+<link href='http://fonts.googleapis.com/css?family=Abel' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="http://assets.whouz.com/css/style.css" type="text/css" />
+<link rel="stylesheet" href="http://assets.whouz.com/css/pygments_style.css" type="text/css" />
+<link rel="alternate" type="application/rss+xml" href="http://feeds.feedburner.com/Whtsky" title="whtsky" />
+
+
+<script type="text/javascript">
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-33275966-1']);
+_gaq.push(['_trackPageview']);
+(function() {
+var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script>
+
+</head>
+<body>
+<div id="header">
+<div id="nav_wrapper">
+<div id="nav">
+<div class="inner">
+<h1 id="title"><a href="http://whouz.com">whtsky</a></h1>
+<div id="description" class="seal">a blog</div>
+<ul class="right">
+
+<li><a href="http://jyprince.me/" title="A ballache coder.">Jybox</a></li>
+<li class="dot">&bull;</a>
+
+<li><a href="http://www.luztak.net/" title="luztak">Luztak</a></li>
+<li class="dot">&bull;</a>
+
+</ul>
+</div>
+</div>
+</div>
+<div id="header_inner">
+<div id="social">
+<a href="http://twitter.com/whouz" target="_blank" title="Follow Me @ Twitter"><img src="http://assets.whouz.com/image/ic16_twitter.png"></a>
+<a href="http://github.com/whtsky" target="_blank" title="Fork Me @ Github"><img src="http://assets.whouz.com/image/ic16_github.png"></a>
+<a href="http://feeds.feedburner.com/Whtsky" target="_blank" title="Subscribe My Blog"><img src="http://assets.whouz.com/image/ic16_rss.png"></a>
+</div>
+<div class="sep"></div>
+</div>
+</div>
+<div id="content">
+
+<ul id="article_list">
+
+<li class="list_item">
+<div class="article">
+<div class="inner">
+<h2 class="article_title title"><a href="get-ip-in-tornado.html">在Tornado中获取访客ip
+</a></h2>
+<div class="article_meta">
+<span>on</span>
+2012-7-9
+
+</div>
+<div class="text">
+<p>以前都是用<code>self.request.headers[&#39;X-Real-Ip&#39;]</code>来取访客ip，今天翻源码才发现官方已经给获取好了:</p>
+<div class="highlight"><pre><span class="k">if</span> <span class="n">connection</span> <span class="ow">and</span> <span class="n">connection</span><span class="o">.</span><span class="n">xheaders</span><span class="p">:</span>
+
+            <span class="c"># Squid uses X-Forwarded-For, others use X-Real-Ip</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">remote_ip</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+
+                <span class="s">&quot;X-Real-Ip&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;X-Forwarded-For&quot;</span><span class="p">,</span> <span class="n">remote_ip</span><span class="p">))</span>
+</pre></div>
+
+<p><a href="https://github.com/facebook/tornado/blob/master/tornado/httpserver.py#L358">https://github.com/facebook/tornado/blob/master/tornado/httpserver.py#L358</a></p>
+
+<p>用起来很简单：</p>
+
+<p>把<code>http_server = tornado.httpserver.HTTPServer(application)</code>改成<code>http_server = tornado.httpserver.HTTPServer(application, xheaders=True)</code></p>
+
+<p>然后直接在RequestHandler里使用<code>self.request.remote_ip</code>就可以了</p>
+
+</div>
+</div>
+</div>
+<div class="sep"></div>
+</li>
+
+<li class="list_item">
+<div class="article">
+<div class="inner">
+<h2 class="article_title title"><a href="mark-my-catsup-config.html">记录一下Catsup的Nginx设置
+</a></h2>
+<div class="article_meta">
+<span>on</span>
+2012-7-7
+
+</div>
+<div class="text">
+<p>catsup.conf:</p>
+
+<pre><code>upstream catsup_whtsky{
+
+    server localhost:2331;
+
+}
+
+server {
+
+    server_name whouz.com;
+
+
+
+    proxy_read_timeout 200;
+
+    tcp_nopush on;
+
+    gzip_min_length 1000;
+
+    gzip_proxied any;
+
+    proxy_next_upstream error;
+
+
+
+    if ($host != 'whouz.com' ) { 
+
+        rewrite  ^/(.*)$  http://whouz.com/$1  permanent; 
+
+    }
+
+
+
+    listen 80;
+
+
+
+    location / {
+
+        proxy_pass_header Server;
+
+        proxy_set_header Host $http_host;
+
+        proxy_redirect off;
+
+        proxy_set_header X-Real-IP $remote_addr;
+
+        proxy_set_header X-Scheme $scheme;
+
+
+
+        # proxy to your upstream
+
+        proxy_pass http://catsup_whtsky;
+
+    }
+
+}
+
+
+
+server {
+
+    server_name assets.whouz.com;
+
+    gzip_min_length 1;
+
+    gzip_proxied any;
+
+
+
+    listen 80;
+
+
+
+    add_header Vary Accept-Encoding;
+
+    access_log   off;
+
+
+
+    root /web/catsup/themes/sealscript/static;
+
+    expires 30d;
+
+}</code></pre>
+
+</div>
+</div>
+</div>
+<div class="sep"></div>
+</li>
+
+<li class="list_item">
+<div class="article">
+<div class="inner">
+<h2 class="article_title title"><a href="mark-my-supervisord-conf.html">Mark一下目前的supervisord.conf
+</a></h2>
+<div class="article_meta">
+<span>on</span>
+2012-7-10
+
+</div>
+<div class="text">
+
+<pre><code>[unix_http_server]
+
+file=/tmp/supervisor.sock   ; (the path to the socket file)
+
+
+
+[supervisord]
+
+logfile=/tmp/supervisord.log ; (main log file;default $CWD/supervisord.log)
+
+logfile_maxbytes=50MB        ; (max main logfile bytes b4 rotation;default 50MB)
+
+logfile_backups=10           ; (num of main logfile rotation backups;default 10)
+
+loglevel=warn                ; (log level;default info; others: debug,warn,trace)
+
+pidfile=/tmp/supervisord.pid ; (supervisord pidfile;default supervisord.pid)
+
+nodaemon=false               ; (start in foreground if true;default false)
+
+minfds=1024                  ; (min. avail startup file descriptors;default 1024)
+
+minprocs=200                 ; (min. avail process descriptors;default 200)
+
+
+
+[rpcinterface:supervisor]
+
+supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
+
+
+
+[supervisorctl]
+
+serverurl=unix:///tmp/supervisor.sock ; use a unix:// URL  for a unix socket
+
+
+
+[program:catsup]
+
+command=python /web/catsup/catsup.py --port=2331
+
+redirect_stderr=true
+
+stdout_logfile=/tmp/catsup.log</code></pre>
+
+</div>
+</div>
+</div>
+<div class="sep"></div>
+</li>
+
+</ul>
+
+
+<a id="next" href="page_2.html" class="v_nav" >
+<span class="icon">Next</span>
+</a>
+
+
+</div>
+<div id="footer">
+Powered by <a href="https://github.com/whtsky/catsup">CATSUP</a>
+<span>&bull;</span>
+SealScript Theme by <a href="http://shellex.info">Shellex</a>
+<span>&bull;</span>
+Hosted on <a href="https://whmcs.hangssh.info/aff.php?aff=144">Host700</a>
+</div>
+</body>
+</html>
