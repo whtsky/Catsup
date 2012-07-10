@@ -77,8 +77,10 @@ class BaseHandler(tornado.web.RequestHandler):
 
 
 class MainHandler(BaseHandler):
-    def get(self):
-        p = int(self.get_argument('p', default=0))
+    def get(self, p=1):
+        if p == '1':#/page_1.html
+            self.redirect('/', status=301)
+        p = int(p)
         if p > len(self.settings['posts']):
             raise tornado.web.HTTPError(404)
         self.render('index.html', posts=self.settings['posts'], p=p)
@@ -86,9 +88,18 @@ class MainHandler(BaseHandler):
 
 class ArticleHandler(BaseHandler):
     def get(self, file_name):
-        for post in self.settings['posts']:
+        posts_num = self.settings['posts_num']
+        posts = self.settings['posts']
+        prev = next = None
+        for i in range(posts_num):
+            post = posts[i]
             if post['file_name'] == file_name:
-                return self.render('article.html', post=post)
+                if i:#i>0
+                    prev = posts[i-1]
+                if (i+1) < posts_num:
+                    next = posts[i+1]
+                return self.render('article.html', post=post,
+                    prev=prev, next=next)
         raise tornado.web.HTTPError(404)
 
 
@@ -111,16 +122,20 @@ class ReloadHandler(BaseHandler):
             pass
         os.chdir(config.posts_path)
         os.system('git pull')
-        self.settings['posts'] = load_posts()
+        posts = load_posts()
+        self.settings['posts'] = posts
+        self.settings['posts_num'] = len(posts)
 
 posts = load_posts()
+posts_num = len(posts)
 
 application = tornado.web.Application([
     (r'/', MainHandler),
-    (r'/feed', FeedHandler),
+    (r'/page_(.*?).html', MainHandler),
+    (r'/feed.xml', FeedHandler),
     (r'/reload', ReloadHandler),
-    (r'/(.*)', ArticleHandler),
-], posts = posts, autoescape=None, **config.settings)
+    (r'/(.*).html', ArticleHandler),
+], posts = posts, posts_num = posts_num, autoescape=None, **config.settings)
 
 if __name__ == '__main__':
     tornado.options.parse_command_line()
