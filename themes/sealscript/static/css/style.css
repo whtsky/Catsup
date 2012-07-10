@@ -17,7 +17,7 @@ table, caption, tbody, tfoot, thead, tr, th, td {
 body {
 	line-height: 1;
 	background: #fff;
-	background: transparent url(/static/image/body_bg.png) repeat fixed;
+	background: transparent url(../image/body_bg.png) repeat fixed;
 	overflow: auto;
 	font: 14px 'Helvetica Neue',Helvetica,"Hiragino Sans GB","Hiragino Sans GB W3",Arial,sans-serif;
 	color: #494949;
@@ -104,7 +104,7 @@ input[type="text"]:focus, textarea:focus {
 	margin-top: 16px;
 }
 .sep {
-	background: transparent url(/static/image/background-stripes.png) repeat-x 0 0;
+	background: transparent url(../image/background-stripes.png) repeat-x 0 0;
 	height: 5px;
 }
 
@@ -112,11 +112,11 @@ input[type="text"]:focus, textarea:focus {
 
 #nav {
 	height: 35px;
-	background: transparent url(/static/image/nav_bg.png) repeat-x 0 0;
+	background: transparent url(../image/nav_bg.png) repeat-x 0 0;
 }
 #nav_wrapper {
 	height: 50px;
-	background: transparent url(/static/image/body_dark_bg.png) repeat-x;
+	background: transparent url(../image/body_dark_bg.png) repeat-x;
 }
 #nav .inner {
 	width: 960px;
@@ -151,7 +151,7 @@ input[type="text"]:focus, textarea:focus {
 	height: 16px;
 	padding: 5px 10px 5px 5px;
 	position: absolute;
-	background: transparent url(/static/image/body_dark_bg.png) repeat-x;
+	background: transparent url(../image/body_dark_bg.png) repeat-x;
 	border-radius: 3px;
 }
 #social a {
@@ -408,7 +408,7 @@ input[type="text"]:focus, textarea:focus {
 .v_nav {
 	position: fixed;
 	display: block;
-	background: transparent url(/static/image/body_dark_bg.png);
+	background: transparent url(../image/body_dark_bg.png);
 	outline: none;
 	color: #6D6E71;
 	font-size: 20px;
@@ -419,7 +419,7 @@ input[type="text"]:focus, textarea:focus {
 	text-indent: -9999px;
 }
 .v_nav .icon {
-	background: transparent url(/static/image/go_bg.png) no-repeat 0 0;
+	background: transparent url(../image/go_bg.png) no-repeat 0 0;
 	height: 64px;
 	width: 64px;
 	display: block;
