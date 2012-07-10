@@ -3,6 +3,7 @@ import os
 site_title = 'capsule'
 site_description = 'a blog'
 site_url = 'https://github.com/whtsky/catsup'
+static_url = '/static'
 theme_name = 'sealscript'
 
 catsup_path = os.path.dirname(__file__)
@@ -23,6 +24,8 @@ github_ips = ('207.97.227.253', '50.57.128.197', '108.171.174.178')
 
 if site_url.endswith('/'):
     site_url = site_url[:-1]
+if static_url.endswith('/'):
+    static_url = static_url[:-1]
 
 settings = dict(static_path = os.path.join(theme_path, 'static'),
     template_path = os.path.join(theme_path, 'template'),
@@ -34,4 +37,5 @@ settings = dict(static_path = os.path.join(theme_path, 'static'),
     github = github,
     feed = feed,
     links = links,
+    static_url = static_url,
 )

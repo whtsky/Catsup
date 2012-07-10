@@ -3,8 +3,8 @@
 <head>
     <title>{% block title %}{{ handler.settings['site_title'] }}{% end %}</title>
     <link href='http://fonts.googleapis.com/css?family=Abel' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="/static/css/style.css" type="text/css" />
-    <link rel="stylesheet" href="/static/css/pygments_style.css" type="text/css" />
+    <link rel="stylesheet" href="{{ handler.settings['static_url'] }}/css/style.css" type="text/css" />
+    <link rel="stylesheet" href="{{ handler.settings['static_url'] }}/css/pygments_style.css" type="text/css" />
     <link rel="alternate" type="application/rss+xml" href="{{ handler.settings['feed'] }}" title="{{ handler.settings['site_title'] }}" />
 </head>
 <body>
@@ -25,9 +25,9 @@
     </div>
     <div id="header_inner">
         <div id="social">
-            <a href="http://twitter.com/{{ handler.settings['twitter'] }}" target="_blank" title="Follow Me @ Twitter"><img src="/static/image/ic16_twitter.png"></a>
-            <a href="http://github.com/{{ handler.settings['github'] }}" target="_blank" title="Fork Me @ Github"><img src="/static/image/ic16_github.png"></a>
-            <a href="{{ handler.settings['feed'] }}" target="_blank" title="Subscribe My Blog"><img src="/static/image/ic16_rss.png"></a>
+            <a href="http://twitter.com/{{ handler.settings['twitter'] }}" target="_blank" title="Follow Me @ Twitter"><img src="{{ handler.settings['static_url'] }}/image/ic16_twitter.png"></a>
+            <a href="http://github.com/{{ handler.settings['github'] }}" target="_blank" title="Fork Me @ Github"><img src="{{ handler.settings['static_url'] }}/image/ic16_github.png"></a>
+            <a href="{{ handler.settings['feed'] }}" target="_blank" title="Subscribe My Blog"><img src="{{ handler.settings['static_url'] }}/image/ic16_rss.png"></a>
         </div>
         <div class="sep"></div>
     </div>
@@ -40,6 +40,8 @@
     Powered by <a href="https://github.com/whtsky/catsup">CATSUP</a>
     <span>&bull;</span>
     SealScript Theme by <a href="http://shellex.info">Shellex</a>
+    <span>&bull;</span>
+    Hosted on <a href="https://whmcs.hangssh.info/aff.php?aff=144">Host700</a>
 </div>
 
 </body>
