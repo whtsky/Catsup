@@ -7,7 +7,7 @@ cd catsup
 pip install -r requirements.txt
 cp config-sample.py config.py
 vim config.py #Change it.
-python catsup.py
+python catsup-server.py
 ```
 Then go to http://localhost:8888 to take a look at your own catsup:)
 
