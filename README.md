@@ -24,3 +24,7 @@ Example:
 	```python
 	print "hi,I'm coding."
 	```
+	
+##Deploy a static blog
+run`python catsup-static.py`
+And you can find your static blog in deploy/ .
