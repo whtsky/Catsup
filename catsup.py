@@ -59,7 +59,7 @@ def load_post(file_name):
 
 def load_posts():
     '''load all the posts.return a list.
-    sort with mtime.
+    sort with ctime.
     '''
     post_files = os.listdir(config.posts_path)
     posts = []
@@ -78,7 +78,7 @@ class BaseHandler(tornado.web.RequestHandler):
 
 class MainHandler(BaseHandler):
     def get(self):
-        p = self.get_argument('p', default=0)
+        p = int(self.get_argument('p', default=0))
         if p > len(self.settings['posts']):
             raise tornado.web.HTTPError(404)
         self.render('index.html', posts=self.settings['posts'], p=p)
@@ -95,7 +95,7 @@ class ArticleHandler(BaseHandler):
 
 class FeedHandler(BaseHandler):
     def get(self):
-        posts = self.settings['posts'][:3]
+        posts = self.settings['posts'][:5]
         self.render('feed.xml', posts=posts)
 
 
