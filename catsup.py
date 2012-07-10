@@ -29,8 +29,8 @@ class CatsupRender(m.HtmlRenderer, m.SmartyPants):
         return highlight(text, lexer, formatter)
 
 
-md = m.Markdown(CatsupRender(),
-    extensions=m.EXT_FENCED_CODE | m.EXT_NO_INTRA_EMPHASIS)
+md = m.Markdown(CatsupRender(flags=m.HTML_ESCAPE | m.HTML_USE_XHTML),
+    extensions=m.EXT_FENCED_CODE | m.EXT_NO_INTRA_EMPHASIS | m.EXT_AUTOLINK)
 
 
 def load_post(file_name):
