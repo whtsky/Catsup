@@ -28,7 +28,7 @@
     <div id="nav_wrapper">
         <div id="nav">
             <div class="inner">
-                <h1 id="title"><a href="/">{{ handler.settings['site_title'] }}</a></h1>
+                <h1 id="title"><a href="{{ handler.settings['site_url'] }}">{{ handler.settings['site_title'] }}</a></h1>
                 <div id="description" class="seal">{{ handler.settings['site_description'] }}</div>
                 <ul class="right">
                     {% for link in handler.settings['links'] %}

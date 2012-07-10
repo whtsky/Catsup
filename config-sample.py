@@ -1,6 +1,6 @@
 #coding=utf-8
 import os
-site_title = 'capsule'
+site_title = 'catsup'
 site_description = 'a blog'
 site_url = 'https://github.com/whtsky/catsup'
 static_url = '/static'

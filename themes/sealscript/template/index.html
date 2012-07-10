@@ -6,7 +6,7 @@
     <li class="list_item">
         <div class="article">
             <div class="inner">
-                <h2 class="article_title title"><a href="/{{ post['file_name'] }}.html">{{ post['title'] }}</a></h2>
+                <h2 class="article_title title"><a href="{{ post['file_name'] }}.html">{{ post['title'] }}</a></h2>
                 <div class="article_meta">
                     <span>on</span>
 
@@ -26,9 +26,9 @@
 {% if p > 1 %}
 <a id="prev" href="
 {% if p == 2 %}
-/
+./
 {% else %}
-/page_{{ p-1 }}.html
+page_{{ p-1 }}.html
 {% end %}
 " class="v_nav" >
     <span class="icon">Prev</span>
@@ -36,7 +36,7 @@
 {% end %}
 
 {% if len(posts) > (p*3) %}
-<a id="next" href="/page_{{ p+1 }}.html" class="v_nav" >
+<a id="next" href="page_{{ p+1 }}.html" class="v_nav" >
     <span class="icon">Next</span>
 </a>
 {% end %}

@@ -39,13 +39,13 @@
     </div>
 </div>
 {% if prev %}
-<a id="prev" href="/{{ prev['file_name'] }}.html" class="v_nav" >
+<a id="prev" href="{{ prev['file_name'] }}.html" class="v_nav" >
     <span class="icon">Prev</span>
 </a>
 {% end %}
 
 {% if next %}
-<a id="next" href="/{{ next['file_name'] }}.html" class="v_nav" >
+<a id="next" href="{{ next['file_name'] }}.html" class="v_nav" >
     <span class="icon">Next</span>
 </a>
 {% end %}
