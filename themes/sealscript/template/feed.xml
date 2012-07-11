@@ -5,7 +5,7 @@
     <link href="{{ handler.settings['site_url'] }}" />
     <updated>{{ posts[0]['updated_xml'] }}</updated>
     <id>{{ handler.settings['site_url'] }}</id>
-    {% for post in posts %}
+    {% for post in posts[:15] %}
     <entry>
         <title type="html"><![CDATA[{{ post['title'] }}]]></title>
         <link href="{{ handler.settings['site_url'] }}/{{ post['file_name'] }}.html"/>

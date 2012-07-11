@@ -5,7 +5,7 @@ site_description = 'a blog'
 site_url = 'https://github.com/whtsky/catsup'
 static_url = '/static'
 theme_name = 'sealscript'
-google_analytics = ''#optional
+google_analytics = ''  # optional
 
 catsup_path = os.path.dirname(__file__)
 posts_path = os.path.join(catsup_path, '_posts')
@@ -28,16 +28,16 @@ if site_url.endswith('/'):
 if static_url.endswith('/'):
     static_url = static_url[:-1]
 
-settings = dict(static_path = os.path.join(theme_path, 'static'),
-    template_path = os.path.join(theme_path, 'template'),
-    gzip = True,
-    site_title = site_title,
-    site_description = site_description,
-    site_url = site_url,
-    twitter = twitter,
-    github = github,
-    feed = feed,
-    links = links,
-    static_url = static_url,
-    google_analytics = google_analytics,
+settings = dict(static_path=os.path.join(theme_path, 'static'),
+    template_path=os.path.join(theme_path, 'template'),
+    gzip=True,
+    site_title=site_title,
+    site_description=site_description,
+    site_url=site_url,
+    twitter=twitter,
+    github=github,
+    feed=feed,
+    links=links,
+    static_url=static_url,
+    google_analytics=google_analytics,
 )

@@ -14,51 +14,55 @@ if len(sys.argv) > 1:
     deploy_dir = sys.argv[1]
 deploy_dir = os.path.join(config.catsup_path, deploy_dir)
 
+posts_num = len(posts)
+
+
+def write(file_name, page):
+    file_path = os.path.join(deploy_dir, file_name)
+    open(file_path, 'w').write(page)
 
 if __name__ == '__main__':
     if not os.path.exists(deploy_dir):
         os.makedirs(deploy_dir)
-    print('Start generating articles')
+
     loader = tornado.template.Loader(config.settings['template_path'],
         autoescape=None)
-    generator = loader.load("article.html")
-    for i in range(posts_num):
-        post = posts[i]
-        prev = next = None
-        print('Generating %s' % post['file_name'])
-        if i:#i>0
-            prev = posts[i-1]
-        if (i+1) < posts_num:
-            next = posts[i+1]
-        page = generator.generate(post=post, handler=config,
-            prev=prev, next=next)
-        file_path = os.path.join(deploy_dir, '%s.html' % post['file_name'])
-        open(file_path, 'w').write(page)
 
     print('Start generating atom')
-    page = loader.load("feed.xml").generate(posts=posts[:5], handler=config)
-    file_path = os.path.join(deploy_dir, 'feed.xml')
-    open(file_path, 'w').write(page)
+    page = loader.load("feed.xml").generate(posts=posts, handler=config)
+    write('feed.xml', page)
 
     print('Start generating index pages..')
     generator = loader.load("index.html")
     p = 0
-    while posts_num > (p*3):
+    while posts_num > p * 3:
         p += 1
         print('Start generating page %s' % p)
         page = generator.generate(posts=posts, handler=config,
-        p=p)
-        file_path = os.path.join(deploy_dir, 'page_%s.html' % p)
-        open(file_path, 'w').write(page)
+            p=p)
+        write('page_%s.html' % p, page)
 
     index_1 = os.path.join(deploy_dir, 'page_1.html')
     index = os.path.join(deploy_dir, 'index.html')
     os.rename(index_1, index)
 
+    print('Start generating articles')
+    generator = loader.load("article.html")
+    posts.reverse()
+
+    prev = None
+    post = posts.pop()
+    next = len(posts) and posts.pop() or None
+    while post:
+        print('Generating %s' % post['file_name'])
+        page = generator.generate(post=post, handler=config,
+            prev=prev, next=next)
+        write('%s.html' % post['file_name'], page)
+        prev, post, next = post, next, len(posts) and posts.pop() or None
+
     print('Start generating 404 page')
     page = loader.load("404.html").generate(handler=config)
-    file_path = os.path.join(deploy_dir, '404.html')
-    open(file_path, 'w').write(page)
+    write('404.html', page)
 
     print('Copying static files.')
     deploy_static_dir = os.path.join(deploy_dir, 'static')

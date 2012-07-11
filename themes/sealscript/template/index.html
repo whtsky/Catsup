@@ -28,14 +28,14 @@
 {% if p == 2 %}
 ./
 {% else %}
-page_{{ p-1 }}.html
+page_{{ p - 1 }}.html
 {% end %}
 " class="v_nav" >
     <span class="icon">Prev</span>
 </a>
 {% end %}
 
-{% if len(posts) > (p*3) %}
+{% if len(posts) > p * 3 %}
 <a id="next" href="page_{{ p+1 }}.html" class="v_nav" >
     <span class="icon">Next</span>
 </a>

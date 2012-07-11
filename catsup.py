@@ -42,7 +42,7 @@ def load_post(file_name):
     while True:
         line = file.readline()
         if line.startswith('#'):
-            post['title'] = line.replace('#', '')
+            post['title'] = line[1:].replace(' ', '')
         elif 'date' in line.lower():
             post['date'] = line.split(':')[-1].replace(' ', '')
         elif line.startswith('---'):
@@ -78,7 +78,7 @@ class BaseHandler(tornado.web.RequestHandler):
 
 class MainHandler(BaseHandler):
     def get(self, p=1):
-        if p == '1':#/page_1.html
+        if p == '1':  # /page_1.html
             self.redirect('/', status=301)
         p = int(p)
         if p > len(self.settings['posts']):
@@ -88,16 +88,15 @@ class MainHandler(BaseHandler):
 
 class ArticleHandler(BaseHandler):
     def get(self, file_name):
-        posts_num = self.settings['posts_num']
-        posts = self.settings['posts']
+        posts_num = len(posts)
         prev = next = None
         for i in range(posts_num):
             post = posts[i]
             if post['file_name'] == file_name:
-                if i:#i>0
-                    prev = posts[i-1]
-                if (i+1) < posts_num:
-                    next = posts[i+1]
+                if i:  # i>0
+                    prev = posts[i - 1]
+                if (i + 1) < posts_num:
+                    next = posts[i + 1]
                 return self.render('article.html', post=post,
                     prev=prev, next=next)
         raise tornado.web.HTTPError(404)
@@ -106,7 +105,7 @@ class ArticleHandler(BaseHandler):
 
 class FeedHandler(BaseHandler):
     def get(self):
-        posts = self.settings['posts'][:5]
+        posts = self.settings['posts']
         self.render('feed.xml', posts=posts)
 
 
@@ -124,10 +123,8 @@ class ReloadHandler(BaseHandler):
         os.system('git pull')
         posts = load_posts()
         self.settings['posts'] = posts
-        self.settings['posts_num'] = len(posts)
 
 posts = load_posts()
-posts_num = len(posts)
 
 application = tornado.web.Application([
     (r'/', MainHandler),
@@ -135,7 +132,7 @@ application = tornado.web.Application([
     (r'/feed.xml', FeedHandler),
     (r'/reload', ReloadHandler),
     (r'/(.*).html', ArticleHandler),
-], posts = posts, posts_num = posts_num, autoescape=None, **config.settings)
+], posts=posts, autoescape=None, **config.settings)
 
 if __name__ == '__main__':
     tornado.options.parse_command_line()

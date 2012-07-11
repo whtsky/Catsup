@@ -6,6 +6,7 @@ import tornado.escape
 import os
 import config
 
+
 class ReloadHandler(tornado.web.RequestHandler):
     def post(self):
         if self.request.remote_ip not in config.github_ips:
