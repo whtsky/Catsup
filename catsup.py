@@ -59,7 +59,7 @@ def load_post(file_name):
 
 def load_posts():
     '''load all the posts.return a list.
-    sort with ctime.
+    DO NOT SORT NOW.ORGANIZE THEM BY FILENAME BY YOURSELF.
     '''
     post_files = os.listdir(config.posts_path)
     posts = []
@@ -67,7 +67,6 @@ def load_posts():
         if '.md' in file_name:
             post = load_post(file_name)
             posts.append(post)
-    posts.sort(key=lambda x: x['updated'], reverse=True)
     return posts
 
 

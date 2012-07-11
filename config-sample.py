@@ -3,7 +3,7 @@ import os
 site_title = 'catsup'
 site_description = 'a blog'
 site_url = 'https://github.com/whtsky/catsup'
-static_url = '/static'
+static_url = 'static'
 theme_name = 'sealscript'
 google_analytics = ''  # optional
 
@@ -13,7 +13,7 @@ theme_path = os.path.join(catsup_path, 'themes', theme_name)
 
 twitter = 'whouz'
 github = 'whtsky'
-feed = '/feed.xml'
+feed = 'feed.xml'
 
 links = (
     ('whtsky', 'http://whouz.com', 'I write catsup'),
