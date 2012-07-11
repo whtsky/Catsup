@@ -59,9 +59,10 @@ def load_post(file_name):
 
 def load_posts():
     '''load all the posts.return a list.
-    DO NOT SORT NOW.ORGANIZE THEM BY FILENAME BY YOURSELF.
+    Sort with filename.
     '''
     post_files = os.listdir(config.posts_path)
+    post_files.sort(reverse = True)
     posts = []
     for file_name in post_files:
         if '.md' in file_name:
