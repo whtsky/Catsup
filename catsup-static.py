@@ -16,8 +16,8 @@ deploy_dir = os.path.join(config.catsup_path, deploy_dir)
 
 
 if __name__ == '__main__':
-    shutil.rmtree(deploy_dir)
-    os.makedirs(deploy_dir)
+    if not os.path.exists(deploy_dir):
+        os.makedirs(deploy_dir)
     print('Start generating articles')
     loader = tornado.template.Loader(config.settings['template_path'],
         autoescape=None)
@@ -55,8 +55,14 @@ if __name__ == '__main__':
     index = os.path.join(deploy_dir, 'index.html')
     os.rename(index_1, index)
 
+    print('Start generating 404 page')
+    page = loader.load("404.html").generate()
+    file_path = os.path.join(deploy_dir, '404.html')
+    open(file_path, 'w').write(page)
+
     print('Copying static files.')
     deploy_static_dir = os.path.join(deploy_dir, 'static')
+    shutil.rmtree(deploy_static_dir)
     shutil.copytree(config.settings['static_path'], deploy_static_dir)
 
     print('Done.')
