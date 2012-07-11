@@ -2,6 +2,7 @@
 #catsup
 config.py
 _posts/*
+deploy/*
 
 #PyCharm
 .idea

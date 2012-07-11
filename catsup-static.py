@@ -56,13 +56,14 @@ if __name__ == '__main__':
     os.rename(index_1, index)
 
     print('Start generating 404 page')
-    page = loader.load("404.html").generate()
+    page = loader.load("404.html").generate(handler=config)
     file_path = os.path.join(deploy_dir, '404.html')
     open(file_path, 'w').write(page)
 
     print('Copying static files.')
     deploy_static_dir = os.path.join(deploy_dir, 'static')
-    shutil.rmtree(deploy_static_dir)
+    if os.path.exists(deploy_static_dir):
+        shutil.rmtree(deploy_static_dir)
     shutil.copytree(config.settings['static_path'], deploy_static_dir)
 
     print('Done.')
