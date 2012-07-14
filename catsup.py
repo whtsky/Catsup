@@ -43,19 +43,19 @@ def load_post(file_name):
     while True:
         line = file.readline()
         if line.startswith('#'):
-            post['title'] = line[1:].replace(' ', '')
+            post['title'] = line[1:].rstrip()
         elif 'date' in line.lower():
-            post['date'] = line.split(':')[-1].replace(' ', '')
+            post['date'] = line.split(':')[-1].rstrip()
         elif line.startswith('---'):
             content = '\n'.join(file.readlines())
             if isinstance(content, str):
                 content = content.decode('utf-8')
             post['content'] = md.render(content)
-            break
-    post['updated'] = os.stat(path).st_ctime
-    updated_xml = time.gmtime(post['updated'])
-    post['updated_xml'] = time.strftime('%Y-%m-%dT%H:%M:%SZ', updated_xml)
-    return post
+            post['updated'] = os.stat(path).st_ctime
+            updated_xml = time.gmtime(post['updated'])
+            post['updated_xml'] = time.strftime('%Y-%m-%dT%H:%M:%SZ',
+                updated_xml)
+            return post
 
 
 def load_posts():
@@ -107,18 +107,18 @@ class FeedHandler(BaseHandler):
     def get(self):
         loader = tornado.template.Loader(config.common_template_path,
             autoescape=None)
-        atom = loader.load("feed.xml").generate(posts=self.settings['posts'],
+        p = loader.load("feed.xml").generate(posts=self.settings['posts'],
             handler=config)
-        self.write(atom)
+        self.write(p)
 
 
 class SitemapHandler(BaseHandler):
     def get(self):
         loader = tornado.template.Loader(config.common_template_path,
             autoescape=None)
-        atom = loader.load("sitemap.txt").generate(posts=self.settings['posts'],
+        p = loader.load("sitemap.txt").generate(posts=self.settings['posts'],
             handler=config)
-        self.write(atom)
+        self.write(p)
 
 
 class ReloadHandler(BaseHandler):
