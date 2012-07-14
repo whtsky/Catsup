@@ -25,12 +25,21 @@ if __name__ == '__main__':
     if not os.path.exists(deploy_dir):
         os.makedirs(deploy_dir)
 
-    loader = tornado.template.Loader(config.settings['template_path'],
+    print('Start generating sitemap')
+    links = []
+    for post in posts:
+        links.append('%s/%s' % (config.site_url, post['file_name']))
+    write('sitemap.txt', '\n'.join(links))
+
+    loader = tornado.template.Loader(config.common_template_path,
         autoescape=None)
 
     print('Start generating atom')
     page = loader.load("feed.xml").generate(posts=posts, handler=config)
     write('feed.xml', page)
+
+    loader = tornado.template.Loader(config.settings['template_path'],
+        autoescape=None)
 
     print('Start generating index pages..')
     generator = loader.load("index.html")

@@ -8,6 +8,7 @@ import tornado.web
 import tornado.ioloop
 import tornado.options
 import tornado.escape
+import tornado.template
 import misaka as m
 
 from tornado.options import define, options
@@ -62,7 +63,7 @@ def load_posts():
     Sort with filename.
     '''
     post_files = os.listdir(config.posts_path)
-    post_files.sort(reverse = True)
+    post_files.sort(reverse=True)
     posts = []
     for file_name in post_files:
         if '.md' in file_name:
@@ -102,11 +103,21 @@ class ArticleHandler(BaseHandler):
         raise tornado.web.HTTPError(404)
 
 
-
 class FeedHandler(BaseHandler):
     def get(self):
-        posts = self.settings['posts']
-        self.render('feed.xml', posts=posts)
+        loader = tornado.template.Loader(config.common_template_path,
+            autoescape=None)
+        atom = loader.load("feed.xml").generate(posts=self.settings['posts'],
+            handler=config)
+        self.write(atom)
+
+
+class SitemapHandler(BaseHandler):
+    def get(self):
+        links = []
+        for post in posts:
+            links.append('%s/%s' % (config.site_url, post['file_name']))
+        self.write('\n'.join(links))
 
 
 class ReloadHandler(BaseHandler):
@@ -130,6 +141,7 @@ application = tornado.web.Application([
     (r'/', MainHandler),
     (r'/page_(.*?).html', MainHandler),
     (r'/feed.xml', FeedHandler),
+    (r'/sitemap.txt', SitemapHandler),
     (r'/reload', ReloadHandler),
     (r'/(.*).html', ArticleHandler),
 ], posts=posts, autoescape=None, **config.settings)
