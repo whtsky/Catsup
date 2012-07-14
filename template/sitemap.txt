@@ -1,0 +1,2 @@
+{% for post in posts %}{{ handler.settings['site_url'] }}/{{ post['file_name'] }}.html
+{% end %}

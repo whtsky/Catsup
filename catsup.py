@@ -114,10 +114,11 @@ class FeedHandler(BaseHandler):
 
 class SitemapHandler(BaseHandler):
     def get(self):
-        links = []
-        for post in posts:
-            links.append('%s/%s' % (config.site_url, post['file_name']))
-        self.write('\n'.join(links))
+        loader = tornado.template.Loader(config.common_template_path,
+            autoescape=None)
+        atom = loader.load("sitemap.txt").generate(posts=self.settings['posts'],
+            handler=config)
+        self.write(atom)
 
 
 class ReloadHandler(BaseHandler):
