@@ -293,9 +293,17 @@ a:active, a:hover {
 	box-shadow: inset 0 0 10px #000;
 }
 .article code {
+	color: #000;
+	background: #f8f8ff;
+	padding: 0.5em;
 	font-size: 14px;
 	font-family: 'Monaco', 'monospace';
 	text-shadow: none;
+}
+.article pre code{
+	padding: 0;
+	background: #222;
+	color: white;
 }
 .article .share {
 	float: right;
