@@ -36,20 +36,6 @@ a {
 a:active, a:hover {
 	color: #ff4b33;
 }
-input[type="text"], textarea {
-	background: #FCFCFC;
-	border: 1px solid #ddd;
-	padding: 8px;
-	outline: none;
-	margin: 0;
-	color: #444;
-	-moz-box-shadow: 1px 1px 4px #F4F4F4 inset;
-	-webkit-box-shadow: 1px 1px 4px #F4F4F4 inset;
-	box-shadow: 1px 1px 4px #F4F4F4 inset;
-}
-input[type="text"]:focus, textarea:focus {
-	border-color: #bbb;
-}
 .button {
 	border-radius: 2px;
 	border: 1px #ddd solid;
@@ -73,24 +59,10 @@ input[type="text"]:focus, textarea:focus {
 	-moz-box-shadow: inset #ccc 0 0 5px;
 	box-shadow: inset #ccc 0 0 5px;
 }
-.avatar {
-	padding: 1px;
-	border: 1px #ccc solid;
-	background: #fff;
-	-moz-box-shadow: 0 0 3px rgba(0,0,0,0.1);
-	-webkit-box-shadow: 0 0 3px rgba(0,0,0,0.1);
-	box-shadow: 0 0 3px rgba(0,0,0,0.1);
-}
-.avatar img {
-	display: block;
-	width: 48px;
-	height: 48px;
-}
 .title {
 	font-size: 30px;
 	line-height: 30px;
 	letter-spacing: -0.5px;
-	text-transform: uppercase;
 	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 	font-family: "Abel", "Helvetica Neue", Helvetica, Arial, Sans-serif;
 }
@@ -164,62 +136,9 @@ input[type="text"]:focus, textarea:focus {
 	padding: 0;
 	text-align: center;
 }
-#recent_comments {
-	height: 36px;
-	padding: 20px 0;
-}
-#recent_comments li, #recent_comments .recent_comment, #recent_comments img {
-	display: inline-block;
-	width: 32px;
-	height: 32px;
-}
-#recent_comments li {
-	margin: 0 3px;
-	position: relative;
-}
-#recent_comments .recent_comment {
-	opacity: 0.7;
-}
-#recent_comments .recent_comment:hover {
-	opacity: 1;
-}
-#recent_comments .recent_comment:hover:before {
-	content: " ";
-	border-width: 6px;
-	border-color: transparent transparent #000 transparent;
-	border-style: solid;
-	display: block;
-	position: absolute;
-	top: 28px;
-	left: 10px;
-	opacity: 0.8;
-}
-#recent_comments .bubble {
-	background: rgba(0, 0, 0, 0.8);
-	padding: 1px;
-	position: absolute;
-	top: 40px;
-	display: none;
-	text-align: left;
-	max-width: 400px;
-	max-height: 250px;
-	min-width: 300px;
-	overflow: hidden;
-	z-index: 100;
-	border-radius: 5px;
-}
-#recent_comments .bubble_text {
-	padding: 10px;
-	color: #ddd;
-}
-
-#recent_comments .bubble_text a {
-	color: white;
-}
 #title {
 	color: #ddd;
 	text-shadow: 0 1px 1px black;
-	text-transform: uppercase;
 	font-size: 22px;
 	font-family: "Abel", "Helvetica Neue", Helvetica, Arial, Sans-serif;
 	float: left;
@@ -380,27 +299,6 @@ input[type="text"]:focus, textarea:focus {
 }
 .article .share {
 	float: right;
-}
-
-#respond {
-	margin: 50px 0;
-	padding: 20px 0 0 0;
-}
-#respond > h3 {
-	font-size: 20px;
-}
-#respond > form {
-	margin-top: 40px;
-}
-#respond p {
-	margin: 10px 0;
-}
-#respond textarea {
-	width: 98%;
-}
-#respond label {
-	margin-left: 20px;
-	font-size: 10px;
 }
 
 /* Nav */
