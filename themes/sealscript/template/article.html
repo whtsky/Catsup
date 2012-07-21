@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<meta name=description content="{{ post['title'] }},{{ handler.settings['site_title'] }},{{ handler.settings['site_description'] }}">
+<meta name=description content="{{ post['title'] }},{% for tg in post['tags']%}{{tg}},{% end %}{{ handler.settings['site_title'] }},{{ handler.settings['site_description'] }}">
 {% end %}
 
 {% block title %}
