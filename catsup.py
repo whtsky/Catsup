@@ -30,6 +30,17 @@ class CatsupRender(m.HtmlRenderer, m.SmartyPants):
         return highlight(text, lexer, formatter)
 
 
+    def autolink(self, link, is_email):
+        if is_email:
+            return '<a href="mailto:%(link)s">%(link)s</a>' % {'link': link}
+
+        if '.' in link:
+            name_extension = link.split('.')[-1].lower()
+            if name_extension in ('jpg', 'png', 'git', 'jpeg'):
+                return '<img src="%s" />' % link
+
+        return '<a href="%s">%s</a>' % (link, link)
+
 md = m.Markdown(CatsupRender(flags=m.HTML_ESCAPE | m.HTML_USE_XHTML),
     extensions=m.EXT_FENCED_CODE | m.EXT_NO_INTRA_EMPHASIS | m.EXT_AUTOLINK)
 
