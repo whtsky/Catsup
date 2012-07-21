@@ -30,7 +30,8 @@ if __name__ == '__main__':
         autoescape=None)
 
     print('Start generating sitemap')
-    page = loader.load("sitemap.txt").generate(posts=posts, handler=config)
+    page = loader.load("sitemap.txt").generate(posts=posts, handler=config,
+        tags=tags)
     write('sitemap.txt', page)
 
     print('Start generating atom')

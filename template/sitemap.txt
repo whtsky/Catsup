@@ -1,2 +1,3 @@
 {% for post in posts %}{{ handler.settings['site_url'] }}/{{ post['file_name'] }}.html
+{% end %}{% for tag in tags %}{{ handler.settings['site_url'] }}/tag_{{ tag[0] }}.html
 {% end %}

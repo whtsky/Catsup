@@ -154,7 +154,7 @@ class SitemapHandler(BaseHandler):
         loader = tornado.template.Loader(config.common_template_path,
             autoescape=None)
         p = loader.load("sitemap.txt").generate(posts=self.settings['posts'],
-            handler=config)
+            handler=config, tags=self.settings['tags'])
         self.write(p)
 
 
