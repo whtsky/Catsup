@@ -50,13 +50,16 @@ def load_post(file_name):
     '''
     path = os.path.join(config.posts_path, file_name)
     file = open(path, 'r')
-    post = {'file_name': file_name[:-3]}
+    post = {'file_name': file_name[:-3], 'tags': []}
     while True:
         line = file.readline()
         if line.startswith('#'):
-            post['title'] = line[1:].rstrip()
+            post['title'] = line[1:].strip()
         elif 'date' in line.lower():
-            post['date'] = line.split(':')[-1].rstrip()
+            post['date'] = line.split(':')[-1].strip()
+        elif 'tags' in line.lower():
+            for tag in line.split(':')[-1].strip().split(','):
+                post['tags'].append(tag.strip())
         elif line.startswith('---'):
             content = '\n'.join(file.readlines())
             if isinstance(content, str):
@@ -81,6 +84,21 @@ def load_posts():
             post = load_post(file_name)
             posts.append(post)
     return posts
+    
+    
+def get_tag_list(posts):
+    """return the tag list.
+    sorted with posts num.
+    """
+    tags = {}
+    for post in posts:
+        for tag in post['tags']:
+            if tag in tags:
+                tags[tag].append(post)
+            else:
+                tags[tag] = [post]
+    
+    return sorted(tags.items(), key=lambda x: len(x[1]), reverse=True)
 
 
 class BaseHandler(tornado.web.RequestHandler):
@@ -111,6 +129,14 @@ class ArticleHandler(BaseHandler):
                     next = posts[i + 1]
                 return self.render('article.html', post=post,
                     prev=prev, next=next)
+        raise tornado.web.HTTPError(404)
+
+
+class TagHandler(BaseHandler):
+    def get(self, tag_name):
+        for tag in self.settings['tags']:
+            if tag[0] == tag_name:
+                return self.render('tag.html', tag=tag)
         raise tornado.web.HTTPError(404)
 
 
@@ -148,15 +174,17 @@ class ReloadHandler(BaseHandler):
         self.settings['posts'] = posts
 
 posts = load_posts()
+tags = get_tag_list(posts)
 
 application = tornado.web.Application([
     (r'/', MainHandler),
     (r'/page_(.*?).html', MainHandler),
+    (r'/tag_(.*?).html', TagHandler),
     (r'/feed.xml', FeedHandler),
     (r'/sitemap.txt', SitemapHandler),
     (r'/reload', ReloadHandler),
     (r'/(.*).html', ArticleHandler),
-], posts=posts, autoescape=None, **config.settings)
+], autoescape=None, posts=posts, tags=tags, **config.settings)
 
 if __name__ == '__main__':
     tornado.options.parse_command_line()

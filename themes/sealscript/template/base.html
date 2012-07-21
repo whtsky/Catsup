@@ -5,7 +5,7 @@
     {% block head %}{% end %}
     <title>{% block title %}{{ handler.settings['site_title'] }}{% end %}</title>
     <link href='http://fonts.googleapis.com/css?family=Abel' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="{{ handler.settings['static_url'] }}/css/style.css" type="text/css" />
+    <link rel="stylesheet" href="{{ handler.settings['static_url'] }}/css/style.css?20120722" type="text/css" />
     <link rel="stylesheet" href="{{ handler.settings['static_url'] }}/css/pygments_style.css" type="text/css" />
     <link rel="alternate" type="application/rss+xml" href="{{ handler.settings['feed'] }}" title="{{ handler.settings['site_title'] }}" />
     {% if handler.settings['google_analytics'] %}
@@ -32,9 +32,9 @@
                 <h1 id="title"><a href="{{ handler.settings['site_url'] }}">{{ handler.settings['site_title'] }}</a></h1>
                 <div id="description" class="seal">{{ handler.settings['site_description'] }}</div>
                 <ul class="right">
-                    {% for link in handler.settings['links'] %}
-                    <li><a href="{{ link[1] }}" title="{{ link[2] }}">{{ link[0].capitalize() }}</a></li>
-                    <li class="dot">&bull;</a>
+                    {% for t in handler.settings['tags'][:5] %}
+                    <li><a href="tag_{{ t[0] }}.html">{{ t[0].capitalize() }}</a></li>
+                    <li class="dot">&bull;</li>
                     {% end %}
                 </ul>
             </div>
@@ -53,12 +53,32 @@
     {% block content %}
     {% end %}
 </div>
-<div id="footer">
-    Powered by <a href="https://github.com/whtsky/catsup">CATSUP</a>
-    <span>&bull;</span>
-    SealScript Theme by <a href="http://shellex.info">Shellex</a>
-    <span>&bull;</span>
-    Hosted on <a href="https://whmcs.hangssh.info/aff.php?aff=144">Host700</a>
+<div id="footer_wrapper">
+    <div id="footer">
+        <div id="footer_inner">
+            <div class="tag_cloud col">
+                <h2>Tag Cloud</h2>
+                {% for t in handler.settings['tags'] %}
+                <a class="tag" href="tag_{{ t[0] }}.html">{{ t[0].capitalize() }}</a>
+                {% end %}
+            </div>
+            <div class="col">
+                <h2>Links</h2>
+                <ul>
+                    {% for link in handler.settings['links'] %}
+                    <li><a href="{{ link[1] }}" title="{{ link[2] }}">{{ link[0].capitalize() }}</a></li>
+                    {% end %}
+                </ul>
+            </div>
+            <div class="copyright">
+                Powered by <a href="https://github.com/whtsky/catsup">CATSUP</a>
+                <span>&bull;</span>
+                SealScript Theme by <a href="http://shellex.info">Shellex</a>
+                <span>&bull;</span>
+                Hosted on <a href="https://whmcs.hangssh.info/aff.php?aff=144">Host700</a>
+            </div>
+        </div>
+    </div>
 </div>
 
 </body>

@@ -26,6 +26,15 @@
         <div class="text">
             {{ post['content'] }}
         </div>
+        {% if post['tags'] %}
+        <div class="big_sep"></div>
+        <div class="article_meta">
+            <span>tagged:</span>
+            {% for tag in post['tags'] %}
+            <a class="tag" href="tag_{{ tag }}.html">{{ tag }},</a> 
+            {% end %} 
+        </div>
+        {% end %}
         <div class="big_sep"></div>
         <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
         <div id="disqus_thread"></div>

@@ -15,6 +15,7 @@ if len(sys.argv) > 1:
 deploy_dir = os.path.join(config.catsup_path, deploy_dir)
 
 posts_num = len(posts)
+config.settings['tags'] = tags
 
 
 def write(file_name, page):
@@ -39,7 +40,7 @@ if __name__ == '__main__':
     loader = tornado.template.Loader(config.settings['template_path'],
         autoescape=None)
 
-    print('Start generating index pages..')
+    print('Start generating index pages')
     generator = loader.load("index.html")
     p = 0
     while posts_num > p * 3:
@@ -52,6 +53,13 @@ if __name__ == '__main__':
     index_1 = os.path.join(deploy_dir, 'page_1.html')
     index = os.path.join(deploy_dir, 'index.html')
     os.rename(index_1, index)
+
+    print('Start generating index tags')
+    generator = loader.load("tag.html")
+    for tag in tags:
+        print('Start generating tag %s' % tag[0])
+        page = generator.generate(tag=tag, handler=config)
+        write('tag_%s.html' % tag[0], page)
 
     print('Start generating articles')
     generator = loader.load("article.html")
