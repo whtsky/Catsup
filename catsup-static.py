@@ -24,8 +24,10 @@ def write(file_name, page):
 
 
 def generate():
-    if not os.path.exists(deploy_dir):
-        os.makedirs(deploy_dir)
+    if os.path.exists(deploy_dir):
+        shutil.rmtree(deploy_dir)
+
+    os.makedirs(deploy_dir)
 
     loader = tornado.template.Loader(config.common_template_path,
         autoescape=None)
