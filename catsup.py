@@ -142,6 +142,7 @@ class TagHandler(BaseHandler):
 
 class FeedHandler(BaseHandler):
     def get(self):
+        self.set_header("Content-Type", "application/atom+xml")
         loader = tornado.template.Loader(config.common_template_path,
             autoescape=None)
         p = loader.load("feed.xml").generate(posts=self.settings['posts'],
@@ -151,6 +152,7 @@ class FeedHandler(BaseHandler):
 
 class SitemapHandler(BaseHandler):
     def get(self):
+        self.set_header("Content-Type", "text/plain")
         loader = tornado.template.Loader(config.common_template_path,
             autoescape=None)
         p = loader.load("sitemap.txt").generate(posts=self.settings['posts'],

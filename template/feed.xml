@@ -7,12 +7,12 @@
     <id>{{ handler.settings['site_url'] }}</id>
     {% for post in posts[:15] %}
     <entry>
-        <title type="html"><![CDATA[{{ post['title'] }}]]></title>
+        <title><![CDATA[{{ post['title'] }}]]></title>
         <link href="{{ handler.settings['site_url'] }}/{{ post['file_name'] }}.html"/>
         <updated>{{ post['updated_xml'] }}</updated>
         <published>{{ post['updated_xml'] }}</published>
         <id>{{ handler.settings['site_url'] }}/{{ post['file_name'] }}</id>
-        <content type="html" xml:base="{{ handler.settings['site_url'] }}" xml:lang="en">
+        <content type="html">
             <![CDATA[ {{ post['content'] }} ]]>
         </content>
     </entry>
