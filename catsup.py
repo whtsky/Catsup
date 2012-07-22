@@ -29,7 +29,6 @@ class CatsupRender(m.HtmlRenderer, m.SmartyPants):
         formatter = HtmlFormatter()
         return highlight(text, lexer, formatter)
 
-
     def autolink(self, link, is_email):
         if is_email:
             return '<a href="mailto:%(link)s">%(link)s</a>' % {'link': link}
@@ -84,8 +83,8 @@ def load_posts():
             post = load_post(file_name)
             posts.append(post)
     return posts
-    
-    
+
+
 def get_tag_list(posts):
     """return the tag list.
     sorted with posts num.
@@ -97,7 +96,7 @@ def get_tag_list(posts):
                 tags[tag].append(post)
             else:
                 tags[tag] = [post]
-    
+
     return sorted(tags.items(), key=lambda x: len(x[1]), reverse=True)
 
 

@@ -22,7 +22,8 @@ def write(file_name, page):
     file_path = os.path.join(deploy_dir, file_name)
     open(file_path, 'w').write(page)
 
-if __name__ == '__main__':
+
+def generate():
     if not os.path.exists(deploy_dir):
         os.makedirs(deploy_dir)
 
@@ -87,3 +88,6 @@ if __name__ == '__main__':
     shutil.copytree(config.settings['static_path'], deploy_static_dir)
 
     print('Done.')
+
+if __name__ == '__main__':
+    generate()

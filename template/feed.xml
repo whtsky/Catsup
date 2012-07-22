@@ -13,7 +13,9 @@
         <published>{{ post['updated_xml'] }}</published>
         <id>{{ handler.settings['site_url'] }}/{{ post['file_name'] }}</id>
         <content type="html">
-            <![CDATA[ {{ post['content'] }} ]]>
+            <![CDATA[
+             {{ post['content'] }}
+            ]]>
         </content>
     </entry>
     {% end %}
