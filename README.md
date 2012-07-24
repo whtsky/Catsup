@@ -13,6 +13,7 @@ Then go to http://localhost:8888 to take a look at your own catsup:)
 
 ##How to write
 catsup uses Markdown to write posts.
+Filename should like 2000-01-01-catsup.md(year-month-day-title.md)
 Example:
 
 	#Title
