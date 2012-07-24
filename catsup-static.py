@@ -47,7 +47,7 @@ def generate():
     print('Start generating index pages')
     generator = loader.load("index.html")
     p = 0
-    while posts_num > p * 3:
+    while posts_num > p * config.settings['post_per_page']:
         p += 1
         print('Start generating page %s' % p)
         page = generator.generate(posts=posts, handler=config,
@@ -58,7 +58,11 @@ def generate():
     index = os.path.join(deploy_dir, 'index.html')
     os.rename(index_1, index)
 
-    print('Start generating index tags')
+    print('Start generating tag pages')
+    generator = loader.load("tags.html")
+    page = generator.generate(handler=config)
+    write('tags.html', page)
+
     generator = loader.load("tag.html")
     for tag in tags:
         print('Start generating tag %s' % tag[0])

@@ -41,7 +41,8 @@ class CatsupRender(m.HtmlRenderer, m.SmartyPants):
         return '<a href="%s">%s</a>' % (link, link)
 
 md = m.Markdown(CatsupRender(flags=m.HTML_ESCAPE | m.HTML_USE_XHTML),
-    extensions=m.EXT_FENCED_CODE | m.EXT_NO_INTRA_EMPHASIS | m.EXT_AUTOLINK)
+    extensions=m.EXT_FENCED_CODE | m.EXT_NO_INTRA_EMPHASIS | m.EXT_AUTOLINK | 
+        m.EXT_STRIKETHROUGH | m.EXT_SUPERSCRIPT)
 
 
 def load_post(file_name):
@@ -49,13 +50,13 @@ def load_post(file_name):
     '''
     path = os.path.join(config.posts_path, file_name)
     file = open(path, 'r')
-    post = {'file_name': file_name[:-3], 'tags': []}
+    post = {'file_name': file_name[:-3],
+            'tags': [],
+            'date': file_name[:10]}
     while True:
         line = file.readline()
         if line.startswith('#'):
             post['title'] = line[1:].strip()
-        elif 'date' in line.lower():
-            post['date'] = line.split(':')[-1].strip()
         elif 'tags' in line.lower():
             for tag in line.split(':')[-1].strip().split(','):
                 post['tags'].append(tag.strip())
@@ -113,6 +114,11 @@ class MainHandler(BaseHandler):
         if p > len(self.settings['posts']):
             raise tornado.web.HTTPError(404)
         self.render('index.html', posts=self.settings['posts'], p=p)
+
+
+class TagsHandler(BaseHandler):
+    def get(self, p=1):
+        self.render('tags.html')
 
 
 class ArticleHandler(BaseHandler):
@@ -181,6 +187,7 @@ application = tornado.web.Application([
     (r'/', MainHandler),
     (r'/page_(.*?).html', MainHandler),
     (r'/tag_(.*?).html', TagHandler),
+    (r'/tags.html', TagsHandler),
     (r'/feed.xml', FeedHandler),
     (r'/sitemap.txt', SitemapHandler),
     (r'/reload', ReloadHandler),

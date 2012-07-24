@@ -16,7 +16,6 @@ catsup uses Markdown to write posts.
 Example:
 
 	#Title
-	- date: 2012-7-6
 	- tags: tag1, tag2, tag3
 	
 	----
