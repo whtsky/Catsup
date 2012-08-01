@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ archive[0] }} | {{ handler.settings['site_title'] }}
+{% end %}
+
+{% block content %}
+<div class="article">
+	<div class="inner">
+		<h2 class="title">Articles posted in "{{ archive[0] }}"</h2>
+		<div class="text">
+			<ul>
+				{% for post in archive[1] %}
+				<li>
+					<span class="time_stamp">{{ post['date'] }}</span>
+					<a href="{{ post['file_name'] }}.html">{{ post['title'] }}</a>
+				</li>
+				{% end %}
+			</ul>
+		</div>
+	</div>
+</div>
+{% if prev %}
+<a id="prev" href="archive_{{ prev[0] }}.html" class="v_nav" >
+	<span class="icon">Prev</span>
+</a>
+{% end %}
+
+{% if next %}
+<a id="next" href="archive_{{ next[0] }}.html" class="v_nav" >
+	<span class="icon">Next</span>
+</a>
+{% end %}
+
+{% end %}

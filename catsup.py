@@ -86,19 +86,25 @@ def load_posts():
     return posts
 
 
-def get_tag_list(posts):
-    """return the tag list.
-    sorted with posts num.
+def get_infos(posts):
+    """return the tag list and archive list.
     """
     tags = {}
+    archives = {}
     for post in posts:
         for tag in post['tags']:
             if tag in tags:
                 tags[tag].append(post)
             else:
                 tags[tag] = [post]
+        month = post['date'][:7]
+        if month in archives:
+            archives[month].append(post)
+        else:
+            archives[month] = [post]
 
-    return sorted(tags.items(), key=lambda x: len(x[1]), reverse=True)
+    return sorted(tags.items(), key=lambda x: len(x[1]), reverse=True),\
+        sorted(archives.items(), key=lambda x: x[0], reverse=True)
 
 
 class BaseHandler(tornado.web.RequestHandler):
@@ -111,8 +117,6 @@ class MainHandler(BaseHandler):
         if p == '1':  # /page_1.html
             self.redirect('/', status=301)
         p = int(p)
-        if p > len(self.settings['posts']):
-            raise tornado.web.HTTPError(404)
         self.render('index.html', posts=self.settings['posts'], p=p)
 
 
@@ -139,9 +143,30 @@ class ArticleHandler(BaseHandler):
 
 class TagHandler(BaseHandler):
     def get(self, tag_name):
-        for tag in self.settings['tags']:
+        prev = next = None
+        for i, tag in enumerate(self.settings['tags']):
             if tag[0] == tag_name:
-                return self.render('tag.html', tag=tag)
+                i += 1
+                if i < len(self.settings['tags']):
+                    next = self.settings['tags'][i]
+                return self.render('tag.html', tag=tag,
+                    prev=prev, next=next)
+            prev = tag
+
+        raise tornado.web.HTTPError(404)
+
+
+class ArchiveHandler(BaseHandler):
+    def get(self, archive_name):
+        prev = next = None
+        for i, archive in enumerate(self.settings['archives']):
+            if archive[0] == archive_name:
+                i += 1
+                if i < len(self.settings['archives']):
+                    next = self.settings['archives'][i]
+                return self.render('archive.html', archive=archive,
+                    prev=prev, next=next)
+            prev = archive
         raise tornado.web.HTTPError(404)
 
 
@@ -161,7 +186,8 @@ class SitemapHandler(BaseHandler):
         loader = tornado.template.Loader(config.common_template_path,
             autoescape=None)
         p = loader.load("sitemap.txt").generate(posts=self.settings['posts'],
-            handler=config, tags=self.settings['tags'])
+            handler=config, tags=self.settings['tags'],
+            archives=self.settings['archives'])
         self.write(p)
 
 
@@ -178,21 +204,25 @@ class ReloadHandler(BaseHandler):
         os.chdir(config.posts_path)
         os.system('git pull')
         posts = load_posts()
+        tags, archives = get_infos(posts)
         self.settings['posts'] = posts
+        self.settings['tags'] = tags
+        self.settings['archives'] = archives
 
 posts = load_posts()
-tags = get_tag_list(posts)
+tags, archives = get_infos(posts)
 
 application = tornado.web.Application([
     (r'/', MainHandler),
     (r'/page_(.*?).html', MainHandler),
     (r'/tag_(.*?).html', TagHandler),
+    (r'/archive_(.*?).html', ArchiveHandler),
     (r'/tags.html', TagsHandler),
     (r'/feed.xml', FeedHandler),
     (r'/sitemap.txt', SitemapHandler),
     (r'/reload', ReloadHandler),
     (r'/(.*).html', ArticleHandler),
-], autoescape=None, posts=posts, tags=tags, **config.settings)
+], autoescape=None, posts=posts, tags=tags, archives=archives, **config.settings)
 
 if __name__ == '__main__':
     tornado.options.parse_command_line()

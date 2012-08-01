@@ -16,6 +16,7 @@ deploy_dir = os.path.join(config.catsup_path, deploy_dir)
 
 posts_num = len(posts)
 config.settings['tags'] = tags
+config.settings['archives'] = archives
 
 
 def write(file_name, page):
@@ -32,12 +33,12 @@ def generate():
     loader = tornado.template.Loader(config.common_template_path,
         autoescape=None)
 
-    print('Start generating sitemap')
+    print('Generating sitemap')
     page = loader.load("sitemap.txt").generate(posts=posts, handler=config,
-        tags=tags)
+        tags=tags, archives=archives)
     write('sitemap.txt', page)
 
-    print('Start generating atom')
+    print('Generating atom')
     page = loader.load("feed.xml").generate(posts=posts, handler=config)
     write('feed.xml', page)
 
@@ -57,22 +58,10 @@ def generate():
     index_1 = os.path.join(deploy_dir, 'page_1.html')
     index = os.path.join(deploy_dir, 'index.html')
     os.rename(index_1, index)
-
-    print('Start generating tag pages')
-    generator = loader.load("tags.html")
-    page = generator.generate(handler=config)
-    write('tags.html', page)
-
-    generator = loader.load("tag.html")
-    for tag in tags:
-        print('Start generating tag %s' % tag[0])
-        page = generator.generate(tag=tag, handler=config)
-        write('tag_%s.html' % tag[0], page)
-
+    
     print('Start generating articles')
     generator = loader.load("article.html")
     posts.reverse()
-
     prev = None
     post = posts.pop()
     next = len(posts) and posts.pop() or None
@@ -83,7 +72,35 @@ def generate():
         write('%s.html' % post['file_name'], page)
         prev, post, next = post, next, len(posts) and posts.pop() or None
 
-    print('Start generating 404 page')
+    print('Start generating tag pages')
+    generator = loader.load("tags.html")
+    page = generator.generate(handler=config)
+    write('tags.html', page)
+
+    generator = loader.load("tag.html")
+    prev = None
+    for i, tag in enumerate(tags):
+        print('Generating tag %s' % tag[0])
+        i += 1
+        next = i < len(tags) and tags[i] or None
+        page = generator.generate(tag=tag, prev=prev,
+            next=next, handler=config)
+        write('tag_%s.html' % tag[0], page)
+        prev = tag
+
+    print('Start generating archive pages')
+    generator = loader.load("archive.html")
+    prev = None
+    for i, archive in enumerate(archives):
+        print('Generating archive %s' % archive[0])
+        i += 1
+        next = i < len(archives) and archives[i] or None
+        page = generator.generate(archive=archive, prev=prev,
+            next=next, handler=config)
+        write('archive_%s.html' % archive[0], page)
+        prev = archive
+    
+    print('Generating 404 page')
     page = loader.load("404.html").generate(handler=config)
     write('404.html', page)
 

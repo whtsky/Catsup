@@ -24,5 +24,15 @@
         </div>
     </div>
 </div>
+{% if prev %}
+<a id="prev" href="tag_{{ prev[0] }}.html" class="v_nav" >
+    <span class="icon">Prev</span>
+</a>
+{% end %}
 
+{% if next %}
+<a id="next" href="tag_{{ next[0] }}.html" class="v_nav" >
+    <span class="icon">Next</span>
+</a>
+{% end %}
 {% end %}

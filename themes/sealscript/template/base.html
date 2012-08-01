@@ -59,8 +59,16 @@
             <div class="tag_cloud col">
                 <h2>Tag Cloud</h2>
                 {% for t in handler.settings['tags'] %}
-                <a class="tag" href="tag_{{ t[0] }}.html">{{ t[0].capitalize() }}</a>
+                <a class="tag" href="tag_{{ t[0] }}.html">{{ t[0].capitalize() }} ({{ len(t[1]) }})</a>
                 {% end %}
+            </div>
+            <div class="col">
+                <h2>Archives</h2>
+                <ul>
+                    {% for av in handler.settings['archives'] %}
+                    <li><a href="archive_{{ av[0] }}.html">{{ av[0] }} ({{ len(av[1]) }})</a></li>
+                    {% end %}
+                </ul>
             </div>
             <div class="col">
                 <h2>Links</h2>
