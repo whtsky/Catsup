@@ -1,5 +1,8 @@
 #catsup
 
+##License
+Licensed under the MIT License.
+
 ##Install
 ```bash
 git clone git://github.com/whtsky/catsup.git
