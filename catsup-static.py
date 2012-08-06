@@ -5,6 +5,7 @@ from __future__ import print_function
 from catsup import *
 
 import tornado.template
+import os
 import sys
 import shutil
 
@@ -109,6 +110,9 @@ def generate():
     if os.path.exists(deploy_static_dir):
         shutil.rmtree(deploy_static_dir)
     shutil.copytree(config.settings['static_path'], deploy_static_dir)
+    os.chdir(deploy_dir)
+    os.system('cp static/favicon.ico ./')
+    os.system('cp static/robots.txt ./')
 
     print('Done.')
 

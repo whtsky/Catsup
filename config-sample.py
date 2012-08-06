@@ -14,6 +14,8 @@ common_template_path = os.path.join(catsup_path, 'template')
 
 twitter = 'whouz'
 github = 'whtsky'
+disqus_shortname = 'catsup'
+
 feed = 'feed.xml'
 post_per_page = 3
 
@@ -40,6 +42,7 @@ settings = dict(static_path=os.path.join(theme_path, 'static'),
     github=github,
     feed=feed,
     post_per_page=post_per_page,
+    disqus_shortname=disqus_shortname,
     links=links,
     static_url=static_url,
     google_analytics=google_analytics,
