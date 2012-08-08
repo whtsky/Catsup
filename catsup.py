@@ -98,11 +98,11 @@ def get_infos(posts):
                 tags[tag].append(post)
             else:
                 tags[tag] = [post]
-        month = post['date'][:7]
-        if month in archives:
-            archives[month].append(post)
+        year = post['date'][:4]
+        if year in archives:
+            archives[year].append(post)
         else:
-            archives[month] = [post]
+            archives[year] = [post]
 
     return sorted(tags.items(), key=lambda x: len(x[1]), reverse=True),\
         sorted(archives.items(), key=lambda x: x[0], reverse=True)
