@@ -241,13 +241,15 @@ code {
     -moz-border-radius: 3px;
     border-radius: 3px;
 }
+pre code{
+    border: 0;
+}
 pre {
     display: block;
     padding: 8px;
     margin: 0 0 30px;
     line-height: 20px;
     background-color: #f7f7f9;
-    border: 1px solid #e1e1e8;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border-radius: 4px;
