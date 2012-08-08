@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% for post in posts[(p-1)*handler.settings['post_per_page']:p*handler.settings['post_per_page']] %}
+<div class="wrapper">
+	<h1><a href="{{ post['file_name'] }}.html">{{ post['title'] }}</a> <small class="pull-right">{{ post['date'] }}</small></h1>
+	{{ post['content'] }}
+	{% for tag in post['tags'] %}
+	<a class="label" href="tag_{{ tag }}.html">{{ tag }}</a>
+	{% end %}
+</div>
+{% end %}
+
+<div class="wrapper">
+	<ul class="pager">
+		{% if p > 1 %}
+		<li class="previous">
+			<a href="{% if p == 2 %}/{% else %}page_{{ p - 1 }}.html{% end %}">&larr; Prev</a>
+		</li>
+		{% end %}
+	
+		{% if len(posts) > p * handler.settings['post_per_page'] %}
+		<li class="next">
+		<a href="page_{{ p+1 }}.html">Next &rarr;</a>
+		</li>
+		{% end %}
+	</ul>
+</div>
+
+{% end %}

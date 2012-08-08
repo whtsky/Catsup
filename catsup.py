@@ -120,11 +120,6 @@ class MainHandler(BaseHandler):
         self.render('index.html', posts=self.settings['posts'], p=p)
 
 
-class TagsHandler(BaseHandler):
-    def get(self, p=1):
-        self.render('tags.html')
-
-
 class ArticleHandler(BaseHandler):
     def get(self, file_name):
         posts_num = len(posts)
@@ -139,6 +134,11 @@ class ArticleHandler(BaseHandler):
                 return self.render('article.html', post=post,
                     prev=prev, next=next)
         raise tornado.web.HTTPError(404)
+
+
+class TagsHandler(BaseHandler):
+    def get(self):
+        self.render('tags.html')
 
 
 class TagHandler(BaseHandler):
@@ -156,6 +156,11 @@ class TagHandler(BaseHandler):
         raise tornado.web.HTTPError(404)
 
 
+class ArchivesHandler(BaseHandler):
+    def get(self):
+        self.render('archives.html')
+
+
 class ArchiveHandler(BaseHandler):
     def get(self, archive_name):
         prev = next = None
@@ -168,6 +173,11 @@ class ArchiveHandler(BaseHandler):
                     prev=prev, next=next)
             prev = archive
         raise tornado.web.HTTPError(404)
+
+
+class LinksHandler(BaseHandler):
+    def get(self):
+        self.render('links.html')
 
 
 class FeedHandler(BaseHandler):
@@ -209,19 +219,28 @@ class ReloadHandler(BaseHandler):
         self.settings['tags'] = tags
         self.settings['archives'] = archives
 
+
+class ErrorHandler(BaseHandler):
+    def prepare(self):
+        raise tornado.web.HTTPError(404)
+
+
 posts = load_posts()
 tags, archives = get_infos(posts)
 
 application = tornado.web.Application([
     (r'/', MainHandler),
     (r'/page_(.*?).html', MainHandler),
-    (r'/tag_(.*?).html', TagHandler),
+    (r'/archives.html', ArchivesHandler),
     (r'/archive_(.*?).html', ArchiveHandler),
     (r'/tags.html', TagsHandler),
+    (r'/tag_(.*?).html', TagHandler),
+    (r'/links.html', LinksHandler),
     (r'/feed.xml', FeedHandler),
     (r'/sitemap.txt', SitemapHandler),
     (r'/reload', ReloadHandler),
     (r'/(.*).html', ArticleHandler),
+    (r'/.*', ErrorHandler),
 ], autoescape=None, posts=posts, tags=tags, archives=archives, **config.settings)
 
 if __name__ == '__main__':

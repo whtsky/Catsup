@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Links | {{ handler.settings['site_title'] }}
+{% end %}
+
+{% block content %}
+<div class="wrapper">
+	<ul>
+		{% if handler.settings['twitter'] %}
+		<li><a href="http://twitter.com/{{ handler.settings['twitter'] }}" target="_blank" title="Follow Me @ Twitter">Twitter</a></li>
+		{% end %}
+		{% if handler.settings['github'] %}
+		<li><a href="http://github.com/{{ handler.settings['github'] }}" target="_blank" title="Fork Me @ Github">GitHub</a></li>
+		{% end %}
+		{% for link in handler.settings['links'] %}
+        <li><a href="{{ link[1] }}" title="{{ link[2] }}" target="_blank">{{ link[0] }}</a></li>
+        {% end %}
+	</ul>
+</div>
+{% end %}

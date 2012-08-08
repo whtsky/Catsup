@@ -42,8 +42,12 @@
     </div>
     <div id="header_inner">
         <div id="social">
+            {% if handler.settings['twitter'] %}
             <a href="http://twitter.com/{{ handler.settings['twitter'] }}" target="_blank" title="Follow Me @ Twitter"><img src="{{ handler.settings['static_url'] }}/image/ic16_twitter.png"></a>
+            {% end %}
+            {% if handler.settings['github'] %}
             <a href="http://github.com/{{ handler.settings['github'] }}" target="_blank" title="Fork Me @ Github"><img src="{{ handler.settings['static_url'] }}/image/ic16_github.png"></a>
+            {% end %}
             <a href="{{ handler.settings['feed'] }}" target="_blank" title="Subscribe My Blog"><img src="{{ handler.settings['static_url'] }}/image/ic16_rss.png"></a>
         </div>
         <div class="sep"></div>
@@ -74,7 +78,7 @@
                 <h2>Links</h2>
                 <ul>
                     {% for link in handler.settings['links'] %}
-                    <li><a href="{{ link[1] }}" title="{{ link[2] }}">{{ link[0].capitalize() }}</a></li>
+                    <li><a href="{{ link[1] }}" title="{{ link[2] }}" target="_blank">{{ link[0] }}</a></li>
                     {% end %}
                 </ul>
             </div>

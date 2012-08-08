@@ -74,10 +74,6 @@ def generate():
         prev, post, next = post, next, len(posts) and posts.pop() or None
 
     print('Start generating tag pages')
-    generator = loader.load("tags.html")
-    page = generator.generate(handler=config)
-    write('tags.html', page)
-
     generator = loader.load("tag.html")
     prev = None
     for i, tag in enumerate(tags):
@@ -101,9 +97,10 @@ def generate():
         write('archive_%s.html' % archive[0], page)
         prev = archive
     
-    print('Generating 404 page')
-    page = loader.load("404.html").generate(handler=config)
-    write('404.html', page)
+    print('Start generating other pages')
+    for p in ('404', 'tags', 'archives', 'links'):
+        page = loader.load("%s.html" % p).generate(handler=config)
+        write('%s.html' % p, page)
 
     print('Copying static files.')
     deploy_static_dir = os.path.join(deploy_dir, 'static')
