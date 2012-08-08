@@ -6,7 +6,7 @@ import os
 import config
 
 
-def update_posts(self):
+def update_posts():
     os.chdir(config.posts_path)
     if os.path.isdir(os.path.join(config.posts_path, '.git')):
         os.system('git pull')
