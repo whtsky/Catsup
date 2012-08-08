@@ -60,7 +60,7 @@ p a {
     border-bottom: 1px dashed #CED1D1;
 }
 .container {
-    width: 960px;
+    width: 660px;
     margin-left: auto;
     margin-right: auto;
     *zoom: 1;
@@ -403,11 +403,6 @@ text-shadow: 0 1px 0 #fff;
   font-size: 14px;
 }
 
-@media (max-width:960px) {
-    .container {
-        width: 640px;
-    }
-}
 @media (max-width:768px){
     .container {
         width:  auto;
