@@ -5,7 +5,7 @@ footer, header, nav {
     display: block;
 }
 footer {
-    margin-top: -40px;
+    margin-top: 5px;
     text-align: center;
 }
 .nav>a {
@@ -60,7 +60,7 @@ p a {
     border-bottom: 1px dashed #CED1D1;
 }
 .container {
-    width: 640px;
+    width: 960px;
     margin-left: auto;
     margin-right: auto;
     *zoom: 1;
@@ -398,23 +398,32 @@ text-shadow: 0 1px 0 #fff;
   border-bottom: 1px solid #eee;
 }
 .postsList li span{
-    color: #bbb;
+  color: #bbb;
   float: right;
   font-size: 14px;
 }
 
-@media only screen and (max-width:768px) {
+@media (max-width:960px) {
     .container {
-    width:  auto;
-    padding: 20px;
+        width: 640px;
+    }
 }
-.sitename {
-    font-size: 24px;
-    font-weight: bold;
-    text-align: center;
-}
-
-.wrapper  {
-    background-color:  #fff;
-    margin:  10px 0px 20px 0px;
+@media (max-width:768px){
+    .container {
+        width:  auto;
+        padding: 20px;
+    }
+    .sitename {
+        font-size: 30px;
+        font-weight: bold;
+    }
+    
+    .sitename, .nav {
+        text-align: center;
+    }
+    
+    .wrapper  {
+        background-color:  #fff;
+        margin:  10px 0px 20px 0px;
+    }
 }
