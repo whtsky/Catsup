@@ -59,7 +59,7 @@ def generate():
     index_1 = os.path.join(deploy_dir, 'page_1.html')
     index = os.path.join(deploy_dir, 'index.html')
     os.rename(index_1, index)
-    
+
     print('Start generating articles')
     generator = loader.load("article.html")
     posts.reverse()
@@ -96,7 +96,7 @@ def generate():
             next=next, handler=config)
         write('archive_%s.html' % archive[0], page)
         prev = archive
-    
+
     print('Start generating other pages')
     for p in ('404', 'tags', 'archives', 'links'):
         page = loader.load("%s.html" % p).generate(handler=config)

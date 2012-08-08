@@ -24,9 +24,6 @@ links = (
     ('catsup', 'https://github.com/whtsky/catsup', 'the source of this blog'),
 )
 
-github_ips = ('207.97.227.253', '50.57.128.197', '108.171.174.178')
-#You can find these ips in your repo's service page.
-
 if site_url.endswith('/'):
     site_url = site_url[:-1]
 if static_url.endswith('/'):

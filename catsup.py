@@ -10,6 +10,7 @@ import tornado.options
 import tornado.escape
 import tornado.template
 import misaka as m
+from webhook import update_posts
 
 from tornado.options import define, options
 
@@ -41,7 +42,7 @@ class CatsupRender(m.HtmlRenderer, m.SmartyPants):
         return '<a href="%s">%s</a>' % (link, link)
 
 md = m.Markdown(CatsupRender(flags=m.HTML_ESCAPE | m.HTML_USE_XHTML),
-    extensions=m.EXT_FENCED_CODE | m.EXT_NO_INTRA_EMPHASIS | m.EXT_AUTOLINK | 
+    extensions=m.EXT_FENCED_CODE | m.EXT_NO_INTRA_EMPHASIS | m.EXT_AUTOLINK |
         m.EXT_STRIKETHROUGH | m.EXT_SUPERSCRIPT)
 
 
@@ -201,18 +202,11 @@ class SitemapHandler(BaseHandler):
         self.write(p)
 
 
-class ReloadHandler(BaseHandler):
+class WebhookHandler(BaseHandler):
     def post(self):
-        """Github Post-Receive Hooks support.
+        """Webhook support for GitHub and Bitbucket.
         """
-        if self.request.remote_ip not in config.github_ips:
-            pass
-        payload = self.get_argument('payload')
-        payload = tornado.escape.json_decode(payload)
-        if payload['repository']['owner']['name'] != config.github:
-            pass
-        os.chdir(config.posts_path)
-        os.system('git pull')
+        update_posts()
         posts = load_posts()
         tags, archives = get_infos(posts)
         self.settings['posts'] = posts
@@ -238,10 +232,11 @@ application = tornado.web.Application([
     (r'/links.html', LinksHandler),
     (r'/feed.xml', FeedHandler),
     (r'/sitemap.txt', SitemapHandler),
-    (r'/reload', ReloadHandler),
+    (r'/webhook', WebhookHandler),
     (r'/(.*).html', ArticleHandler),
     (r'/.*', ErrorHandler),
-], autoescape=None, posts=posts, tags=tags, archives=archives, **config.settings)
+], autoescape=None, posts=posts, tags=tags, archives=archives,
+**config.settings)
 
 if __name__ == '__main__':
     tornado.options.parse_command_line()
