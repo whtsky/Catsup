@@ -2,8 +2,13 @@
 import tornado.httpserver
 import tornado.web
 import tornado.ioloop
+import tornado.options
 import os
 import config
+
+from tornado.options import define, options
+
+define("port", default=80, help="run on the given port", type=int)
 
 
 def update_posts():
@@ -28,8 +33,9 @@ application = tornado.web.Application([
 ])
 
 if __name__ == '__main__':
+    tornado.options.parse_command_line()
     http_server = tornado.httpserver.HTTPServer(application)
-    http_server.listen(2331)
+    http_server.listen(options.port)
     os.chdir(config.catsup_path)
     os.system('chmod +x catsup-static.py')
     tornado.ioloop.IOLoop.instance().start()
