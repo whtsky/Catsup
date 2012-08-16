@@ -229,15 +229,15 @@ tags, archives = get_infos(posts)
 
 
 def write(file_name, page):
-    file_path = os.path.join(deploy_dir, file_name)
+    file_path = os.path.join(deploy_path, file_name)
     open(file_path, 'w').write(page)
 
 
 def deploy():
-    if os.path.exists(deploy_dir):
-        shutil.rmtree(deploy_dir)
+    if os.path.exists(config.deploy_path):
+        shutil.rmtree(config.deploy_path)
 
-    os.makedirs(deploy_dir)
+    os.makedirs(config.deploy_path)
 
     loader = tornado.template.Loader(config.common_template_path,
         autoescape=None)
@@ -264,8 +264,8 @@ def deploy():
             p=p)
         write('page_%s.html' % p, page)
 
-    index_1 = os.path.join(deploy_dir, 'page_1.html')
-    index = os.path.join(deploy_dir, 'index.html')
+    index_1 = os.path.join(deploy_path, 'page_1.html')
+    index = os.path.join(deploy_path, 'index.html')
     os.rename(index_1, index)
 
     print('Start generating articles')
@@ -311,11 +311,11 @@ def deploy():
         write('%s.html' % p, page)
 
     print('Copying static files.')
-    deploy_static_dir = os.path.join(deploy_dir, 'static')
+    deploy_static_dir = os.path.join(deploy_path, 'static')
     if os.path.exists(deploy_static_dir):
         shutil.rmtree(deploy_static_dir)
     shutil.copytree(config.settings['static_path'], deploy_static_dir)
-    os.chdir(deploy_dir)
+    os.chdir(deploy_path)
     os.system('cp static/favicon.ico ./')
     os.system('cp static/robots.txt ./')
 
@@ -354,7 +354,7 @@ if __name__ == '__main__':
         ], autoescape=None, posts=posts, tags=tags, archives=archives,
         **config.settings)
     elif cmd == 'deploy':
-        deploy_dir = config.deploy_path
+        deploy_path = config.deploy_path
         
         posts_num = len(posts)
         config.settings['tags'] = tags
