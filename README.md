@@ -10,7 +10,7 @@ cd catsup
 pip install -r requirements.txt
 cp config-sample.py config.py
 vim config.py #Change it.
-python catsup.py
+python catsup.py server --port=8888
 ```
 Then go to http://localhost:8888 to take a look at your own catsup:)
 
@@ -30,5 +30,5 @@ Example:
 	```
 	
 ##Deploy a static blog
-run`python catsup-static.py`
+run`python catsup.py static`
 And you can find your static blog in deploy/ .

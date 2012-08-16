@@ -11,6 +11,7 @@ catsup_path = os.path.dirname(__file__)
 posts_path = os.path.join(catsup_path, '_posts')
 theme_path = os.path.join(catsup_path, 'themes', theme_name)
 common_template_path = os.path.join(catsup_path, 'template')
+deploy_path = os.path.join(catsup_path, 'deploy')
 
 twitter = 'whouz'
 github = 'whtsky'
