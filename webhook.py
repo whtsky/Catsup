@@ -8,8 +8,6 @@ import config
 
 from tornado.options import define, options
 
-define("port", default=80, help="run on the given port", type=int)
-
 
 def update_posts():
     os.chdir(config.posts_path)
@@ -33,6 +31,7 @@ application = tornado.web.Application([
 ])
 
 if __name__ == '__main__':
+    define("port", default=80, help="run on the given port", type=int)
     tornado.options.parse_command_line()
     http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(options.port)
