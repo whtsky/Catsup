@@ -234,6 +234,12 @@ def write(file_name, page):
 
 
 def deploy():
+    posts = load_posts()
+    tags, archives = get_infos(posts)
+    posts_num = len(posts)
+    config.settings['tags'] = tags
+    config.settings['archives'] = archives
+    
     if os.path.exists(config.deploy_path):
         shutil.rmtree(config.deploy_path)
 
@@ -354,11 +360,6 @@ if __name__ == '__main__':
         ], autoescape=None, posts=posts, tags=tags, archives=archives,
         **config.settings)
     elif cmd == 'deploy':
-        
-        posts_num = len(posts)
-        config.settings['tags'] = tags
-        config.settings['archives'] = archives
-
         deploy()
     elif cmd == 'webhook':
         application = tornado.web.Application([
