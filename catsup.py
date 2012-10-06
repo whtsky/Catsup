@@ -205,7 +205,7 @@ class SitemapHandler(BaseHandler):
 
 
 class WebhookHandler(BaseHandler):
-    def get(self): 
+    def get(self):
         deploy()
 
     def post(self):
