@@ -205,6 +205,9 @@ class SitemapHandler(BaseHandler):
 
 
 class WebhookHandler(BaseHandler):
+    def get(self):
+        self.post()
+
     def post(self):
         """Webhook support for GitHub and Bitbucket.
         """
