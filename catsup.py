@@ -83,7 +83,7 @@ def load_posts():
     post_files.sort(reverse=True)
     posts = []
     for file_name in post_files:
-        if '.md' in file_name:
+        if file_name.endswith('.md'):
             post = load_post(file_name)
             posts.append(post)
     return posts
