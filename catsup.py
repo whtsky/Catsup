@@ -1,114 +1,22 @@
 #coding=utf-8
 
 import os
-import time
 import sys
 import shutil
-import config
 import tornado.httpserver
 import tornado.web
 import tornado.ioloop
 import tornado.options
 import tornado.escape
 import tornado.template
-import misaka as m
 
 
 from tornado.options import define, options
+from utils import *
 
 define("port", default=8888, help="run on the given port", type=int)
 
-from pygments import highlight
-from pygments.formatters import HtmlFormatter
-from pygments.lexers import get_lexer_by_name
-
-
-class CatsupRender(m.HtmlRenderer, m.SmartyPants):
-    def block_code(self, text, lang):
-        if not lang:
-            text = tornado.escape.xhtml_escape(text.strip())
-            return '\n<pre><code>%s</code></pre>\n' % text
-        lexer = get_lexer_by_name(lang, stripall=True)
-        formatter = HtmlFormatter()
-        return highlight(text, lexer, formatter)
-
-    def autolink(self, link, is_email):
-        if is_email:
-            return '<a href="mailto:%(link)s">%(link)s</a>' % {'link': link}
-
-        if '.' in link:
-            name_extension = link.split('.')[-1].lower()
-            if name_extension in ('jpg', 'png', 'git', 'jpeg'):
-                return '<img src="%s" />' % link
-
-        return '<a href="%s">%s</a>' % (link, link)
-
-md = m.Markdown(CatsupRender(flags=m.HTML_ESCAPE | m.HTML_USE_XHTML),
-    extensions=m.EXT_FENCED_CODE | m.EXT_NO_INTRA_EMPHASIS | m.EXT_AUTOLINK |
-        m.EXT_STRIKETHROUGH | m.EXT_SUPERSCRIPT)
-
-
-def load_post(file_name):
-    '''Load a post.return a dict.
-    '''
-    path = os.path.join(config.posts_path, file_name)
-    file = open(path, 'r')
-    post = {'file_name': file_name[:-3],
-            'tags': [],
-            'date': file_name[:10]}
-    while True:
-        line = file.readline()
-        if line.startswith('#'):
-            post['title'] = line[1:].strip()
-        elif 'tags' in line.lower():
-            for tag in line.split(':')[-1].strip().split(','):
-                post['tags'].append(tag.strip())
-        elif line.startswith('---'):
-            content = '\n'.join(file.readlines())
-            if isinstance(content, str):
-                content = content.decode('utf-8')
-            post['content'] = md.render(content)
-            post['updated'] = os.stat(path).st_ctime
-            updated_xml = time.gmtime(post['updated'])
-            post['updated_xml'] = time.strftime('%Y-%m-%dT%H:%M:%SZ',
-                updated_xml)
-            return post
-
-
-def load_posts():
-    '''load all the posts.return a list.
-    Sort with filename.
-    '''
-    post_files = os.listdir(config.posts_path)
-    post_files.sort(reverse=True)
-    posts = []
-    for file_name in post_files:
-        if file_name.endswith('.md'):
-            post = load_post(file_name)
-            posts.append(post)
-    return posts
-
-
-def get_infos(posts):
-    """return the tag list and archive list.
-    """
-    tags = {}
-    archives = {}
-    for post in posts:
-        for tag in post['tags']:
-            if tag in tags:
-                tags[tag].append(post)
-            else:
-                tags[tag] = [post]
-        year = post['date'][:4]
-        if year in archives:
-            archives[year].append(post)
-        else:
-            archives[year] = [post]
-
-    return sorted(tags.items(), key=lambda x: len(x[1]), reverse=True),\
-        sorted(archives.items(), key=lambda x: x[0], reverse=True)
-
+config = load_config()
 
 class BaseHandler(tornado.web.RequestHandler):
     def get_error_html(self, *args, **kwargs):
@@ -186,20 +94,20 @@ class LinksHandler(BaseHandler):
 class FeedHandler(BaseHandler):
     def get(self):
         self.set_header("Content-Type", "application/atom+xml")
-        loader = tornado.template.Loader(config.common_template_path,
+        loader = tornado.template.Loader(config['common_template_path'],
             autoescape=None)
         p = loader.load("feed.xml").generate(posts=self.settings['posts'],
-            handler=config)
+            handler=handler)
         self.write(p)
 
 
 class SitemapHandler(BaseHandler):
     def get(self):
         self.set_header("Content-Type", "text/plain")
-        loader = tornado.template.Loader(config.common_template_path,
+        loader = tornado.template.Loader(config['common_template_path'],
             autoescape=None)
         p = loader.load("sitemap.txt").generate(posts=self.settings['posts'],
-            handler=config, tags=self.settings['tags'],
+            handler=handler, tags=self.settings['tags'],
             archives=self.settings['archives'])
         self.write(p)
 
@@ -227,22 +135,23 @@ class ErrorHandler(BaseHandler):
         raise tornado.web.HTTPError(404)
 
 
-posts = load_posts()
+posts = load_posts(config)
 tags, archives = get_infos(posts)
 
 
 def write(file_name, page):
-    file_path = os.path.join(config.deploy_path, file_name)
+    file_path = os.path.join(config['deploy_path'], file_name)
     open(file_path, 'w').write(page)
 
 
 def deploy():
-    posts = load_posts()
+    posts = load_posts(config)
     tags, archives = get_infos(posts)
     posts_num = len(posts)
-    config.settings['tags'] = tags
-    config.settings['archives'] = archives
-    
+    config['tags'] = tags
+    config['archives'] = archives
+    handler = FakeHandler(config)
+
     if os.path.exists(config.deploy_path):
         shutil.rmtree(config.deploy_path)
 
@@ -252,24 +161,24 @@ def deploy():
         autoescape=None)
 
     print('Generating sitemap')
-    page = loader.load("sitemap.txt").generate(posts=posts, handler=config,
+    page = loader.load("sitemap.txt").generate(posts=posts, handler=handler,
         tags=tags, archives=archives)
     write('sitemap.txt', page)
 
     print('Generating atom')
-    page = loader.load("feed.xml").generate(posts=posts, handler=config)
+    page = loader.load("feed.xml").generate(posts=posts, handler=handler)
     write('feed.xml', page)
 
-    loader = tornado.template.Loader(config.settings['template_path'],
+    loader = tornado.template.Loader(config['template_path'],
         autoescape=None)
 
     print('Start generating index pages')
     generator = loader.load("index.html")
     p = 0
-    while posts_num > p * config.settings['post_per_page']:
+    while posts_num > p * config['post_per_page']:
         p += 1
         print('Start generating page %s' % p)
-        page = generator.generate(posts=posts, handler=config,
+        page = generator.generate(posts=posts, handler=handler,
             p=p)
         write('page_%s.html' % p, page)
 
@@ -285,7 +194,7 @@ def deploy():
     next = len(posts) and posts.pop() or None
     while post:
         print('Generating %s' % post['file_name'])
-        page = generator.generate(post=post, handler=config,
+        page = generator.generate(post=post, handler=handler,
             prev=prev, next=next)
         write('%s.html' % post['file_name'], page)
         prev, post, next = post, next, len(posts) and posts.pop() or None
@@ -298,7 +207,7 @@ def deploy():
         i += 1
         next = i < len(tags) and tags[i] or None
         page = generator.generate(tag=tag, prev=prev,
-            next=next, handler=config)
+            next=next, handler=handler)
         write('tag_%s.html' % tag[0], page)
         prev = tag
 
@@ -310,20 +219,20 @@ def deploy():
         i += 1
         next = i < len(archives) and archives[i] or None
         page = generator.generate(archive=archive, prev=prev,
-            next=next, handler=config)
+            next=next, handler=handler)
         write('archive_%s.html' % archive[0], page)
         prev = archive
 
     print('Start generating other pages')
     for p in ('404', 'tags', 'archives', 'links'):
-        page = loader.load("%s.html" % p).generate(handler=config)
+        page = loader.load("%s.html" % p).generate(handler=handler)
         write('%s.html' % p, page)
 
     print('Copying static files.')
     deploy_static_dir = os.path.join(config.deploy_path, 'static')
     if os.path.exists(deploy_static_dir):
         shutil.rmtree(deploy_static_dir)
-    shutil.copytree(config.settings['static_path'], deploy_static_dir)
+    shutil.copytree(config['static_path'], deploy_static_dir)
     os.chdir(config.deploy_path)
     os.system('cp static/favicon.ico ./')
     os.system('cp static/robots.txt ./')
@@ -332,10 +241,10 @@ def deploy():
 
 
 def update_posts():
-    os.chdir(config.posts_path)
-    if os.path.isdir(os.path.join(config.posts_path, '.git')):
+    os.chdir(config['posts_path'])
+    if os.path.isdir(os.path.join(config['posts_path'], '.git')):
         os.system('git pull')
-    elif os.path.isdir(os.path.join(config.posts_path, '.hg')):
+    elif os.path.isdir(os.path.join(config['posts_path'], '.hg')):
         os.system('hg pull')
 
 
@@ -361,7 +270,7 @@ if __name__ == '__main__':
             (r'/(.*).html', ArticleHandler),
             (r'/.*', ErrorHandler),
         ], autoescape=None, posts=posts, tags=tags, archives=archives,
-        **config.settings)
+        **config)
     elif cmd == 'deploy':
         deploy()
     elif cmd == 'webhook':
