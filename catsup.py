@@ -18,6 +18,7 @@ define("port", default=8888, help="run on the given port", type=int)
 
 config = load_config()
 
+
 class BaseHandler(tornado.web.RequestHandler):
     def get_error_html(self, *args, **kwargs):
         return self.render_string('404.html')

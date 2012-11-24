@@ -1,6 +1,7 @@
 import os
 import time
 import misaka as m
+import tornado.escape
 from tornado.util import ObjectDict
 
 from pygments import highlight
@@ -28,13 +29,14 @@ def load_config(filename='config.py'):
     execfile(filename, {}, config)
 
     if 'theme_path' not in config:
-        config.theme_path = os.path.join(catsup_path, 'themes', config.theme_name)
+        config.theme_path = os.path.join(catsup_path, 'themes',
+            config.theme_name)
 
     if 'template_path' not in config:
         config.template_path = os.path.join(config.theme_path, 'template')
 
     if 'static_path' not in config:
-        config.static_path=os.path.join(config.theme_path, 'static')
+        config.static_path = os.path.join(config.theme_path, 'static')
 
     if config.site_url.endswith('/'):
         config.site_url = config.site_url[:-1]
