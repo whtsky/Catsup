@@ -79,6 +79,13 @@ md = m.Markdown(CatsupRender(flags=m.HTML_ESCAPE | m.HTML_USE_XHTML),
 def load_post(file_name, config):
     '''Load a post.return a dict.
     '''
+    def _highlightcode(m):
+        '''Function for replace liquid style code highlight to github style
+        '''
+        return "```%s\n%s\n```" % (m.group(1), m.group(2))
+
+    pattern = re.compile('\{%\s?highlight ([\w\-\+]+)\s?%\}\n*(.+?)\n*\{%\s?endhighlight\s?%\}', re.I | re.S)
+
     path = os.path.join(config['posts_path'], file_name)
     print('Loading file %s' % path)
     post = {'file_name': file_name[:-3],
@@ -114,6 +121,8 @@ def load_post(file_name, config):
                     content = '\n'.join(file.readlines())
                     if isinstance(content, str):
                         content = content.decode('utf-8')
+                    # Provide compatibility for liquid style code highlight
+                    content = pattern.sub(_highlightcode, content)
                     # Post excerpt support, use <!--more--> as flag
                     if content.lower().find(u'<!--more-->'):
                         post['excerpt'] = md.render(content.split(u'<!--more-->')[0])
@@ -134,7 +143,7 @@ def load_posts(config):
     Sort with filename.
     '''
     # Post file name must match style 2012-12-24-title.md
-    pattern = re.compile('^\d{4}\-\d{2}\-\d{2}\-.+\.md', re.I)
+    pattern = re.compile('^\d{4}\-\d{2}\-\d{2}\-.+\.md$', re.I)
     post_files = os.listdir(config['posts_path'])
     post_files.sort(reverse=True)
     posts = []
