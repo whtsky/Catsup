@@ -39,12 +39,15 @@ Example:
     - comment: no
 
 The `category` property defines the category of the post, but it's not used yet.
-The `date` property can overwrite the date from the filename。
+
+The `date` property can overwrite the date from the file name.
+
 The `tags` property defines the tags of the post.
+
 The `comment` property defines whether the post can be commented or not.
 
 ### Post excerpt
-You can use `<--more-->` to define an excerpt of a post. Any content before that will be used as excerpt of the post. And you can choose to display excerpt rather than full content on your homepage.
+You can use `<!--more-->` to define an excerpt of a post. Any content before that will be used as excerpt of the post. And you can choose to display excerpt rather than full content on your homepage.
 
 ##Deploy a static blog
 run`python catsup.py deploy`
