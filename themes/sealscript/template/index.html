@@ -13,7 +13,11 @@
                 </div>
 
                 <div class="text">
+                    {% if handler.settings['excerpt_index'] and post['has_excerpt'] %}
+                    {{ post['excerpt'] }}
+                    {% else %}
                     {{ post['content'] }}
+                    {% end %}
                 </div>
                 <div class="article_meta">
                     <span>tagged:</span>

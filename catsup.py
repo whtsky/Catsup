@@ -284,6 +284,10 @@ if __name__ == '__main__':
 
     if 'application' in locals():
         tornado.options.parse_command_line(args)
+        if cmd == 'server':
+            print('Starting server at port %s' % options.port)
+        elif cmd == 'webhook':
+            print('Starting webhook at port %s' % options.port)
         http_server = tornado.httpserver.HTTPServer(application, xheaders=True)
         http_server.listen(options.port)
         tornado.ioloop.IOLoop.instance().start()

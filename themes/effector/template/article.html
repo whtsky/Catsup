@@ -36,6 +36,7 @@
 	</ul>
 
 	<hr>
+    {% if post['comment_open'] %}
 	{% if handler.settings['comment_system'] == 'disqus' and handler.settings['disqus_shortname'] %}
     <div id="disqus_thread"></div>
     <script type="text/javascript">
@@ -60,6 +61,6 @@
         })();
     </script>
     {% end %}
-	
+	{% end %}
 </div>
 {% end %}

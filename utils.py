@@ -1,5 +1,8 @@
+from __future__ import with_statement
+
 import os
 import time
+import re
 import misaka as m
 import tornado.escape
 from tornado.util import ObjectDict
@@ -17,7 +20,9 @@ def load_config(filename='config.py'):
         posts_path=os.path.join(catsup_path, '_posts'),
         common_template_path=os.path.join(catsup_path, 'template'),
         deploy_path=os.path.join(catsup_path, 'deploy'),
+        comment_system='disqus',
         disqus_shortname='catsup',
+        duoshuo_shortname='catsup',
         feed='feed.xml',
         post_per_page=3,
         gzip=True,
@@ -75,38 +80,66 @@ def load_post(file_name, config):
     '''Load a post.return a dict.
     '''
     path = os.path.join(config['posts_path'], file_name)
-    file = open(path, 'r')
+    print('Loading file %s' % path)
     post = {'file_name': file_name[:-3],
-            'tags': [],
-            'date': file_name[:10]}
-    while True:
-        line = file.readline()
-        if line.startswith('#'):
-            post['title'] = line[1:].strip()
-        elif 'tags' in line.lower():
-            for tag in line.split(':')[-1].strip().split(','):
-                post['tags'].append(tag.strip())
-        elif line.startswith('---'):
-            content = '\n'.join(file.readlines())
-            if isinstance(content, str):
-                content = content.decode('utf-8')
-            post['content'] = md.render(content)
-            post['updated'] = os.stat(path).st_ctime
-            updated_xml = time.gmtime(post['updated'])
-            post['updated_xml'] = time.strftime('%Y-%m-%dT%H:%M:%SZ',
-                updated_xml)
-            return post
-
+        'tags': [],
+        'date': file_name[:10],
+        'comment_open' : True,
+        'has_excerpt' : False }
+    try:
+        with open(path, 'r') as file:
+            while True:
+                line = file.readline()
+                line_lower = line.lower()
+                # Post title
+                if line.startswith('#'):
+                    post['title'] = line[1:].strip()
+                # Post category(unused)
+                elif 'category' in line_lower:
+                    post['category'] = line.split(':')[-1].strip()
+                # Post tags
+                elif 'tags' in line_lower:
+                    for tag in line.split(':')[-1].strip().split(','):
+                        post['tags'].append(tag.strip())
+                # Post date specificed
+                elif 'date' in line_lower:
+                    post['date'] = line.split(':')[-1].strip()
+                # Allow comment of not
+                elif 'comment' in line_lower:
+                    status = line_lower.split(':')[-1].strip()
+                    if status in ['no', 'false', '0', 'close']:
+                        post['comment_open'] = False
+                # Here many cause an infinite loop if the post has no --- in it
+                elif line.startswith('---'):
+                    content = '\n'.join(file.readlines())
+                    if isinstance(content, str):
+                        content = content.decode('utf-8')
+                    # Post excerpt support, use <!--more--> as flag
+                    if content.lower().find(u'<!--more-->'):
+                        post['excerpt'] = md.render(content.split(u'<!--more-->')[0])
+                        post['has_excerpt'] = True
+                        content = content.replace(u'<!--more-->', '')
+                    post['content'] = md.render(content)
+                    post['updated'] = os.stat(path).st_ctime
+                    updated_xml = time.gmtime(post['updated'])
+                    post['updated_xml'] = time.strftime('%Y-%m-%dT%H:%M:%SZ',
+                        updated_xml)
+                    break; # exit the infinite loop
+    except IOError:
+        print('Open file %s failed.' % path)
+    return post
 
 def load_posts(config):
     '''load all the posts.return a list.
     Sort with filename.
     '''
+    # Post file name must match style 2012-12-24-title.md
+    pattern = re.compile('^\d{4}\-\d{2}\-\d{2}\-.+\.md', re.I)
     post_files = os.listdir(config['posts_path'])
     post_files.sort(reverse=True)
     posts = []
     for file_name in post_files:
-        if file_name.endswith('.md'):
+        if pattern.match(file_name):
             post = load_post(file_name, config)
             posts.append(post)
     return posts
