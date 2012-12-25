@@ -5,12 +5,12 @@ import time
 import re
 import misaka as m
 import tornado.escape
+from tornado.escape import xhtml_escape
 from tornado.util import ObjectDict
 
 from pygments import highlight
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name
-
 
 def load_config(filename='config.py'):
     catsup_path = os.path.dirname(__file__)
@@ -47,8 +47,60 @@ def load_config(filename='config.py'):
         config.site_url = config.site_url[:-1]
     if config.static_url.endswith('/'):
         config.static_url = config.static_url[:-1]
+    if not (config.site_url.startswith('http://') or config.site_url.startswith('https://') or config.site_url.startswith('//')):
+        config.site_url = "//%s" % config.site_url
 
     return config
+
+_config = load_config()
+
+class Post(ObjectDict):
+    """Post object"""
+    def has_format(self, format):
+        if not hasattr(self, 'format'):
+            return False
+        if self['format'] == format.lower():
+            return True
+
+    @property
+    def is_regular(self):
+        return self.has_format('regular')
+
+    @property
+    def is_aside(self):
+        return self.has_format('aside')
+
+    @property
+    def is_gallery(self):
+        return self.has_format('gallery')
+
+    @property
+    def is_link(self):
+        return self.has_format('link')
+
+    @property
+    def is_status(self):
+        return self.has_format('status')
+
+    @property
+    def is_image(self):
+        return self.has_format('image')
+
+    @property
+    def is_video(self):
+        return self.has_format('video')
+
+    @property
+    def is_audio(self):
+        return self.has_format('audio')
+
+    @property
+    def is_chat(self):
+        return self.has_format('chat')
+
+    @property
+    def is_quote(self):
+        return self.has_format('quote')
 
 
 class CatsupRender(m.HtmlRenderer, m.SmartyPants):
@@ -89,11 +141,17 @@ def load_post(file_name, config):
 
     path = os.path.join(config['posts_path'], file_name)
     print('Loading file %s' % path)
-    post = {'file_name': file_name[:-3],
-        'tags': [],
-        'date': file_name[:10],
-        'comment_open' : True,
-        'has_excerpt' : False }
+    post = Post(
+        file_name = file_name[:-3],
+        tags = [],
+        date = file_name[:10],
+        comment_open = True,
+        has_excerpt = False,
+        excerpt = '',
+        format = 'regular',
+        category = '',
+        permalink = '%s/%s.html' % (_config.site_url, file_name[:-3])
+    )
     try:
         with open(path, 'r') as file:
             while True:
@@ -101,22 +159,28 @@ def load_post(file_name, config):
                 line_lower = line.lower()
                 # Post title
                 if line.startswith('#'):
-                    post['title'] = line[1:].strip()
+                    post.title = xhtml_escape(line[1:].strip())
+                # Post format
+                elif 'format' in line_lower:
+                    post_format = line_lower.split(':')[-1].strip()
+                    if post_format not in ['regular', 'aside', 'gallery', 'link', 'image', 'quote', 'status', 'video', 'audio', 'chat']:
+                        post_format = 'regular'
+                    post.format = post_format
                 # Post category(unused)
                 elif 'category' in line_lower:
-                    post['category'] = line.split(':')[-1].strip()
+                    post.category = xhtml_escape(line.split(':')[-1].strip())
                 # Post tags
                 elif 'tags' in line_lower:
                     for tag in line.split(':')[-1].strip().split(','):
-                        post['tags'].append(tag.strip())
+                        post.tags.append(xhtml_escape(tag.strip()))
                 # Post date specificed
                 elif 'date' in line_lower:
-                    post['date'] = line.split(':')[-1].strip()
+                    post.date = xhtml_escape(line.split(':')[-1].strip())
                 # Allow comment of not
                 elif 'comment' in line_lower:
                     status = line_lower.split(':')[-1].strip()
                     if status in ['no', 'false', '0', 'close']:
-                        post['comment_open'] = False
+                        post.comment_open = False
                 # Here many cause an infinite loop if the post has no --- in it
                 elif line.startswith('---'):
                     content = '\n'.join(file.readlines())
@@ -126,13 +190,13 @@ def load_post(file_name, config):
                     content = pattern.sub(_highlightcode, content)
                     # Post excerpt support, use <!--more--> as flag
                     if content.lower().find(u'<!--more-->'):
-                        post['excerpt'] = md.render(content.split(u'<!--more-->')[0])
-                        post['has_excerpt'] = True
-                        content = content.replace(u'<!--more-->', '')
-                    post['content'] = md.render(content)
-                    post['updated'] = os.stat(path).st_ctime
+                        post.excerpt = md.render(content.split(u'<!--more-->')[0])
+                        post.has_excerpt = True
+                        content = content.replace(u'<!--more-->', '<span id="readmore"><!--more--></span>')
+                    post.content = md.render(content)
+                    post.updated = os.stat(path).st_ctime
                     updated_xml = time.gmtime(post['updated'])
-                    post['updated_xml'] = time.strftime('%Y-%m-%dT%H:%M:%SZ',
+                    post.updated_xml = time.strftime('%Y-%m-%dT%H:%M:%SZ',
                         updated_xml)
                     break; # exit the infinite loop
     except IOError:
@@ -174,9 +238,3 @@ def get_infos(posts):
 
     return sorted(tags.items(), key=lambda x: len(x[1]), reverse=True),\
            sorted(archives.items(), key=lambda x: x[0], reverse=True)
-
-
-class FakeHandler(object):
-
-    def __init__(self, config):
-        self.settings = config

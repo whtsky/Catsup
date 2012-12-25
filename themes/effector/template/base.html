@@ -3,16 +3,16 @@
 <head>
     <meta http-equiv="content-type" content="text/html;charset=utf-8">
     {% block head %}{% end %}
-    <title>{% block title %}{{ handler.settings['site_title'] }}{% end %}</title>
+    <title>{% block title %}{{ config.site_title }}{% end %}</title>
     <meta name="viewport" content="width=device-width; initial-scale=1.0">
-    <link rel="stylesheet" href="{{ handler.settings['static_url'] }}/css/effector.css" type="text/css" />
-    <link rel="stylesheet" href="{{ handler.settings['static_url'] }}/css/pygments_style.css" type="text/css" />
-    <link rel="alternate" type="application/rss+xml" href="{{ handler.settings['feed'] }}" title="{{ handler.settings['site_title'] }}" />
-    {% if handler.settings['google_analytics'] %}
+    <link rel="stylesheet" href="{{ config.static_url }}/css/effector.css" type="text/css" />
+    <link rel="stylesheet" href="{{ config.static_url }}/css/pygments_style.css" type="text/css" />
+    <link rel="alternate" type="application/rss+xml" href="{{ config.feed }}" title="{{ config.site_title }}" />
+    {% if config.google_analytics %}
     <script type="text/javascript">
     
     	var _gaq = _gaq || [];
-    	_gaq.push(['_setAccount', '{{ handler.settings['google_analytics'] }}']);
+    	_gaq.push(['_setAccount', '{{ config.google_analytics }}']);
     	_gaq.push(['_trackPageview']);
     
     	(function() {
@@ -26,7 +26,7 @@
 </head>
 <body>
     <div class="container">
-		<h1 class="sitename">{{ handler.settings['site_title'] }}</h1>
+		<h1 class="sitename">{{ config.site_title }}</h1>
 		<div class="nav">
 		    <a href="/">Home</a>
 		    <a href="/archives.html">Archives</a>
@@ -40,9 +40,6 @@
 		    Powered by <a href="https://github.com/whtsky/catsup">CATSUP</a>
 		     | 
 		    <a href="https://github.com/pala/pala.github.com">Effector Theme</a> by <a href="http://ztpala.com">Tao Zhang</a>
-		     | 
-	        Hosted on <a href="https://whmcs.hangssh.info/aff.php?aff=144">Host700</a> 
-	        </small></p>
 	        <!-- inspired by http://effectortheme.tumblr.com/ -->
 	    </footer>
 	</div>

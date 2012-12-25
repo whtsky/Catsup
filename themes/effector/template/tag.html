@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-{{ tag[0] }} | {{ handler.settings['site_title'] }}
+{{ tag[0] }} | {{ config.site_title }}
 {% end %}
 
 {% block content %}
@@ -9,7 +9,7 @@
 	<h2>{{ tag[0] }}</h2>
 	<ul class="postsList">
 		{% for post in tag[1] %}
-		<li><span>{{ post['date'] }}</span> <a href="{{ post['file_name'] }}.html">{{ post['title'] }}</a></li>
+		<li><span>{{ post.date }}</span> <a href="/{{ post.file_name }}.html">{{ post.title }}</a></li>
 		{% end %}
 	</ul>
 </div>

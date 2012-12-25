@@ -8,7 +8,7 @@ comment_system = 'disqus'
 disqus_shortname = 'catsup'
 duoshuo_shortname = 'catsup'
 
-#static_url = 'static'
+#static_url = '/static'
 #theme_name = 'sealscript'
 #google_analytics = ''
 

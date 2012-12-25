@@ -1,7 +1,7 @@
 
 #catsup
 config.py
-_posts/*.md
+_posts/*
 deploy/*
 
 #PyCharm

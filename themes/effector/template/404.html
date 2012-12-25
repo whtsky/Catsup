@@ -6,11 +6,11 @@
 <p><strong>Sorry, the page you were looking does not exist.</strong></p>
 What about...
 <div class="wrapper">
-	{% for archive in handler.settings['archives'] %}
+	{% for archive in config.archives %}
 	<h2>{{ archive[0] }}</h2>
 	<ul class="postsList">
 		{% for post in archive[1] %}
-		<li><span>{{ post['date'] }}</span> <a href="{{ post['file_name'] }}.html">{{ post['title'] }}</a></li>
+		<li><span>{{ post['date'] }}</span> <a href="/{{ post.file_name }}.html">{{ post.title }}</a></li>
 		{% end %}
 	</ul>
 	{% end %}
