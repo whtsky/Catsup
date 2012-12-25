@@ -71,7 +71,8 @@ class CatsupRender(m.HtmlRenderer, m.SmartyPants):
 
         return '<a href="%s">%s</a>' % (link, link)
 
-md = m.Markdown(CatsupRender(flags=m.HTML_ESCAPE | m.HTML_USE_XHTML),
+# Allow use raw html in .md files
+md = m.Markdown(CatsupRender(flags=m.HTML_USE_XHTML),
     extensions=m.EXT_FENCED_CODE | m.EXT_NO_INTRA_EMPHASIS | m.EXT_AUTOLINK |
                m.EXT_STRIKETHROUGH | m.EXT_SUPERSCRIPT)
 

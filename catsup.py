@@ -12,6 +12,7 @@ import tornado.template
 
 
 from tornado.options import define, options
+from tornado.util import ObjectDict
 from utils import *
 
 define("port", default=8888, help="run on the given port", type=int)
@@ -20,6 +21,12 @@ config = load_config()
 
 
 class BaseHandler(tornado.web.RequestHandler):
+
+    def render_string(self, template_name, **kwargs):
+        # access config directly
+        kwargs["config"] = config
+        return super(BaseHandler, self).render_string(template_name,**kwargs)
+
     def get_error_html(self, *args, **kwargs):
         return self.render_string('404.html')
 
