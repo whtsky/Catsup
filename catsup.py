@@ -212,9 +212,13 @@ def deploy():
     next = len(posts) and posts.pop() or None
     while post:
         print('Generating %s' % post['file_name'])
+        post_file = post['file_name']
+        if not config.date_in_permalink:
+            post_file = post['file_name'][11:]
+            post['file_name'] = post['file_name'][11:]
         page = generator.generate(post=post, prev=prev, 
             next=next, config=config)
-        write('%s.html' % post['file_name'], page)
+        write('%s.html' % post_file, page)
         prev, post, next = post, next, len(posts) and posts.pop() or None
 
     print('Start generating tag pages')

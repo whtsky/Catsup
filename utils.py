@@ -28,7 +28,8 @@ def load_config(filename='config.py'):
         gzip=True,
         static_url='static',
         theme_name='sealscript',
-        google_analytics=''
+        google_analytics='',
+        date_in_permalink=True
     )
 
     execfile(filename, {}, config)
@@ -141,6 +142,9 @@ def load_post(file_name, config):
 
     path = os.path.join(config['posts_path'], file_name)
     print('Loading file %s' % path)
+    post_permalink = file_name[:-3]
+    if not config['date_in_permalink']:
+        post_permalink = file_name[11:-3]
     post = Post(
         file_name = file_name[:-3],
         tags = [],
@@ -150,7 +154,7 @@ def load_post(file_name, config):
         excerpt = '',
         format = 'regular',
         category = '',
-        permalink = '%s/%s.html' % (_config.site_url, file_name[:-3])
+        permalink = '%s/%s.html' % (_config.site_url, post_permalink)
     )
     try:
         with open(path, 'r') as file:
