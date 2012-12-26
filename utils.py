@@ -166,7 +166,7 @@ def load_post(file_name, config):
                     post.title = xhtml_escape(line[1:].strip())
                 # Yet another post title property for compatibility of jekyll
                 elif 'title' in line_lower:
-                    post.title = xhtml_escape(line[.split(':')[-1].strip())     
+                    post.title = xhtml_escape(line.split(':')[-1].strip())     
                 # Post format
                 elif 'format' in line_lower:
                     post_format = line_lower.split(':')[-1].strip()
