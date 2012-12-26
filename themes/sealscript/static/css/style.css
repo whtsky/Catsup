@@ -280,7 +280,7 @@ a:active, a:hover {
 	box-shadow: 0 1px 3px #333;
 	max-width: 570px;
 }
-.article .highlight pre {
+.article pre {
 	margin: 10px -37px;
 	background: #222;
 	color: white;
@@ -311,6 +311,11 @@ a:active, a:hover {
 
 .article .gist-syntax {
 	font-size: 80% !important;
+}
+
+.article .gist-syntax pre {
+	text-shadow: none;
+	box-shadow: none;
 }
 
 /* Nav */
