@@ -214,10 +214,32 @@ def load_posts(config):
     '''load all the posts.return a list.
     Sort with filename.
     '''
+    def _cmp_post(p1, p2):
+        """
+        Post sort compare function
+        """
+        if p1[:10] == p2[:10]:
+            # Posts in the same day
+            p1_updated = os.stat(os.path.join(config['posts_path'], p1)).st_ctime
+            p2_updated = os.stat(os.path.join(config['posts_path'], p2)).st_ctime
+            if p1_updated > p2_updated:
+                return 1
+            elif p1_updated < p2_updated:
+                return -1
+            else:
+                return 0
+        else:
+            if p1 > p2:
+                return 1
+            elif p1 < p2:
+                return -1
+            else:
+                return 0
+
     # Post file name must match style 2012-12-24-title.md
     pattern = re.compile('^\d{4}\-\d{2}\-\d{2}\-.+\.md$', re.I)
     post_files = os.listdir(config['posts_path'])
-    post_files.sort(reverse=True)
+    post_files.sort(reverse=True, cmp=_cmp_post)
     posts = []
     for file_name in post_files:
         if pattern.match(file_name):
