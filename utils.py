@@ -142,7 +142,7 @@ def load_post(file_name, config):
 
     path = os.path.join(config['posts_path'], file_name)
     print('Loading file %s' % path)
-    post_permalink = file_name[:-3]
+    post_permalink = file_name[:-3].lower()
     if not config['date_in_permalink']:
         post_permalink = file_name[11:-3]
     post = Post(
@@ -164,6 +164,9 @@ def load_post(file_name, config):
                 # Post title
                 if line.startswith('#'):
                     post.title = xhtml_escape(line[1:].strip())
+                # Yet another post title property for compatibility of jekyll
+                elif 'title' in line_lower:
+                    post.title = xhtml_escape(line[.split(':')[-1].strip())     
                 # Post format
                 elif 'format' in line_lower:
                     post_format = line_lower.split(':')[-1].strip()
@@ -176,7 +179,7 @@ def load_post(file_name, config):
                 # Post tags
                 elif 'tags' in line_lower:
                     for tag in line.split(':')[-1].strip().split(','):
-                        post.tags.append(xhtml_escape(tag.strip()))
+                        post.tags.append(xhtml_escape(tag.strip().lower()))
                 # Post date specificed
                 elif 'date' in line_lower:
                     post.date = xhtml_escape(line.split(':')[-1].strip())
