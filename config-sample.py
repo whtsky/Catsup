@@ -2,9 +2,16 @@
 site_title = 'catsup'
 site_description = 'a blog'
 site_url = 'https://github.com/whtsky/catsup'
-disqus_shortname = 'catsup'
 
-#static_url = 'static'
+# comment system
+comment_system = 'disqus'
+disqus_shortname = 'catsup'
+duoshuo_shortname = 'catsup'
+
+# permalink
+date_in_permalink = True
+
+#static_url = '/static'
 #theme_name = 'sealscript'
 #google_analytics = ''
 

@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Archives | {{ handler.settings['site_title'] }}
+Archives | {{ config.site_title }}
 {% end %}
 
 {% block content %}
 <div class="wrapper">
 	<ul>
-	{% for archive in handler.settings['archives'] %}
-		<li><a href="archive_{{ archive[0] }}.html">{{ archive[0] }} ({{ len(archive[1]) }})</a></li>
+	{% for archive in config.archives %}
+		<li><a href="/archive/{{ archive[0] }}.html">{{ archive[0] }} ({{ len(archive[1]) }})</a></li>
 	{% end %}
 	</ul>
 </div>
