@@ -280,7 +280,7 @@ a:active, a:hover {
 	box-shadow: 0 1px 3px #333;
 	max-width: 570px;
 }
-.article pre {
+.article .highlight pre {
 	margin: 10px -37px;
 	background: #222;
 	color: white;
@@ -307,6 +307,10 @@ a:active, a:hover {
 }
 .article .share {
 	float: right;
+}
+
+.article .gist-syntax {
+	font-size: 80% !important;
 }
 
 /* Nav */
