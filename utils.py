@@ -146,7 +146,7 @@ def load_post(file_name, config):
     if not config['date_in_permalink']:
         post_permalink = file_name[11:-3]
     post = Post(
-        file_name = file_name[:-3],
+        file_name = post_permalink,
         tags = [],
         date = file_name[:10],
         comment_open = True,
