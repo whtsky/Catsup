@@ -309,6 +309,15 @@ a:active, a:hover {
 	float: right;
 }
 
+.article .gist-syntax {
+	font-size: 80% !important;
+}
+
+.article .gist-syntax pre {
+	text-shadow: none;
+	box-shadow: none;
+}
+
 /* Nav */
 
 .v_nav {
