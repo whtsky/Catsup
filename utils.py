@@ -157,9 +157,18 @@ def load_post(file_name, config):
         permalink = '%s/%s.html' % (_config.site_url, post_permalink)
     )
     try:
-        with open(path, 'r') as file:
+        with open(path, 'r') as f:
+            # test if the post includes a string ---
+            fcontent = f.read()
+            if fcontent.find("\n---") == -1:
+                print('The format of post %s is illegal, ignore it.' % path)
+                return None
+            else:
+                # fallback to the file's beginning
+                f.seek(0, os.SEEK_SET)
+                del fcontent
             while True:
-                line = file.readline()
+                line = f.readline()
                 line_lower = line.lower()
                 # Post title
                 if line.startswith('#'):
@@ -190,7 +199,7 @@ def load_post(file_name, config):
                         post.comment_open = False
                 # Here many cause an infinite loop if the post has no --- in it
                 elif line.startswith('---'):
-                    content = '\n'.join(file.readlines())
+                    content = '\n'.join(f.readlines())
                     if isinstance(content, str):
                         content = content.decode('utf-8')
                     # Provide compatibility for liquid style code highlight
@@ -244,7 +253,8 @@ def load_posts(config):
     for file_name in post_files:
         if pattern.match(file_name):
             post = load_post(file_name, config)
-            posts.append(post)
+            if post:
+                posts.append(post)
     return posts
 
 
