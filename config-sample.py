@@ -3,6 +3,9 @@ site_title = 'catsup'
 site_description = 'a blog'
 site_url = 'https://github.com/whtsky/catsup'
 
+# Home page display full content or excerpt
+#excerpt_index = True
+
 # comment system
 comment_system = 'disqus'
 disqus_shortname = 'catsup'

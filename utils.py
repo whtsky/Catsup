@@ -29,7 +29,8 @@ def load_config(filename='config.py'):
         static_url='static',
         theme_name='sealscript',
         google_analytics='',
-        date_in_permalink=True
+        date_in_permalink=True,
+        excerpt_index=False
     )
 
     execfile(filename, {}, config)
