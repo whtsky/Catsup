@@ -22,14 +22,15 @@ python setup.py install
 ##Settings
 
 The default settings file is at `~/.catsuprc`, you can specific it by passing `--settings=/path/to/settings` when executing `python -m catsup.app <server/deploy/webhook>`
-For sample usage, just copy and rename config.py to ~/.catsuprc and modify it as you like.
+
+For simple usage, just copy and rename config.py to ~/.catsuprc and modify it as you like.
 
 ##Run
 ```bash
 python -m catsup.app server --port=8888
 ```
 
-Then go to http://localhost:8888 to take a look at your own catsup:)
+Then go to http://localhost:8888 to take a look at your own catsup.:-)
 
 ##How to write
 catsup uses Markdown to write posts.
