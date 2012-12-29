@@ -5,8 +5,8 @@
     {% block head %}{% end %}
     <title>{% block title %}{{ config.site_title }}{% end %}</title>
     <link href='http://fonts.googleapis.com/css?family=Abel' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="{{ config.static_url }}/css/style.css?20120722" type="text/css" />
-    <link rel="stylesheet" href="{{ config.static_url }}/css/pygments_style.css" type="text/css" />
+    <link rel="stylesheet" href="/{{ config.static_url }}/css/style.css?20120722" type="text/css" />
+    <link rel="stylesheet" href="/{{ config.static_url }}/css/pygments_style.css" type="text/css" />
     <link rel="alternate" type="application/rss+xml" href="{{ config.feed }}" title="{{ config.site_title }}" />
     {% if config.google_analytics %}
     <script type="text/javascript">
