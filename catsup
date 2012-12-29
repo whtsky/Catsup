@@ -1,8 +1,0 @@
-#!/bin/sh
-
-case $1 in
-    server) python catsup.py server;;
-    deploy) python catsup.py deploy;;
-    webhook) python catsup.py webhook;;
-    *) echo "Usage: catsup <server | deploy | webhook>";;
-esac

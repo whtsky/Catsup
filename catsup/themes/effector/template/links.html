@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Links | {{ config.site_title }}
+{% end %}
+
+{% block content %}
+<div class="wrapper">
+	<ul>
+		{% if config.twitter %}
+		<li><a href="http://twitter.com/{{ config.twitter }}" target="_blank" title="Follow Me @ Twitter">Twitter</a></li>
+		{% end %}
+		{% if config.github %}
+		<li><a href="http://github.com/{{ config.github }}" target="_blank" title="Fork Me @ Github">GitHub</a></li>
+		{% end %}
+		{% for link in config.links %}
+        <li><a href="{{ link[1] }}" title="{{ link[2] }}" target="_blank">{{ link[0] }}</a></li>
+        {% end %}
+	</ul>
+</div>
+{% end %}

@@ -4,14 +4,30 @@
 Licensed under the MIT License.
 
 ##Install
+
+Simple way using pip
+
+```bash
+pip install catsup
+```
+
+Or another hard way to install
+
 ```bash
 git clone git://github.com/whtsky/catsup.git
 cd catsup
-pip install -r requirements.txt
-cp config-sample.py config.py
-vim config.py #Change it.
-python catsup.py server --port=8888
+python setup.py install
 ```
+
+##Settings
+
+The default settings file is at `~/.catsuprc`, you can specific it by passing `--settings=/path/to/settings` when executing `python -m catsup.app <server/deploy/webhook>`
+
+##Run
+```bash
+python -m catsup.app server --port=8888
+```
+
 Then go to http://localhost:8888 to take a look at your own catsup:)
 
 ##How to write
@@ -50,5 +66,5 @@ The `comment` property defines whether the post can be commented or not.
 You can use `<!--more-->` to define an excerpt of a post. Any content before that will be used as excerpt of the post. And you can choose to display excerpt rather than full content on your homepage.
 
 ##Deploy a static blog
-run`python catsup.py deploy`
+run`python -m catsup.app deploy`
 And you can find your static blog in deploy/ .

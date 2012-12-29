@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>{{ config.site_title }}</title>
+    <link href="{{ config.feed }}" rel="self" />
+    <link href="{{ config.site_url }}" />
+    <updated>{{ posts and posts[0]['updated_xml'] }}</updated>
+    <id>{{ config.site_url }}</id>
+    {% for post in posts[:15] %}
+    <entry>
+        <title><![CDATA[{{ post.title }}]]></title>
+        <link href="{{ post.permalink }}.html"/>
+        <updated>{{ post.updated_xml }}</updated>
+        <published>{{ post.updated_xml }}</published>
+        <id>{{ post.permalink }}</id>
+        <content type="html">
+            <![CDATA[
+             {{ post.content }}
+            ]]>
+        </content>
+    </entry>
+    {% end %}
+</feed>

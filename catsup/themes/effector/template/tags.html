@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Tags | {{ config.site_title }}
+{% end %}
+
+{% block content %}
+<div class="wrapper">
+	<ul>
+		{% for tag in config.tags %}
+		<li><a href="/tag/{{ tag[0] }}.html">{{ tag[0] }} ({{ len(tag[1]) }})</a></li>
+		{% end %}
+	</ul>
+</div>
+{% end %}
