@@ -1,6 +1,5 @@
-
 #catsup
-config.py
+_posts
 _posts/*
 deploy/*
 
