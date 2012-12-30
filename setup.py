@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='catsup',
-    version='0.0.4',
+    version='0.0.5',
     author='whtsky, messense',
     author_email='whtsky@me.com, wapdevelop@gmail.com',
     url='https://github.com/whtsky/catsup',
@@ -13,7 +13,7 @@ setup(
     description='Catsup: a lightweight static blog generator',
     entry_points={
         'console_scripts': ['catsup= catsup.app:main'],
-        },
+    },
     install_requires=[
         'tornado',
         'misaka',
