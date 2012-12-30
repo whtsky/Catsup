@@ -18,14 +18,14 @@ import tornado.escape
 import tornado.template
 
 from tornado.options import define, options
-from tornado.util import ObjectDict
 
 try:
     import catsup
     print('Starting catsup version: %s' % catsup.__version__)
 except ImportError:
     import site
-    site.addsitedir(os.path.split(os.path.abspath(os.path.dirname(__file__)))[0])
+    site_dir = os.path.split(os.path.abspath(os.path.dirname(__file__)))[0]
+    site.addsitedir(site_dir)
 # import the config to define options, this only can be done once
 from catsup import config
 from catsup.utils import load_posts, get_infos, parse_config_file
@@ -51,8 +51,12 @@ if options.site_url.endswith('/'):
     options.site_url = options.site_url[:-1]
 if options.static_url.endswith('/'):
     options.static_url = options.static_url[:-1]
-if not (options.site_url == '' or options.site_url.startswith('http://') or options.site_url.startswith('https://') or options.site_url.startswith('//')):
+if not (options.site_url == ''
+        or options.site_url.startswith('http://')
+        or options.site_url.startswith('https://')
+        or options.site_url.startswith('//')):
     options.site_url = "//%s" % options.site_url
+
 
 class BaseHandler(tornado.web.RequestHandler):
 
@@ -62,7 +66,7 @@ class BaseHandler(tornado.web.RequestHandler):
         options.archives = self.settings['archives']
         # access config directly
         kwargs["config"] = options
-        return super(BaseHandler, self).render_string(template_name,**kwargs)
+        return super(BaseHandler, self).render_string(template_name, **kwargs)
 
     def get_error_html(self, *args, **kwargs):
         return self.render_string('404.html')
@@ -144,7 +148,7 @@ class FeedHandler(BaseHandler):
         self.set_header("Content-Type", "application/atom+xml")
         loader = tornado.template.Loader(options.common_template_path,
             autoescape=None)
-        p = loader.load("feed.xml").generate(posts=self.settings['posts'], 
+        p = loader.load("feed.xml").generate(posts=self.settings['posts'],
             config=options)
         self.write(p)
 
@@ -211,7 +215,7 @@ def deploy():
         autoescape=None)
 
     logging.info('Generating sitemap')
-    page = loader.load("sitemap.txt").generate(posts=posts, tags=tags, 
+    page = loader.load("sitemap.txt").generate(posts=posts, tags=tags,
         archives=archives, config=options)
     write('sitemap.txt', page)
 
@@ -248,7 +252,7 @@ def deploy():
     next = len(posts) and posts.pop() or None
     while post:
         logging.info('Generating %s' % post.file_name)
-        page = generator.generate(post=post, prev=prev, 
+        page = generator.generate(post=post, prev=prev,
             next=next, config=options)
         write('%s.html' % post.file_name, page)
         prev, post, next = post, next, len(posts) and posts.pop() or None
@@ -298,13 +302,15 @@ def deploy():
         shutil.rmtree(deploy_static_dir)
     shutil.copytree(options.static_path, deploy_static_dir)
     os.chdir(options.deploy_path)
-    # Favicon, use favicon.ico in _posts directory default or fallback to the one in static directory
+    # Favicon, use favicon.ico in _posts directory default
+    # or fallback to the one in static directory
     favicon_file = os.path.join(options.posts_path, 'favicon.ico')
     if os.path.exists(favicon_file):
         os.system('cp %s ./' % favicon_file)
     else:
         os.system('cp static/favicon.ico ./')
-    # Robots.txt, use robots.txt in _posts directory default or fallback to the one in static directory
+    # Robots.txt, use robots.txt in _posts directory default
+    # or fallback to the one in static directory
     robots_file = os.path.join(options.posts_path, 'robots.txt')
     if os.path.exists(robots_file):
         os.system('cp %s ./' % robots_file)
@@ -323,56 +329,55 @@ def update_posts():
 
 
 def main():
-    args = sys.argv
-    if len(args) < 2:
-        print('Useage: catsup.py server/deploy/webhook')
-        sys.exit(0)
-    cmd = args[1]
-    del args[1]
-    if cmd == 'server':
-        posts = load_posts()
-        tags, archives = get_infos(posts)
-        settings = dict(
-            autoescape=None,
-            static_path=options.static_path,
-            template_path=options.template_path,
-        )
-        application = tornado.web.Application([
-            (r'/', MainHandler),
-            (r'/page/(.*?).html', MainHandler),
-            (r'/archives.html', ArchivesHandler),
-            (r'/archive/(.*?).html', ArchiveHandler),
-            (r'/tags.html', TagsHandler),
-            (r'/tag/(.*?).html', TagHandler),
-            (r'/links.html', LinksHandler),
-            (r'/feed.xml', FeedHandler),
-            (r'/sitemap.txt', SitemapHandler),
-            (r'/webhook', WebhookHandler),
-            (r'/(.*).html', ArticleHandler),
-            (r'/.*', ErrorHandler),
-        ], posts=posts, tags=tags, archives=archives, **settings)
-    elif cmd == 'deploy':
-        deploy()
-    elif cmd == 'webhook':
-        application = tornado.web.Application([
-            (r'/webhook', WebhookHandler),
-        ])
-    else:
-        print('Unknow Command: %s' % cmd)
-        sys.exit(0)
-
-    if 'application' in locals():
-        if cmd == 'server':
-            print('Starting server at port %s' % options.port)
-        elif cmd == 'webhook':
-            print('Starting webhook at port %s' % options.port)
-        http_server = tornado.httpserver.HTTPServer(application, xheaders=True)
-        http_server.listen(options.port)
-        tornado.ioloop.IOLoop.instance().start()
-
-if __name__ == '__main__':
     try:
-        main()
+        args = sys.argv
+        if len(args) < 2:
+            print('Useage: catsup server/deploy/webhook')
+            sys.exit(0)
+        cmd = args[1]
+        del args[1]
+        if cmd == 'server':
+            posts = load_posts()
+            tags, archives = get_infos(posts)
+            settings = dict(
+                autoescape=None,
+                static_path=options.static_path,
+                template_path=options.template_path,
+            )
+            application = tornado.web.Application([
+                (r'/', MainHandler),
+                (r'/page/(.*?).html', MainHandler),
+                (r'/archives.html', ArchivesHandler),
+                (r'/archive/(.*?).html', ArchiveHandler),
+                (r'/tags.html', TagsHandler),
+                (r'/tag/(.*?).html', TagHandler),
+                (r'/links.html', LinksHandler),
+                (r'/feed.xml', FeedHandler),
+                (r'/sitemap.txt', SitemapHandler),
+                (r'/webhook', WebhookHandler),
+                (r'/(.*).html', ArticleHandler),
+                (r'/.*', ErrorHandler),
+            ], posts=posts, tags=tags, archives=archives, **settings)
+        elif cmd == 'deploy':
+            deploy()
+        elif cmd == 'webhook':
+            application = tornado.web.Application([
+                (r'/webhook', WebhookHandler),
+            ])
+        else:
+            print('Unknow Command: %s' % cmd)
+            sys.exit(0)
+
+        if 'application' in locals():
+            if cmd == 'server':
+                print('Starting server at port %s' % options.port)
+            elif cmd == 'webhook':
+                print('Starting webhook at port %s' % options.port)
+            http_server = tornado.httpserver.HTTPServer(application,
+                xheaders=True)
+            http_server.listen(options.port)
+            tornado.ioloop.IOLoop.instance().start()
+
     except (EOFError, KeyboardInterrupt):
         print('Exiting catsup...')
         sys.exit(0)

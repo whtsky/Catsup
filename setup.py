@@ -11,6 +11,9 @@ setup(
     url='https://github.com/whtsky/catsup',
     packages=find_packages(),
     description='Catsup: a lightweight static blog generator',
+    entry_points={
+        'console_scripts': ['catsup= catsup.app:main'],
+        },
     install_requires=[
         'tornado',
         'misaka',
