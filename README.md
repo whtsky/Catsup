@@ -21,13 +21,13 @@ python setup.py install
 
 ##Settings
 
-The default settings file is at `~/.catsuprc`, you can specific it by passing `--settings=/path/to/settings` when executing `python -m catsup.app <server/deploy/webhook>`
+The default settings file is at `~/.catsuprc`, you can specific it by passing `--settings=/path/to/settings` when executing `catsup <server/deploy/webhook>`
 
 For simple usage, just copy and rename config.py to ~/.catsuprc and modify it as you like.
 
 ##Run
 ```bash
-python -m catsup.app server --port=8888
+catsup server --port=8888
 ```
 
 Then go to http://localhost:8888 to take a look at your own catsup.:-)
@@ -68,5 +68,5 @@ The `comment` property defines whether the post can be commented or not.
 You can use `<!--more-->` to define an excerpt of a post. Any content before that will be used as excerpt of the post. And you can choose to display excerpt rather than full content on your homepage.
 
 ##Deploy a static blog
-run`python -m catsup.app deploy`
+run`catsup deploy`
 And you can find your static blog in deploy/ .

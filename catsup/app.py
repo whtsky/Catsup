@@ -18,7 +18,6 @@ import tornado.escape
 import tornado.template
 
 from tornado.options import define, options
-from tornado.util import ObjectDict
 
 try:
     import catsup
@@ -323,56 +322,54 @@ def update_posts():
 
 
 def main():
-    args = sys.argv
-    if len(args) < 2:
-        print('Useage: catsup.py server/deploy/webhook')
-        sys.exit(0)
-    cmd = args[1]
-    del args[1]
-    if cmd == 'server':
-        posts = load_posts()
-        tags, archives = get_infos(posts)
-        settings = dict(
-            autoescape=None,
-            static_path=options.static_path,
-            template_path=options.template_path,
-        )
-        application = tornado.web.Application([
-            (r'/', MainHandler),
-            (r'/page/(.*?).html', MainHandler),
-            (r'/archives.html', ArchivesHandler),
-            (r'/archive/(.*?).html', ArchiveHandler),
-            (r'/tags.html', TagsHandler),
-            (r'/tag/(.*?).html', TagHandler),
-            (r'/links.html', LinksHandler),
-            (r'/feed.xml', FeedHandler),
-            (r'/sitemap.txt', SitemapHandler),
-            (r'/webhook', WebhookHandler),
-            (r'/(.*).html', ArticleHandler),
-            (r'/.*', ErrorHandler),
-        ], posts=posts, tags=tags, archives=archives, **settings)
-    elif cmd == 'deploy':
-        deploy()
-    elif cmd == 'webhook':
-        application = tornado.web.Application([
-            (r'/webhook', WebhookHandler),
-        ])
-    else:
-        print('Unknow Command: %s' % cmd)
-        sys.exit(0)
-
-    if 'application' in locals():
-        if cmd == 'server':
-            print('Starting server at port %s' % options.port)
-        elif cmd == 'webhook':
-            print('Starting webhook at port %s' % options.port)
-        http_server = tornado.httpserver.HTTPServer(application, xheaders=True)
-        http_server.listen(options.port)
-        tornado.ioloop.IOLoop.instance().start()
-
-if __name__ == '__main__':
     try:
-        main()
+        args = sys.argv
+        if len(args) < 2:
+            print('Useage: catsup server/deploy/webhook')
+            sys.exit(0)
+        cmd = args[1]
+        del args[1]
+        if cmd == 'server':
+            posts = load_posts()
+            tags, archives = get_infos(posts)
+            settings = dict(
+                autoescape=None,
+                static_path=options.static_path,
+                template_path=options.template_path,
+            )
+            application = tornado.web.Application([
+                (r'/', MainHandler),
+                (r'/page/(.*?).html', MainHandler),
+                (r'/archives.html', ArchivesHandler),
+                (r'/archive/(.*?).html', ArchiveHandler),
+                (r'/tags.html', TagsHandler),
+                (r'/tag/(.*?).html', TagHandler),
+                (r'/links.html', LinksHandler),
+                (r'/feed.xml', FeedHandler),
+                (r'/sitemap.txt', SitemapHandler),
+                (r'/webhook', WebhookHandler),
+                (r'/(.*).html', ArticleHandler),
+                (r'/.*', ErrorHandler),
+            ], posts=posts, tags=tags, archives=archives, **settings)
+        elif cmd == 'deploy':
+            deploy()
+        elif cmd == 'webhook':
+            application = tornado.web.Application([
+                (r'/webhook', WebhookHandler),
+            ])
+        else:
+            print('Unknow Command: %s' % cmd)
+            sys.exit(0)
+
+        if 'application' in locals():
+            if cmd == 'server':
+                print('Starting server at port %s' % options.port)
+            elif cmd == 'webhook':
+                print('Starting webhook at port %s' % options.port)
+            http_server = tornado.httpserver.HTTPServer(application, xheaders=True)
+            http_server.listen(options.port)
+            tornado.ioloop.IOLoop.instance().start()
+
     except (EOFError, KeyboardInterrupt):
         print('Exiting catsup...')
         sys.exit(0)
