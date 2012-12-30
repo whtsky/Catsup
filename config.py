@@ -1,7 +1,7 @@
 #coding=utf-8
 site_title = 'catsup'
 site_description = 'a blog'
-site_url = '/'
+site_url = ''
 
 # Home page display full content or excerpt
 excerpt_index = False
