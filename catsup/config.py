@@ -38,7 +38,6 @@ define('posts_path', type=str, default=os.path.join(os.path.dirname(options.cats
 define('common_template_path', type=str, default=os.path.join(options.catsup_path, 'template'), help='common template path')
 define('deploy_path', type=str, default=os.path.join(os.path.dirname(options.catsup_path), 'deploy'), help='catsup deploy path')
 define('themes_path', type=str, default=os.path.join(options.catsup_path, 'themes'), help='themes path')
-
 define('settings', type=str, default=os.path.join(os.path.expanduser('~'), '.catsuprc'), help='catsup settings file path')
 
 # for catsup use, do not delete them
