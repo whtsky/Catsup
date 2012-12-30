@@ -17,7 +17,7 @@ define('feed', type=str, default='/feed.xml', help='your rss feed url')
 define('theme_name', type=str, default='sealscript', help='the theme you prefer')
 
 
-define('gzip', type=str, default=True, help='whether gzip content or not')
+define('gzip', type=bool, default=True, help='whether gzip content or not')
 define('excerpt_index', type=bool, default=False, help='display excerpt at homepage')
 define('date_in_permalink', type=bool, default=True, help='whether permalink contains date or not')
 define('post_per_page', type=int, default=3, help='post per page at homepage')
@@ -38,7 +38,7 @@ define('posts_path', type=str, default=os.path.join(os.path.dirname(options.cats
 define('common_template_path', type=str, default=os.path.join(options.catsup_path, 'template'), help='common template path')
 define('deploy_path', type=str, default=os.path.join(os.path.dirname(options.catsup_path), 'deploy'), help='catsup deploy path')
 define('themes_path', type=str, default=os.path.join(options.catsup_path, 'themes'), help='themes path')
-#define('ui_module_path', type=str, default=os.path.join(options.common_template_path, 'modules'), help='Tornado UIModule path')
+
 define('settings', type=str, default=os.path.join(os.path.expanduser('~'), '.catsuprc'), help='catsup settings file path')
 
 # for catsup use, do not delete them

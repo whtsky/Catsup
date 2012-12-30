@@ -14,6 +14,7 @@ from pygments import highlight
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name
 
+
 def parse_config_file(path):
     if not path:
         return
@@ -24,6 +25,7 @@ def parse_config_file(path):
             options[name].set(config[name])
         else:
             define(name, config[name])
+
 
 class Post(ObjectDict):
     """Post object"""
@@ -108,7 +110,9 @@ def load_post(file_name):
         '''
         return "```%s\n%s\n```" % (m.group(1), m.group(2))
 
-    pattern = re.compile('\{%\s?highlight ([\w\-\+]+)\s?%\}\n*(.+?)\n*\{%\s?endhighlight\s?%\}', re.I | re.S)
+    pattern = re.compile('\{%\s?highlight ([\w\-\+]+)\s?%\}\n'
+                         '*(.+?)'
+                         '\n*\{%\s?endhighlight\s?%\}', re.I | re.S)
 
     path = os.path.join(options.posts_path, file_name)
     logging.info('Loading file %s' % path)
@@ -116,23 +120,24 @@ def load_post(file_name):
     if not options.date_in_permalink:
         post_permalink = file_name[11:-3]
     post = Post(
-        file_name = post_permalink,
-        tags = [],
-        date = file_name[:10],
-        comment_open = True,
-        has_excerpt = False,
-        excerpt = '',
-        format = 'regular',
-        category = '',
-        permalink = '%s/%s.html' % (options.site_url, post_permalink)
+        file_name=post_permalink,
+        tags=[],
+        date=file_name[:10],
+        comment_open=True,
+        has_excerpt=False,
+        excerpt='',
+        format='regular',
+        category='',
+        permalink='%s/%s.html' % (options.site_url, post_permalink)
     )
     try:
         with open(path, 'r') as f:
             # test if the post includes a string ---
             fcontent = f.read()
             if fcontent.find("\n---") == -1:
-                logging.warning('The format of post %s is illegal, ignore it.' % path)
-                return None
+                logging.warning('The format of post %s is illegal,'
+                                ' ignore it.' % path)
+                return
             else:
                 # fallback to the file's beginning
                 f.seek(0, os.SEEK_SET)
@@ -145,11 +150,13 @@ def load_post(file_name):
                     post.title = xhtml_escape(line[1:].strip())
                 # Yet another post title property for compatibility of jekyll
                 elif 'title' in line_lower:
-                    post.title = xhtml_escape(line.split(':')[-1].strip())     
+                    post.title = xhtml_escape(line.split(':')[-1].strip())
                 # Post format
                 elif 'format' in line_lower:
                     post_format = line_lower.split(':')[-1].strip()
-                    if post_format not in ('regular', 'aside', 'gallery', 'link', 'image', 'quote', 'status', 'video', 'audio', 'chat'):
+                    if post_format not in ('regular', 'aside', 'gallery',
+                                           'link', 'image', 'quote',
+                                           'status', 'video', 'audio', 'chat'):
                         post_format = 'regular'
                     post.format = post_format
                 # Post category(unused)
@@ -176,18 +183,21 @@ def load_post(file_name):
                     content = pattern.sub(_highlightcode, content)
                     # Post excerpt support, use <!--more--> as flag
                     if content.lower().find(u'<!--more-->'):
-                        post.excerpt = md.render(content.split(u'<!--more-->')[0])
+                        excerpt = content.split(u'<!--more-->')[0]
+                        post.excerpt = md.render(excerpt)
                         post.has_excerpt = True
-                        content = content.replace(u'<!--more-->', '<span id="readmore"><!--more--></span>')
+                        content = content.replace(u'<!--more-->',
+                            u'<span id="readmore"><!--more--></span>')
                     post.content = md.render(content)
                     post.updated = os.stat(path).st_ctime
                     updated_xml = time.gmtime(post['updated'])
                     post.updated_xml = time.strftime('%Y-%m-%dT%H:%M:%SZ',
                         updated_xml)
-                    break; # exit the infinite loop
+                    break  # exit the infinite loop
     except IOError:
         logging.error('Open file %s failed.' % path)
     return post
+
 
 def load_posts():
     '''load all the posts.return a list.
