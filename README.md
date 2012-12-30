@@ -32,6 +32,8 @@ catsup server --port=8888
 
 Then go to http://localhost:8888 to take a look at your own catsup.:-)
 
+if `command not found: catsup` returned, please check whether the catsup script directory(may be `/usr/local/bin` or `/usr/local/share/python` or some other place in different operation system) is in your shell's PATH.
+
 ##How to write
 catsup uses Markdown to write posts.
 Filename should like 2000-01-01-catsup.md(year-month-day-title.md)

@@ -6,4 +6,4 @@ Remember to replace `yourdomain.com`, `/path/to/catsup/deploy/`, `/path/to/catsu
 
 ##Supervisord
 
-Remember to replace `/path/to/logs`, `command=python -m catsup.app webhook --port=5555` and `user=your_username` to the right settings you want in the provided file supervisord.conf.
+Remember to replace `/path/to/logs`, `command=catsup webhook --port=5555` and `user=your_username` to the right settings you want in the provided file supervisord.conf.
