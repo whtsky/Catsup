@@ -30,7 +30,9 @@ For simple usage, just copy and rename ``config.py`` to ``~/.catsuprc`` and modi
 Write a post
 ============
 catsup uses Markdown to write posts.
-Filename should like ``year-month-day-title.md``(For example: ``2000-01-01-catsup.md``)
+Filename should like ``year-month-day-title.md``
+
+(For example: ``2000-01-01-catsup.md``)
 Post Example::
 
     #Title
@@ -62,7 +64,7 @@ The ``comment`` property defines whether the post can be commented or not.
 
 Post excerpt
 -------------
-You can use ``<!==more==>`` to define an excerpt of a post.
+You can use ``<!--more-->`` to define an excerpt of a post.
 Any content before that will be used as excerpt of the post.
 And you can choose to display excerpt rather than full content on your homepage.
 
