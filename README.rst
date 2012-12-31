@@ -2,6 +2,9 @@
 catsup
 ================
 
+.. image:: https://travis-ci.org/whtsky/catsup.png?branch=master
+    :target: https://travis-ci.org/whtsky/catsup
+
 A lightweight static blog generator.
 
 Install
