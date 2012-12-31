@@ -42,5 +42,5 @@ define('settings', type=str, default=os.path.join(os.path.expanduser('~'), '.cat
 
 # for catsup use, do not delete them
 define('posts', type=list, default=[], help='parsed posts list')
-define('tags', type=list, default=[], help='parsed post tags dict')
-define('archives', type=list, default=[], help='parsed post archives dict')
+define('tags', type=list, default=[], help='parsed post tags list')
+define('archives', type=list, default=[], help='parsed post archives list')

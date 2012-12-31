@@ -380,3 +380,7 @@ def main():
     except (EOFError, KeyboardInterrupt):
         print('Exiting catsup...')
         sys.exit(0)
+
+# this is for testing catsup without install it
+if __name__ == '__main__':
+    main()

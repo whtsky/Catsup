@@ -74,5 +74,5 @@ And you can choose to display excerpt rather than full content on your homepage.
 
 Build your blog
 =================
-run``catsup build``
+run ``catsup build``
 And you can find your static blog in ``~/build/`` .
