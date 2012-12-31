@@ -33,6 +33,7 @@ catsup uses Markdown to write posts.
 Filename should like ``year-month-day-title.md``
 
 (For example: ``2000-01-01-catsup.md``)
+
 Post Example::
 
     #Title
