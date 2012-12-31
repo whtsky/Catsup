@@ -30,11 +30,10 @@ For simple usage, just copy and rename ``config.py`` to ``~/.catsuprc`` and modi
 Write a post
 ============
 catsup uses Markdown to write posts.
-Filename should like ``2000=01=01=catsup.md(year=month=day=title.md)``
+Filename should like ``year-month-day-title.md``(For example: ``2000-01-01-catsup.md``)
 Post Example::
 
     #Title
-	= tags: tag1, tag2, tag3
 
     ====
 
@@ -45,13 +44,13 @@ Post Example::
 
 Post properties
 ================
-catsup supports some post properties. Write them before ``===`` and start with ``= ``.
+catsup supports some post properties. Write them before ``===`` and start with ``- ``.
 Example::
 
-    = category: A Category
-    = date: 2012=12=24
-    = tags: tag1, tag2
-    = comment: no
+    - category: A Category
+    - date: 2012-12-24
+    - tags: tag1, tag2
+    - comment: no
 
 The ``category`` property defines the category of the post, but it's not used yet.
 
