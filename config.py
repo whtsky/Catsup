@@ -2,6 +2,7 @@
 site_title = 'catsup'
 site_description = 'a blog'
 site_url = ''
+posts_path = '~/posts'
 
 # Home page display full content or excerpt
 excerpt_index = False

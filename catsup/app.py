@@ -166,7 +166,7 @@ class SitemapHandler(BaseHandler):
 
 class WebhookHandler(BaseHandler):
     def get(self):
-        deploy()
+        build()
 
     def post(self):
         """Webhook support for GitHub and Bitbucket.
@@ -180,7 +180,7 @@ class WebhookHandler(BaseHandler):
             self.settings['tags'] = tags
             self.settings['archives'] = archives
         else:
-            deploy()
+            build()
 
 
 class ErrorHandler(BaseHandler):
@@ -189,15 +189,15 @@ class ErrorHandler(BaseHandler):
 
 
 def write(file_name, page):
-    if not file_name.startswith(options.deploy_path):
-        file_path = os.path.join(options.deploy_path, file_name)
+    if not file_name.startswith(options.build_path):
+        file_path = os.path.join(options.build_path, file_name)
     else:
         file_path = file_name
     open(file_path, 'w').write(page)
 
 
-def deploy():
-    logging.info('Starting deploy catsup')
+def build():
+    logging.info('Building your blog..')
     posts = load_posts()
     tags, archives = get_infos(posts)
     posts_num = len(posts)
@@ -206,10 +206,10 @@ def deploy():
     options.posts = posts
     options.archives = archives
 
-    if os.path.exists(options.deploy_path):
-        shutil.rmtree(options.deploy_path)
+    if os.path.exists(options.build_path):
+        shutil.rmtree(options.build_path)
 
-    os.makedirs(options.deploy_path)
+    os.makedirs(options.build_path)
 
     loader = tornado.template.Loader(options.common_template_path,
         autoescape=None)
@@ -227,7 +227,7 @@ def deploy():
         autoescape=None)
 
     logging.info('Start generating index pages')
-    page_path = os.path.join(options.deploy_path, 'page')
+    page_path = os.path.join(options.build_path, 'page')
     if os.path.exists(page_path):
         shutil.rmtree(page_path)
     os.makedirs(page_path)
@@ -241,7 +241,7 @@ def deploy():
         write(pager_file, page)
 
     index_1 = os.path.join(page_path, '1.html')
-    index = os.path.join(options.deploy_path, 'index.html')
+    index = os.path.join(options.build_path, 'index.html')
     os.rename(index_1, index)
 
     logging.info('Start generating articles')
@@ -258,7 +258,7 @@ def deploy():
         prev, post, next = post, next, len(posts) and posts.pop() or None
 
     logging.info('Start generating tag pages')
-    tag_path = os.path.join(options.deploy_path, 'tag')
+    tag_path = os.path.join(options.build_path, 'tag')
     if os.path.exists(tag_path):
         shutil.rmtree(tag_path)
     os.makedirs(tag_path)
@@ -275,7 +275,7 @@ def deploy():
         prev = tag
 
     logging.info('Start generating archive pages')
-    archive_path = os.path.join(options.deploy_path, 'archive')
+    archive_path = os.path.join(options.build_path, 'archive')
     if os.path.exists(archive_path):
         shutil.rmtree(archive_path)
     os.makedirs(archive_path)
@@ -297,11 +297,11 @@ def deploy():
         write('%s.html' % p, page)
 
     logging.info('Copying static files.')
-    deploy_static_dir = os.path.join(options.deploy_path, 'static')
-    if os.path.exists(deploy_static_dir):
-        shutil.rmtree(deploy_static_dir)
-    shutil.copytree(options.static_path, deploy_static_dir)
-    os.chdir(options.deploy_path)
+    build_static_dir = os.path.join(options.build_path, 'static')
+    if os.path.exists(build_static_dir):
+        shutil.rmtree(build_static_dir)
+    shutil.copytree(options.static_path, build_static_dir)
+    os.chdir(options.build_path)
     # Favicon, use favicon.ico in _posts directory default
     # or fallback to the one in static directory
     favicon_file = os.path.join(options.posts_path, 'favicon.ico')
@@ -332,7 +332,7 @@ def main():
     try:
         args = sys.argv
         if len(args) < 2:
-            print('Useage: catsup server/deploy/webhook')
+            print('Useage: catsup server/build/webhook')
             sys.exit(0)
         cmd = args[1]
         del args[1]
@@ -354,12 +354,11 @@ def main():
                 (r'/links.html', LinksHandler),
                 (r'/feed.xml', FeedHandler),
                 (r'/sitemap.txt', SitemapHandler),
-                (r'/webhook', WebhookHandler),
                 (r'/(.*).html', ArticleHandler),
                 (r'/.*', ErrorHandler),
             ], posts=posts, tags=tags, archives=archives, **settings)
-        elif cmd == 'deploy':
-            deploy()
+        elif cmd == 'build':
+            build()
         elif cmd == 'webhook':
             application = tornado.web.Application([
                 (r'/webhook', WebhookHandler),

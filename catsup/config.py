@@ -34,9 +34,9 @@ define('links', type=tuple, help='your links', default=(
 
 # catsup system settings, edit it only if you know what you are going to do
 define('catsup_path', type=str, default=os.path.dirname(os.path.abspath(__file__)), help='catsup path')
-define('posts_path', type=str, default=os.path.join(os.path.dirname(options.catsup_path), '_posts'), help='posts path')
+define('posts_path', type=str, default=os.path.join(os.path.expanduser('~'), 'posts'), help='posts path')
 define('common_template_path', type=str, default=os.path.join(options.catsup_path, 'template'), help='common template path')
-define('deploy_path', type=str, default=os.path.join(os.path.dirname(options.catsup_path), 'deploy'), help='catsup deploy path')
+define('build_path', type=str, default=os.path.join(os.path.expanduser('~'), 'build'), help='catsup build path')
 define('themes_path', type=str, default=os.path.join(options.catsup_path, 'themes'), help='themes path')
 define('settings', type=str, default=os.path.join(os.path.expanduser('~'), '.catsuprc'), help='catsup settings file path')
 
