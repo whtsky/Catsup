@@ -50,13 +50,14 @@ Post Example::
 
 Post properties
 ================
-catsup supports some post properties. Write them before ``===`` and start with ``- ``.
+catsup supports some post properties. Write them before ``===``
+ and start with ``-`` .
 Example::
 
     - category: A Category
     - date: 2012-12-24
     - tags: tag1, tag2
-    - comment: no
+    - comment: disabled
 
 The ``category`` property defines the category of the post, but it's not used yet.
 
