@@ -40,7 +40,6 @@ else:
 
 
 class BaseHandler(tornado.web.RequestHandler):
-
     def render_string(self, template_name, **kwargs):
         options.tags = self.settings['tags']
         options.posts = self.settings['posts']
@@ -55,7 +54,7 @@ class BaseHandler(tornado.web.RequestHandler):
 
 class MainHandler(BaseHandler):
     def get(self, p=1):
-        if p == '1':  # /page_1.html
+        if p == '1':
             self.redirect('/', status=301)
         p = int(p)
         self.render('index.html', posts=self.settings['posts'], p=p)
@@ -69,7 +68,7 @@ class ArticleHandler(BaseHandler):
         for i in range(posts_num):
             post = posts[i]
             if post.file_name == file_name:
-                if i:  # i>0
+                if i:
                     prev = posts[i - 1]
                 if (i + 1) < posts_num:
                     next = posts[i + 1]
@@ -163,10 +162,8 @@ class ErrorHandler(BaseHandler):
 
 def write(file_name, page):
     if not file_name.startswith(options.build_path):
-        file_path = os.path.join(options.build_path, file_name)
-    else:
-        file_path = file_name
-    open(file_path, 'w').write(page)
+        file_name = os.path.join(options.build_path, file_name)
+    open(file_name, 'w').write(page)
 
 
 def build():
@@ -275,6 +272,7 @@ def build():
         shutil.rmtree(build_static_dir)
     shutil.copytree(options.static_path, build_static_dir)
     os.chdir(options.build_path)
+
     # Favicon, use favicon.ico in _posts directory default
     # or fallback to the one in static directory
     favicon_file = os.path.join(options.posts_path, 'favicon.ico')
@@ -282,6 +280,7 @@ def build():
         os.system('cp %s ./' % favicon_file)
     else:
         os.system('cp static/favicon.ico ./')
+
     # Robots.txt, use robots.txt in _posts directory default
     # or fallback to the one in static directory
     robots_file = os.path.join(options.posts_path, 'robots.txt')
@@ -308,8 +307,7 @@ def main():
         if len(args) < 2:
             print('Useage: catsup server/build/webhook')
             sys.exit(0)
-        cmd = args[1]
-        del args[1]
+        cmd = args.pop(1)
         if cmd == 'server':
             posts = load_posts()
             tags, archives = get_infos(posts)
@@ -346,8 +344,7 @@ def main():
                 print('Starting server at port %s' % options.port)
             elif cmd == 'webhook':
                 print('Starting webhook at port %s' % options.port)
-            http_server = tornado.httpserver.HTTPServer(application,
-                xheaders=True)
+            http_server = tornado.httpserver.HTTPServer(application)
             http_server.listen(options.port)
             tornado.ioloop.IOLoop.instance().start()
 

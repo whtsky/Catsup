@@ -36,7 +36,7 @@
 	</ul>
 
 	<hr>
-    {% if post.comment_open %}
+    {% if not post.comment_disabled %}
 	{% if config.comment_system == 'disqus' and config.disqus_shortname %}
     <div id="disqus_thread"></div>
     <script type="text/javascript">

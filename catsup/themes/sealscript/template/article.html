@@ -36,7 +36,7 @@
         {% end %}
         <div class="big_sep"></div>
         <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-        {% if post.comment_open %}
+        {% if not post.comment_disabled %}
         {% if config.comment_system == 'disqus' and config.disqus_shortname %}
         <div id="disqus_thread"></div>
         <script type="text/javascript">
