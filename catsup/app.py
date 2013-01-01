@@ -31,12 +31,8 @@ if len(sys.argv) > 1:
     _args = copy.deepcopy(sys.argv)
     del _args[1]
     tornado.options.parse_command_line(_args)
-
-if options.settings and os.path.exists(options.settings):
-    print('Parsing settings file: %s' % options.settings)
-    parse_config_file(options.settings)
-else:
-    print('No settings file provided or it does not exists')
+# Loading user settings
+parse_config_file(options.settings)
 
 
 class BaseHandler(tornado.web.RequestHandler):
@@ -88,7 +84,7 @@ class TagHandler(BaseHandler):
         tags = self.settings['tags']
         prev = next = None
         for i, tag in enumerate(tags):
-            if tag[0] == tag_name:
+            if tag.name == tag_name:
                 i += 1
                 if i < len(tags):
                     next = tags[i]
@@ -109,7 +105,7 @@ class ArchiveHandler(BaseHandler):
         archives = self.settings['archives']
         prev = next = None
         for i, archive in enumerate(archives):
-            if archive[0] == archive_name:
+            if archive.name == archive_name:
                 i += 1
                 if i < len(archives):
                     next = archives[i]
@@ -238,12 +234,12 @@ def build():
     generator = loader.load("tag.html")
     prev = None
     for i, tag in enumerate(tags):
-        logging.info('Generating tag %s' % tag[0])
+        logging.info('Generating tag %s' % tag.name)
         i += 1
         next = i < len(tags) and tags[i] or None
         page = generator.generate(tag=tag, prev=prev,
             next=next, config=options)
-        tag_file = os.path.join(tag_path, "%s.html" % tag[0].lower())
+        tag_file = os.path.join(tag_path, "%s.html" % tag.name.lower())
         write(tag_file, page)
         prev = tag
 
@@ -255,12 +251,12 @@ def build():
     generator = loader.load("archive.html")
     prev = None
     for i, archive in enumerate(archives):
-        logging.info('Generating archive %s' % archive[0])
+        logging.info('Generating archive %s' % archive.name)
         i += 1
         next = i < len(archives) and archives[i] or None
         page = generator.generate(archive=archive, prev=prev,
             next=next, config=options)
-        archive_file = os.path.join(archive_path, "%s.html" % archive[0])
+        archive_file = os.path.join(archive_path, "%s.html" % archive.name)
         write(archive_file, page)
         prev = archive
 

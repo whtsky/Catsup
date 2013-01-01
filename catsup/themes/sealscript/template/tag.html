@@ -1,20 +1,20 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<meta name=description content="{{ tag[0] }},{{ config.site_description }}">
+<meta name=description content="{{ tag.name }},{{ config.site_description }}">
 {% end %}
 
 {% block title %}
-{{ tag[0] }} | {{ config.site_title }}
+{{ tag.name }} | {{ config.site_title }}
 {% end %}
 
 {% block content %}
 <div class="article">
     <div class="inner">
-        <h2 class="title">Articles Tagged as "{{ tag[0] }}"</h2>
+        <h2 class="title">Articles Tagged as "{{ tag.name }}"</h2>
         <div class="text">
             <ul>
-                {% for post in tag[1] %}
+                {% for post in tag.posts %}
                 <li>
                     <span class="time_stamp">{{ post.date }}</span>
                     <a href="{{ post.permalink }}">{{ post.title }}</a>
@@ -25,13 +25,13 @@
     </div>
 </div>
 {% if prev %}
-<a id="prev" href="/tag/{{ prev[0] }}.html" class="v_nav" >
+<a id="prev" href="/tag/{{ prev.name }}.html" class="v_nav" >
     <span class="icon">Prev</span>
 </a>
 {% end %}
 
 {% if next %}
-<a id="next" href="/tag/{{ next[0] }}.html" class="v_nav" >
+<a id="next" href="/tag/{{ next.name }}.html" class="v_nav" >
     <span class="icon">Next</span>
 </a>
 {% end %}
