@@ -26,55 +26,26 @@ def parse_config_file(path):
             options[name].set(config[name])
         else:
             define(name, config[name])
+    if 'theme_path' not in options:
+        define('theme_path', os.path.join(options.themes_path, options.theme_name))
+    if 'template_path' not in options:
+        define('template_path', os.path.join(options.theme_path, 'template'))
+    if 'static_path' not in options:
+        define('static_path', os.path.join(options.theme_path, 'static'))
+    if options.site_url.endswith('/'):
+        options.site_url = options.site_url[:-1]
+    if options.static_url.endswith('/'):
+        options.static_url = options.static_url[:-1]
+    if not (options.site_url == ''
+            or options.site_url.startswith('http://')
+            or options.site_url.startswith('https://')
+            or options.site_url.startswith('//')):
+        options.site_url = "//%s" % options.site_url
 
 
 class Post(ObjectDict):
     """Post object"""
-    def has_format(self, format):
-        if not hasattr(self, 'format'):
-            return False
-        if self['format'] == format.lower():
-            return True
-
-    @property
-    def is_regular(self):
-        return self.has_format('regular')
-
-    @property
-    def is_aside(self):
-        return self.has_format('aside')
-
-    @property
-    def is_gallery(self):
-        return self.has_format('gallery')
-
-    @property
-    def is_link(self):
-        return self.has_format('link')
-
-    @property
-    def is_status(self):
-        return self.has_format('status')
-
-    @property
-    def is_image(self):
-        return self.has_format('image')
-
-    @property
-    def is_video(self):
-        return self.has_format('video')
-
-    @property
-    def is_audio(self):
-        return self.has_format('audio')
-
-    @property
-    def is_chat(self):
-        return self.has_format('chat')
-
-    @property
-    def is_quote(self):
-        return self.has_format('quote')
+    pass
 
 
 class CatsupRender(m.HtmlRenderer, m.SmartyPants):
@@ -155,10 +126,6 @@ def load_post(file_name):
                 # Post format
                 elif 'format' in line_lower:
                     post_format = line_lower.split(':')[-1].strip()
-                    if post_format not in ('regular', 'aside', 'gallery',
-                                           'link', 'image', 'quote',
-                                           'status', 'video', 'audio', 'chat'):
-                        post_format = 'regular'
                     post.format = post_format
                 # Post category(unused)
                 elif 'category' in line_lower:
@@ -167,7 +134,7 @@ def load_post(file_name):
                 elif 'tags' in line_lower:
                     for tag in line.split(':')[-1].strip().split(','):
                         post.tags.append(xhtml_escape(tag.strip().lower()))
-                # Post date specificed
+                # Post date specified
                 elif 'date' in line_lower:
                     post.date = xhtml_escape(line.split(':')[-1].strip())
                 # Allow comment of not

@@ -1,11 +1,7 @@
 #!/usr/bin/env python
 #coding=utf-8
-import sys
-default_encoding = 'utf-8'
-if sys.getdefaultencoding() != default_encoding:
-    reload(sys)
-    sys.setdefaultencoding(default_encoding)
 
+import sys
 import os
 import shutil
 import copy
@@ -17,7 +13,7 @@ import tornado.options
 import tornado.escape
 import tornado.template
 
-from tornado.options import define, options
+from tornado.options import options
 
 try:
     import catsup
@@ -26,6 +22,7 @@ except ImportError:
     import site
     site_dir = os.path.split(os.path.abspath(os.path.dirname(__file__)))[0]
     site.addsitedir(site_dir)
+
 # import the config to define options, this only can be done once
 from catsup import config
 from catsup.utils import load_posts, get_infos, parse_config_file
@@ -34,28 +31,12 @@ if len(sys.argv) > 1:
     _args = copy.deepcopy(sys.argv)
     del _args[1]
     tornado.options.parse_command_line(_args)
-    del _args
+
 if options.settings and os.path.exists(options.settings):
     print('Parsing settings file: %s' % options.settings)
     parse_config_file(options.settings)
 else:
     print('No settings file provided or it does not exists')
-
-if 'theme_path' not in options:
-    define('theme_path', os.path.join(options.themes_path, options.theme_name))
-if 'template_path' not in options:
-    define('template_path', os.path.join(options.theme_path, 'template'))
-if 'static_path' not in options:
-    define('static_path', os.path.join(options.theme_path, 'static'))
-if options.site_url.endswith('/'):
-    options.site_url = options.site_url[:-1]
-if options.static_url.endswith('/'):
-    options.static_url = options.static_url[:-1]
-if not (options.site_url == ''
-        or options.site_url.startswith('http://')
-        or options.site_url.startswith('https://')
-        or options.site_url.startswith('//')):
-    options.site_url = "//%s" % options.site_url
 
 
 class BaseHandler(tornado.web.RequestHandler):
@@ -171,16 +152,8 @@ class WebhookHandler(BaseHandler):
     def post(self):
         """Webhook support for GitHub and Bitbucket.
         """
-        logging.info('Updating posts...')
         update_posts()
-        if 'tags' in self.settings:
-            posts = load_posts()
-            tags, archives = get_infos(posts)
-            self.settings['posts'] = posts
-            self.settings['tags'] = tags
-            self.settings['archives'] = archives
-        else:
-            build()
+        build()
 
 
 class ErrorHandler(BaseHandler):
@@ -321,6 +294,7 @@ def build():
 
 
 def update_posts():
+    logging.info('Updating posts...')
     os.chdir(options.posts_path)
     if os.path.isdir(os.path.join(options.posts_path, '.git')):
         os.system('git pull')
