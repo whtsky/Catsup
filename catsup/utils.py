@@ -95,7 +95,7 @@ def load_post(file_name):
         file_name=post_permalink,
         tags=[],
         date=file_name[:10],
-        comment_open=True,
+        comment_disabled=False,
         has_excerpt=False,
         excerpt='',
         format='regular',
@@ -104,45 +104,25 @@ def load_post(file_name):
     )
     try:
         with open(path, 'r') as f:
-            # test if the post includes a string ---
-            fcontent = f.read()
-            if fcontent.find("\n---") == -1:
-                logging.warning('The format of post %s is illegal,'
-                                ' ignore it.' % path)
-                return
-            else:
-                # fallback to the file's beginning
-                f.seek(0, os.SEEK_SET)
-                del fcontent
-            while True:
-                line = f.readline()
+            lines = f.readlines()
+            for line in lines:
                 line_lower = line.lower()
                 # Post title
                 if line.startswith('#'):
                     post.title = xhtml_escape(line[1:].strip())
-                # Yet another post title property for compatibility of jekyll
-                elif 'title' in line_lower:
-                    post.title = xhtml_escape(line.split(':')[-1].strip())
-                # Post format
-                elif 'format' in line_lower:
-                    post_format = line_lower.split(':')[-1].strip()
-                    post.format = post_format
-                # Post category(unused)
-                elif 'category' in line_lower:
-                    post.category = xhtml_escape(line.split(':')[-1].strip())
-                # Post tags
                 elif 'tags' in line_lower:
                     for tag in line.split(':')[-1].strip().split(','):
                         post.tags.append(xhtml_escape(tag.strip().lower()))
-                # Post date specified
-                elif 'date' in line_lower:
-                    post.date = xhtml_escape(line.split(':')[-1].strip())
-                # Allow comment of not
                 elif 'comment' in line_lower:
                     status = line_lower.split(':')[-1].strip()
-                    if status in ['no', 'false', '0', 'close']:
-                        post.comment_open = False
-                # Here many cause an infinite loop if the post has no --- in it
+                    if status in ['no', 'disabled', 'close']:
+                        post.comment_disabled = True
+                # Post properties
+                elif ':' in line_lower and '-' in line_lower:
+                    line = line.split('-')[1].strip()
+                    name, value = line.split(':')
+                    post[name.strip()] = value.strip()
+
                 elif line.startswith('---'):
                     content = '\n'.join(f.readlines())
                     if isinstance(content, str):
@@ -161,10 +141,11 @@ def load_post(file_name):
                     updated_xml = time.gmtime(post['updated'])
                     post.updated_xml = time.strftime('%Y-%m-%dT%H:%M:%SZ',
                         updated_xml)
-                    break  # exit the infinite loop
+                    return post
+            logging.warning('The format of post %s is illegal,'
+                            ' ignore it.' % path)
     except IOError:
         logging.error('Open file %s failed.' % path)
-    return post
 
 
 def load_posts():

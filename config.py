@@ -1,8 +1,11 @@
 #coding=utf-8
+
+import os
+
 site_title = 'catsup'
 site_description = 'a blog'
 site_url = ''
-posts_path = '~/posts'
+posts_path = os.path.join(os.path.expanduser('~'), 'posts')
 
 # Home page display full content or excerpt
 excerpt_index = False
@@ -18,8 +21,6 @@ date_in_permalink = True
 static_url = '/static'
 theme_name = 'sealscript'
 google_analytics = ''
-
-gzip = True
 
 twitter = ''
 github = ''
