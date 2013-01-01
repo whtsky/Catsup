@@ -50,12 +50,8 @@ Post Example::
 
 Post properties
 ================
-<<<<<<< HEAD
-catsup supports some post properties. Write them before ``===``
+catsup supports some post properties. Write them before ``---``
  and start with ``-`` .
-=======
-catsup supports some post properties. Write them before ``---`` and start with ``- `` .
->>>>>>> devel
 Example::
 
     - category: A Category
