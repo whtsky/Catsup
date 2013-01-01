@@ -17,7 +17,6 @@ define('feed', type=str, default='/feed.xml', help='your rss feed url')
 define('theme_name', type=str, default='sealscript', help='the theme you prefer')
 
 
-define('gzip', type=bool, default=True, help='whether gzip content or not')
 define('excerpt_index', type=bool, default=False, help='display excerpt at homepage')
 define('date_in_permalink', type=bool, default=True, help='whether permalink contains date or not')
 define('post_per_page', type=int, default=3, help='post per page at homepage')
