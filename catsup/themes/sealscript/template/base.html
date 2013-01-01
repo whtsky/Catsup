@@ -33,7 +33,7 @@
                 <div id="description" class="seal">{{ config.site_description }}</div>
                 <ul class="right">
                     {% for t in config.tags[:5] %}
-                    <li><a href="/tag/{{ t[0] }}.html">{{ t[0].capitalize() }}</a></li>
+                    <li><a href="/tag/{{ t.name }}.html">{{ t.name.capitalize() }}</a></li>
                     <li class="dot">&bull;</li>
                     {% end %}
                 </ul>
@@ -63,14 +63,14 @@
             <div class="tag_cloud col">
                 <h2>Tag Cloud</h2>
                 {% for t in config.tags %}
-                <a class="tag" href="/tag/{{ t[0] }}.html">{{ t[0].capitalize() }} ({{ len(t[1]) }})</a>
+                <a class="tag" href="/tag/{{ t.name }}.html">{{ t.name.capitalize() }} ({{ t.post_count }})</a>
                 {% end %}
             </div>
             <div class="col">
                 <h2>Archives</h2>
                 <ul>
                     {% for av in config.archives %}
-                    <li><a href="/archive/{{ av[0] }}.html">{{ av[0] }} ({{ len(av[1]) }})</a></li>
+                    <li><a href="/archive/{{ av.name }}.html">{{ av.name }} ({{ av.post_count }})</a></li>
                     {% end %}
                 </ul>
             </div>

@@ -17,15 +17,18 @@ from pygments.lexers import get_lexer_by_name
 
 
 def parse_config_file(path):
-    if not path:
-        return
-    config = {}
-    exec(compile(open(path).read(), path, 'exec'), config, config)
-    for name in config:
-        if name in options:
-            options[name].set(config[name])
-        else:
-            define(name, config[name])
+    if path and os.path.exists(path):
+        print('Parsing settings file %s' % path)
+        config = {}
+        exec(compile(open(path).read(), path, 'exec'), config, config)
+        for name in config:
+            if name in options:
+                options[name].set(config[name])
+            else:
+                define(name, config[name])
+    else:
+        print('No settings file provided or it does not exists')
+    # execute the codes below no matter whether config file exists or not
     if 'theme_path' not in options:
         define('theme_path', os.path.join(options.themes_path, options.theme_name))
     if 'template_path' not in options:
@@ -105,7 +108,7 @@ def load_post(file_name):
     try:
         with open(path, 'r') as f:
             lines = f.readlines()
-            for line in lines:
+            for i, line in enumerate(lines):
                 line_lower = line.lower()
                 # Post title
                 if line.startswith('#'):
@@ -124,7 +127,7 @@ def load_post(file_name):
                     post[name.strip()] = value.strip()
 
                 elif line.startswith('---'):
-                    content = '\n'.join(f.readlines())
+                    content = '\n'.join(lines[i+1:])
                     if isinstance(content, str):
                         content = content.decode('utf-8')
                     # Provide compatibility for liquid style code highlight
@@ -193,16 +196,25 @@ def get_infos(posts):
     tags = {}
     archives = {}
     for post in posts:
-        for tag in post['tags']:
+        for tag in post.tags:
             if tag in tags:
-                tags[tag].append(post)
+                tags[tag].posts.append(post)
+                tags[tag].post_count += 1
             else:
-                tags[tag] = [post]
-        year = post['date'][:4]
+                tags[tag] = ObjectDict(
+                    name=tag,
+                    posts=[post],
+                    post_count=1
+                )
+        year = post.date[:4]
         if year in archives:
-            archives[year].append(post)
+            archives[year].posts.append(post)
+            archives[year].post_count += 1
         else:
-            archives[year] = [post]
-
-    return sorted(tags.items(), key=lambda x: len(x[1]), reverse=True),\
-           sorted(archives.items(), key=lambda x: x[0], reverse=True)
+            archives[year] = ObjectDict(
+                name=year,
+                posts=[post],
+                post_count=1
+            )
+    return sorted(tags.itervalues(), key=lambda x: x.post_count, reverse=True),\
+           sorted(archives.itervalues(), key=lambda x: x.name, reverse=True)

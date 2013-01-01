@@ -8,7 +8,7 @@ Tags | {{ config.site_title }}
 <div class="wrapper">
 	<ul>
 		{% for tag in config.tags %}
-		<li><a href="/tag/{{ tag[0] }}.html">{{ tag[0] }} ({{ len(tag[1]) }})</a></li>
+		<li><a href="/tag/{{ tag.name }}.html">{{ tag.name }} ({{ tag.post_count }})</a></li>
 		{% end %}
 	</ul>
 </div>

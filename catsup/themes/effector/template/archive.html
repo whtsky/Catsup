@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 
 {% block title %}
-{{ archive[0] }} | {{ config.site_title }}
+{{ archive.name }} | {{ config.site_title }}
 {% end %}
 
 {% block content %}
 <div class="wrapper">
-	<h2>{{ archive[0] }}</h2>
+	<h2>{{ archive.name }}</h2>
 	<ul class="postsList">
-		{% for post in archive[1] %}
+		{% for post in archive.posts %}
 		<li><span>{{ post.date }}</span> <a href="{{ post.permalink }}">{{ post.title }}</a></li>
 		{% end %}
 	</ul>
