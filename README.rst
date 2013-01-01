@@ -26,7 +26,7 @@ Settings
 ========
 
 The default settings file is at ``~/.catsuprc``,
-you can specific it by passing ``==settings=/path/to/settings`` when executing ``catsup <server/build/webhook>``
+you can specific it by passing ``--settings=/path/to/settings`` when executing ``catsup <server/build/webhook>``
 
 For simple usage, just copy and rename ``config.py`` to ``~/.catsuprc`` and modify it as you like.
 
@@ -50,7 +50,7 @@ Post Example::
 
 Post properties
 ================
-catsup supports some post properties. Write them before ``===`` and start with ``- ``.
+catsup supports some post properties. Write them before ``---`` and start with ``- `` .
 Example::
 
     - category: A Category
