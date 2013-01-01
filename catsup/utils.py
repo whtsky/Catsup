@@ -108,7 +108,7 @@ def load_post(file_name):
     try:
         with open(path, 'r') as f:
             lines = f.readlines()
-            for line in lines:
+            for i, line in enumerate(lines):
                 line_lower = line.lower()
                 # Post title
                 if line.startswith('#'):
@@ -127,7 +127,7 @@ def load_post(file_name):
                     post[name.strip()] = value.strip()
 
                 elif line.startswith('---'):
-                    content = '\n'.join(f.readlines())
+                    content = '\n'.join(lines[i+1:])
                     if isinstance(content, str):
                         content = content.decode('utf-8')
                     # Provide compatibility for liquid style code highlight
