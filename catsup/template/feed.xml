@@ -8,7 +8,7 @@
     {% for post in posts[:15] %}
     <entry>
         <title><![CDATA[{{ post.title }}]]></title>
-        <link href="{{ post.permalink }}.html"/>
+        <link href="{{ post.permalink }}"/>
         <updated>{{ post.updated_xml }}</updated>
         <published>{{ post.updated_xml }}</published>
         <id>{{ post.permalink }}</id>
