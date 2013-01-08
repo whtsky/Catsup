@@ -18,7 +18,6 @@ except ImportError:
 from catsup import config
 config.init()
 
-from catsup.utils import parse_config_file
 from catsup.tools import catsup_init, catsup_build, catsup_server
 from catsup.tools import catsup_list_themes, catsup_install_theme
 from catsup.tools import catsup_webhook
@@ -27,8 +26,9 @@ if len(sys.argv) > 1:
     _args = copy.deepcopy(sys.argv)
     _args.pop(1)
     tornado.options.parse_command_line(_args)
+
 # Loading user settings
-parse_config_file(options.settings)
+config.parse_config_file(options.settings)
 
 
 def main():

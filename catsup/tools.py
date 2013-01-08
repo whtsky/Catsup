@@ -9,17 +9,44 @@ import tornado.ioloop
 from tornado.options import options
 
 from catsup import handlers
+from catsup.config import save_config_file
 from catsup.utils import load_posts, get_infos, write
 
 
 def catsup_init():
     catsup_dir = os.getcwd()
-    _input = ''
-    try:
-        _input = raw_input("Enter catsup directory(default"
-                           " %s if you enter nothing):" % catsup_dir)
-    except EOFError:
+    ini_path = os.path.join(catsup_dir, 'config.ini')
+
+    if os.path.exists(ini_path):
+        print("These is a config.ini in current directory(%s), "
+              "plese check whether you have seted up catsup before." % catsup_dir)
+        print("If you really want to setup catsup in here, plese backup "
+              "and remove all files here and run \"catsup init\" again.")
         return
+
+    options.posts_path = os.path.join(catsup_dir, 'posts')
+    options.themes_path = os.path.join(catsup_dir, 'themes')
+
+    if os.path.exists(options.posts_path):
+        shutil.rmtree(options.posts_path)
+    if os.path.exists(options.themes_path):
+        shutil.rmtree(options.themes_path)
+
+    os.makedirs(os.path.join(catsup_dir, 'posts'))
+    package_themes = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'themes')
+    shutil.copytree(package_themes, options.themes_path)
+
+    save_config_file(ini_path)
+    print("catsup init success!")
+    print("Plese edit the generated config.ini to configure your blog. "
+          "Or you can run \"catsup config\" to generate your configuration.")
+
+def catsup_config():
+    catsup_dir = os.getcwd()
+    _input = ''
+
+    _input = raw_input("Enter catsup directory(default"
+                           " %s if you enter nothing):" % catsup_dir)
     if _input:
         catsup_dir = _input
     if not os.path.exists(catsup_dir):
@@ -27,6 +54,27 @@ def catsup_init():
             print("Create directory failed, exiting...")
             sys.exit(0)
     os.chdir(catsup_dir)
+
+    _input = raw_input("Enter your site title:")
+    if not _input:
+        print("Site title is null, exiting...")
+        sys.exit(0)
+    options.site_title = _input
+
+    _input = raw_input("Enter your site description:")
+    options.site_description = _input
+
+    _input = raw_input("Enter your site url: ")
+    options.site_url = _input
+
+    _input = raw_input("Enter your static resources url(default /static if you enter nothing):")
+    if _input:
+        options.static_url = _input
+
+    _input = raw_input("Enter your rss feed url(default /feed if you enter nothing):")
+    if _input:
+        options.feed = _input
+
 
 
 def catsup_list_themes():
