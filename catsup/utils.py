@@ -4,9 +4,10 @@ from __future__ import with_statement
 import os
 import time
 import re
+import logging
+import ConfigParser
 import misaka as m
 
-import logging
 from tornado.escape import xhtml_escape
 from tornado.util import ObjectDict
 from tornado.options import options, define
@@ -19,18 +20,45 @@ from pygments.lexers import get_lexer_by_name
 def parse_config_file(path):
     if path and os.path.exists(path):
         print('Parsing settings file %s' % path)
-        config = {}
-        exec(compile(open(path).read(), path, 'exec'), config, config)
-        for name in config:
-            if name in options:
-                options[name].set(config[name])
-            else:
-                define(name, config[name])
+        if not path.endswith('.ini'):
+            config = {}
+            exec(compile(open(path).read(), path, 'exec'), config, config)
+            for name in config:
+                if name in options:
+                    options[name].set(config[name])
+                else:
+                    define(name, config[name])
+        else:
+            parser = ConfigParser.ConfigParser()
+            parser.readfp(open(path))
+            sections = {
+                'site': ('site_title', 'site_url', 'site_description',
+                         'static_url', 'port', 'feed'),
+                'comment': ('comment_system', 'duoshuo_shortname',
+                            'disqus_shortname'),
+                'post': ('date_in_permalink', 'excerpt_index',
+                         'post_per_page'),
+                'theme': ('name'),
+                'sns': ('twitter', 'github'),
+                'system': ('posts_path', 'build_path', 'themes_path'),
+                'other': ('google_analytics'),
+            }
+            for sec, keys in sections:
+                for key in keys:
+                    value = parser.get(sec, key)
+                    if key in options:
+                        if options[key].type:
+                            options[key].set(options[key].type(value))
+                        else:
+                            options[key].set(value)
+                    else:
+                        define(key, value)
     else:
         print('No settings file provided or it does not exists')
     # execute the codes below no matter whether config file exists or not
     if 'theme_path' not in options:
-        define('theme_path', os.path.join(options.themes_path, options.theme_name))
+        define('theme_path', os.path.join(options.themes_path,
+               options.theme_name))
     if 'template_path' not in options:
         define('template_path', os.path.join(options.theme_path, 'template'))
     if 'static_path' not in options:
@@ -73,8 +101,8 @@ class CatsupRender(m.HtmlRenderer, m.SmartyPants):
 
 # Allow use raw html in .md files
 md = m.Markdown(CatsupRender(flags=m.HTML_USE_XHTML),
-    extensions=m.EXT_FENCED_CODE | m.EXT_NO_INTRA_EMPHASIS | m.EXT_AUTOLINK |
-               m.EXT_STRIKETHROUGH | m.EXT_SUPERSCRIPT)
+                extensions=m.EXT_FENCED_CODE | m.EXT_NO_INTRA_EMPHASIS |
+                m.EXT_AUTOLINK | m.EXT_STRIKETHROUGH | m.EXT_SUPERSCRIPT)
 
 
 def load_post(file_name):
@@ -118,7 +146,7 @@ def load_post(file_name):
                         post.tags.append(xhtml_escape(tag.strip().lower()))
                 elif 'comment' in line_lower:
                     status = line_lower.split(':')[-1].strip()
-                    if status in ['no', 'disabled', 'close']:
+                    if status in ('no', 'disabled', 'close'):
                         post.comment_disabled = True
                 # Post properties
                 elif ':' in line_lower and '-' in line_lower:
@@ -127,7 +155,7 @@ def load_post(file_name):
                     post[name.strip()] = value.strip()
 
                 elif line.startswith('---'):
-                    content = '\n'.join(lines[i+1:])
+                    content = '\n'.join(lines[i + 1:])
                     if isinstance(content, str):
                         content = content.decode('utf-8')
                     # Provide compatibility for liquid style code highlight
@@ -138,12 +166,12 @@ def load_post(file_name):
                         post.excerpt = md.render(excerpt)
                         post.has_excerpt = True
                         content = content.replace(u'<!--more-->',
-                            u'<span id="readmore"><!--more--></span>')
+                                                  u'<span id="readmore"></span>')
                     post.content = md.render(content)
                     post.updated = os.stat(path).st_ctime
                     updated_xml = time.gmtime(post['updated'])
                     post.updated_xml = time.strftime('%Y-%m-%dT%H:%M:%SZ',
-                        updated_xml)
+                                                     updated_xml)
                     return post
             logging.warning('The format of post %s is illegal,'
                             ' ignore it.' % path)
@@ -217,4 +245,17 @@ def get_infos(posts):
                 post_count=1
             )
     return sorted(tags.itervalues(), key=lambda x: x.post_count, reverse=True),\
-           sorted(archives.itervalues(), key=lambda x: x.name, reverse=True)
+        sorted(archives.itervalues(), key=lambda x: x.name, reverse=True)
+
+def write(file_name, page):
+    if not file_name.startswith(options.build_path):
+        file_name = os.path.join(options.build_path, file_name)
+    open(file_name, 'w').write(page)
+
+def update_posts():
+    logging.info('Updating posts...')
+    os.chdir(options.posts_path)
+    if os.path.isdir(os.path.join(options.posts_path, '.git')):
+        os.system('git pull')
+    elif os.path.isdir(os.path.join(options.posts_path, '.hg')):
+        os.system('hg pull')
