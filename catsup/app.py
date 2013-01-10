@@ -20,7 +20,7 @@ config.init()
 
 from catsup.tools import catsup_init, catsup_build, catsup_server
 from catsup.tools import catsup_list_themes, catsup_install_theme
-from catsup.tools import catsup_webhook
+from catsup.tools import catsup_webhook, catsup_config
 
 if len(sys.argv) > 1:
     _args = copy.deepcopy(sys.argv)
@@ -47,6 +47,9 @@ def main():
         elif cmd == 'init':
             # init catsup
             catsup_init()
+        elif cmd == 'config':
+            # generate config
+            catsup_config();
         elif cmd == 'themes':
             # list available themes
             catsup_list_themes()

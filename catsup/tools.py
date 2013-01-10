@@ -43,6 +43,7 @@ def catsup_init():
 
 def catsup_config():
     catsup_dir = os.getcwd()
+    ini_path = os.path.join(catsup_dir, 'config.ini')
     _input = ''
 
     _input = raw_input("Enter catsup directory(default"
@@ -75,6 +76,39 @@ def catsup_config():
     if _input:
         options.feed = _input
 
+    _input = raw_input("Choose your comment system, enter 1 for disqus, 2 for duoshuo:")
+    if _input == 1:
+        options.comment_system = 'disqus'
+    elif _input == 2:
+        options.comment_system = 'duoshuo'
+    else:
+        options.comment_system = 'disqus'
+
+    if options.comment_system == 'disqus':
+        _input = raw_input("Enter your disqus shortname:")
+        options.disqus_shortname = _input
+    elif options.comment_system == 'duoshuo':
+        options.duoshuo_shortname = _input
+
+    _input = raw_input("Enter 1 if you want to leave date in permalink, 0 if not")
+    if _input == 0:
+        options.date_in_permalink = False
+    else:
+        options.date_in_permalink = True
+
+    _input = raw_input("Enter 1 if you want to display post excerpt in homepage, 0 if not")
+    if _input == 0:
+        options.excerpt_index = False
+    else:
+        options.excerpt_index = True
+
+    _input = raw_input("How many posts per page do you want?")
+    options.post_per_page = int(_input)
+
+    options.twitter = raw_input("Enter your twitter username: ")
+    options.github = raw_input("Enter your github username: ")
+    options.google_analytics = raw_input("Enter your Google Analytics ID: ")
+    save_config_file(ini_path)
 
 
 def catsup_list_themes():
