@@ -15,6 +15,15 @@ from catsup.utils import load_posts, get_infos, write
 
 def catsup_init():
     catsup_dir = os.getcwd()
+    if len(sys.argv) > 1:
+        """
+        Please note that sys.argv.pop(1) had been executed before here.
+        If length of sys.argv > 1, user runned command "catsup init xxx"
+        instead of "catsup init". And now sys.argv[1] == xxx,
+        we regard xxx as a directory relatively to current directory
+        to initialize catsup.
+        """
+        catsup_dir = os.path.join(catsup_dir, sys.argv[1])
     ini_path = os.path.join(catsup_dir, 'config.ini')
 
     if os.path.exists(ini_path):
@@ -43,8 +52,6 @@ def catsup_init():
 
 def catsup_config():
     catsup_dir = os.getcwd()
-    ini_path = os.path.join(catsup_dir, 'config.ini')
-    _input = ''
 
     _input = raw_input("Enter catsup directory(default"
                            " %s if you enter nothing):" % catsup_dir)
@@ -55,6 +62,12 @@ def catsup_config():
             print("Create directory failed, exiting...")
             sys.exit(0)
     os.chdir(catsup_dir)
+    ini_path = os.path.join(catsup_dir, 'config.ini')
+
+    if not os.path.exists(ini_path):
+        print("No config.ini found in this directory(%s), "
+              "please run \"catsup init\" first.")
+        sys.exit(0)
 
     _input = raw_input("Enter your site title:")
     if not _input:
@@ -68,15 +81,18 @@ def catsup_config():
     _input = raw_input("Enter your site url: ")
     options.site_url = _input
 
-    _input = raw_input("Enter your static resources url(default /static if you enter nothing):")
+    _input = raw_input("Enter your static resources url"
+                       "(default /static if you enter nothing):")
     if _input:
         options.static_url = _input
 
-    _input = raw_input("Enter your rss feed url(default /feed if you enter nothing):")
+    _input = raw_input("Enter your rss feed url"
+                       "(default /feed if you enter nothing):")
     if _input:
         options.feed = _input
 
-    _input = raw_input("Choose your comment system, enter 1 for disqus, 2 for duoshuo:")
+    _input = raw_input("Choose your comment system, "
+                       "enter 1 for disqus, 2 for duoshuo:")
     if _input == 1:
         options.comment_system = 'disqus'
     elif _input == 2:
@@ -90,13 +106,15 @@ def catsup_config():
     elif options.comment_system == 'duoshuo':
         options.duoshuo_shortname = _input
 
-    _input = raw_input("Enter 1 if you want to leave date in permalink, 0 if not")
+    _input = raw_input("Enter 1 if you want to leave "
+                       "date in permalink, 0 if not")
     if _input == 0:
         options.date_in_permalink = False
     else:
         options.date_in_permalink = True
 
-    _input = raw_input("Enter 1 if you want to display post excerpt in homepage, 0 if not")
+    _input = raw_input("Enter 1 if you want to display "
+                       "post excerpt in homepage, 0 if not")
     if _input == 0:
         options.excerpt_index = False
     else:
