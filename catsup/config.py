@@ -13,10 +13,10 @@ _sections = {
                 'disqus_shortname'),
     'post': ('date_in_permalink', 'excerpt_index',
              'post_per_page'),
-    'theme': ('theme_name'),
+    'theme': ('theme_name', ),
     'sns': ('twitter', 'github'),
     'system': ('posts_path', 'build_path', 'themes_path'),
-    'other': ('google_analytics'),
+    'other': ('google_analytics', ),
 }
 
 
@@ -90,6 +90,8 @@ def init():
            default=[], help='parsed post tags list')
     define('archives', type=list,
            default=[], help='parsed post archives list')
+    define('config_loaded', type=bool,
+           default=False, help='mark config loaded or not')
 
 
 def parse_config_file(path):
@@ -105,6 +107,10 @@ def parse_config_file(path):
                 keys = _sections[sec]
                 for key in keys:
                     value = parser.get(sec, key)
+                    if value in ('Yes', 'On'):
+                        value = True
+                    elif value in ('No', 'Off'):
+                        value = False
                     if key in options:
                         if options[key].type:
                             options[key].set(options[key].type(value))
@@ -112,12 +118,8 @@ def parse_config_file(path):
                             options[key].set(value)
                     else:
                         define(key, value)
-    else:
-        if path:
-            print('settings file(%s) does not exists, '
-                  'plese run \"catsup init\" before first run catsup.' % path)
-            sys.exit(0)
-        # execute the codes below no matter whether config file exists or not
+        options.config_loaded = True
+    # execute the codes below no matter whether config file exists or not
     if 'theme_path' not in options:
         theme_path = os.path.join(options.themes_path, options.theme_name)
         if not os.path.isdir(theme_path):
@@ -151,6 +153,14 @@ def save_config_file(path):
         keys = _sections[sec]
         for key in keys:
             if key in options:
-                parser.set(sec, key, options[key])
+                value = options[key].value()
+                if value is bool:
+                    if value:
+                        value = 'Yes'
+                    else:
+                        value = 'No'
+                if not value is str:
+                    value = str(value)
+                parser.set(sec, key, value)
     with open(path, 'w') as fp:
         parser.write(fp)

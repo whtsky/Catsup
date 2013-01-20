@@ -75,52 +75,53 @@ def catsup_config():
         sys.exit(0)
     options.site_title = _input
 
-    _input = raw_input("Enter your site description:")
+    _input = raw_input("Enter your site description: ")
     options.site_description = _input
 
     _input = raw_input("Enter your site url: ")
     options.site_url = _input
 
     _input = raw_input("Enter your static resources url"
-                       "(default /static if you enter nothing):")
+                       "(default /static if you enter nothing): ")
     if _input:
         options.static_url = _input
 
     _input = raw_input("Enter your rss feed url"
-                       "(default /feed if you enter nothing):")
+                       "(default /feed.xml if you enter nothing): ")
     if _input:
         options.feed = _input
 
     _input = raw_input("Choose your comment system, "
-                       "enter 1 for disqus, 2 for duoshuo:")
-    if _input == 1:
+                       "enter 1 for disqus, 2 for duoshuo: ")
+    if _input == '1':
         options.comment_system = 'disqus'
-    elif _input == 2:
+    elif _input == '2':
         options.comment_system = 'duoshuo'
     else:
         options.comment_system = 'disqus'
 
     if options.comment_system == 'disqus':
-        _input = raw_input("Enter your disqus shortname:")
+        _input = raw_input("Enter your disqus shortname: ")
         options.disqus_shortname = _input
     elif options.comment_system == 'duoshuo':
+        _input = raw_input("Enter your duoshuo shortname: ")
         options.duoshuo_shortname = _input
 
     _input = raw_input("Enter 1 if you want to leave "
-                       "date in permalink, 0 if not")
+                       "date in permalink, 0 if not: ")
     if _input == 0:
         options.date_in_permalink = False
     else:
         options.date_in_permalink = True
 
     _input = raw_input("Enter 1 if you want to display "
-                       "post excerpt in homepage, 0 if not")
+                       "post excerpt in homepage, 0 if not: ")
     if _input == 0:
         options.excerpt_index = False
     else:
         options.excerpt_index = True
 
-    _input = raw_input("How many posts per page do you want?")
+    _input = raw_input("How many posts per page do you want: ")
     options.post_per_page = int(_input)
 
     options.twitter = raw_input("Enter your twitter username: ")
@@ -138,6 +139,9 @@ def catsup_install_theme():
 
 
 def catsup_build():
+    if not options.config_loaded:
+        print("Please run \"catsup init\" first.")
+        sys.exit(0)
     logging.info('Building your blog..')
     posts = load_posts()
     tags, archives = get_infos(posts)
@@ -264,6 +268,9 @@ def catsup_build():
 
 
 def catsup_server():
+    if not options.config_loaded:
+        print("Please run \"catsup init\" first.")
+        sys.exit(0)
     posts = load_posts()
     tags, archives = get_infos(posts)
     settings = dict(
@@ -290,6 +297,9 @@ def catsup_server():
     tornado.ioloop.IOLoop.instance().start()
 
 def catsup_webhook():
+    if not options.config_loaded:
+        print("Please run \"catsup init\" first.")
+        sys.exit(0)
     application = tornado.web.Application([
         (r'/webhook', handlers.WebhookHandler),
         ])
