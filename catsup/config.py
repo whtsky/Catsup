@@ -1,5 +1,6 @@
 #coding=utf-8
 from __future__ import with_statement
+import sys
 import ConfigParser
 import os.path
 from tornado.options import define, options
@@ -72,8 +73,11 @@ def init():
            default=os.path.join(os.path.expanduser('~'), 'posts'), help='posts path')
     define('common_template_path', type=str,
            default=os.path.join(options.catsup_path, 'template'), help='common template path')
+    define('global_themes_path', type=str,
+           default=os.path.join(os.path.abspath(os.path.dirname(__file__)), 'themes'),
+           help='global themes path')
     define('build_path', type=str,
-           default=os.path.join(os.path.expanduser('~'), 'build'), help='catsup build path')
+           default=os.path.join(os.getcwd(), 'build'), help='catsup build path')
     define('themes_path', type=str,
            default=os.path.join(options.catsup_path, 'themes'), help='themes path')
     define('settings', type=str,
@@ -111,11 +115,17 @@ def parse_config_file(path):
     else:
         if path:
             print('settings file(%s) does not exists, '
-                  'plese run \"catsup init\" before first.' % path)
+                  'plese run \"catsup init\" before first run catsup.' % path)
+            sys.exit(0)
         # execute the codes below no matter whether config file exists or not
     if 'theme_path' not in options:
-        define('theme_path', os.path.join(options.themes_path,
-                                          options.theme_name))
+        theme_path = os.path.join(options.themes_path, options.theme_name)
+        if not os.path.isdir(theme_path):
+            theme_path = os.path.join(options.global_themes_path, options.theme_name)
+        if not os.path.isdir(theme_path):
+            print("Theme %s does not exists. Catsup failed to start." % options.theme_name)
+            sys.exit(0)
+        define('theme_path', theme_path)
     if 'template_path' not in options:
         define('template_path', os.path.join(options.theme_path, 'template'))
     if 'static_path' not in options:
