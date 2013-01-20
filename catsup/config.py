@@ -1,9 +1,12 @@
 #coding=utf-8
 from __future__ import with_statement
 import sys
+import logging
 import ConfigParser
 import os.path
 from tornado.options import define, options
+from tornado.escape import json_decode
+from tornado.util import ObjectDict
 
 # configuration sections
 _sections = {
@@ -60,11 +63,7 @@ def init():
     define('google_analytics', type=str,
            default='', help='google analytics ID')
 
-    define('links', type=tuple, help='your links', default=(
-        ('whtsky', 'http://whouz.com', 'I write catsup'),
-        ('messense', 'http://messense.me', 'I also write catsup'),
-        ('catsup', 'https://github.com/whtsky/catsup', 'the source of this blog'),
-    ))
+    define('links', type=list, help='your links', default=[])
 
     # catsup system settings, edit it only if you know what you are going to do
     define('catsup_path', type=str,
@@ -74,8 +73,7 @@ def init():
     define('common_template_path', type=str,
            default=os.path.join(options.catsup_path, 'template'), help='common template path')
     define('global_themes_path', type=str,
-           default=os.path.join(os.path.abspath(os.path.dirname(__file__)), 'themes'),
-           help='global themes path')
+           default=os.path.join(options.catsup_path, 'themes'), help='global themes path')
     define('build_path', type=str,
            default=os.path.join(os.getcwd(), 'build'), help='catsup build path')
     define('themes_path', type=str,
@@ -92,6 +90,8 @@ def init():
            default=[], help='parsed post archives list')
     define('config_loaded', type=bool,
            default=False, help='mark config loaded or not')
+    define('links_loaded', type=bool,
+           default=False, help='mark links loaded or not')
 
 
 def parse_config_file(path):
@@ -141,6 +141,23 @@ def parse_config_file(path):
             or options.site_url.startswith('https://')
             or options.site_url.startswith('//')):
         options.site_url = "//%s" % options.site_url
+    # read links from posts/links.json
+    links_file = os.path.join(options.posts_path, 'links.json')
+    if not options.links_loaded and os.path.exists(links_file):
+        with open(links_file, 'r') as fp:
+            fcontent = fp.read()
+            try:
+                flinks = json_decode(fcontent)
+            except ValueError:
+                logging.error('The format of links.json is not correct.')
+                return
+            for alink in flinks:
+                link = ObjectDict()
+                link.title = alink['title']
+                link.description = alink['description']
+                link.url = alink['url']
+                options.links.append(link)
+            options.links_loaded = True
 
 
 def save_config_file(path):

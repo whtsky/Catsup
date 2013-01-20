@@ -14,7 +14,7 @@ Links | {{ config.site_title }}
 		<li><a href="http://github.com/{{ config.github }}" target="_blank" title="Fork Me @ Github">GitHub</a></li>
 		{% end %}
 		{% for link in config.links %}
-        <li><a href="{{ link[1] }}" title="{{ link[2] }}" target="_blank">{{ link[0] }}</a></li>
+        <li><a href="{{ link.url }}" title="{{ link.description }}" target="_blank">{{ link.title }}</a></li>
         {% end %}
 	</ul>
 </div>

@@ -7,6 +7,7 @@ import tornado
 import tornado.httpserver
 import tornado.ioloop
 from tornado.options import options
+from tornado.escape import json_decode
 
 from catsup import handlers
 from catsup.config import save_config_file
