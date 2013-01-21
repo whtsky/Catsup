@@ -9,7 +9,6 @@ from tornado.options import options
 
 try:
     import catsup
-    print('Starting catsup version: %s' % catsup.__version__)
 except ImportError:
     import site
     site_dir = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
@@ -56,6 +55,8 @@ def main():
         elif cmd == 'install':
             # install a new theme
             catsup_install_theme()
+        elif cmd == 'version':
+            print('catsup v%s' % catsup.__version__)
         else:
             print('Unknow Command: %s' % cmd)
             sys.exit(0)

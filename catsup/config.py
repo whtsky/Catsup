@@ -99,7 +99,7 @@ def parse_config_file(path):
     Parser .ini configuration file
     """
     if path and os.path.exists(path):
-        print('Parsing settings file %s' % path)
+        logging.debug('Parsing settings file %s' % path)
         parser = ConfigParser.SafeConfigParser()
         with open(path, 'r') as fp:
             parser.readfp(fp)

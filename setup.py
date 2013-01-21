@@ -11,7 +11,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='catsup',
-    version='0.0.5',
+    version='0.0.6',
     author='whtsky, messense',
     author_email='whtsky@me.com, wapdevelop@gmail.com',
     url='https://github.com/whtsky/catsup',

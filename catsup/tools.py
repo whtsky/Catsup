@@ -6,9 +6,8 @@ import logging
 import tornado
 import tornado.httpserver
 import tornado.ioloop
-from tornado.options import options
-from tornado.escape import json_decode
 
+from tornado.options import options
 from catsup import handlers
 from catsup.config import save_config_file
 from catsup.utils import load_posts, get_infos, write
@@ -17,20 +16,18 @@ from catsup.utils import load_posts, get_infos, write
 def catsup_init():
     catsup_dir = os.getcwd()
     if len(sys.argv) > 1:
-        """
-        Please note that sys.argv.pop(1) had been executed before here.
-        If length of sys.argv > 1, user runned command "catsup init xxx"
-        instead of "catsup init". And now sys.argv[1] == xxx,
-        we regard xxx as a directory relatively to current directory
-        to initialize catsup.
-        """
+        # Please note that sys.argv.pop(1) had been executed before here.
+        # If length of sys.argv > 1, user runned command "catsup init xxx"
+        # instead of "catsup init". And now sys.argv[1] == xxx,
+        # we regard xxx as a directory relatively to current working directory
+        # to initialize catsup.
         catsup_dir = os.path.join(catsup_dir, sys.argv[1])
     ini_path = os.path.join(catsup_dir, 'config.ini')
 
     if os.path.exists(ini_path):
         print("These is a config.ini in current directory(%s), "
-              "plese check whether you have seted up catsup before." % catsup_dir)
-        print("If you really want to setup catsup in here, plese backup "
+              "please check whether you have set up catsup before." % catsup_dir)
+        print("If you really want to setup catsup in here, please backup "
               "and remove all files here and run \"catsup init\" again.")
         return
 
@@ -43,12 +40,12 @@ def catsup_init():
         shutil.rmtree(options.themes_path)
 
     os.makedirs(os.path.join(catsup_dir, 'posts'))
-    package_themes = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'themes')
-    shutil.copytree(package_themes, options.themes_path)
+    #package_themes = os.path.join(options.catsup_path, 'themes')
+    #shutil.copytree(package_themes, options.themes_path)
 
     save_config_file(ini_path)
     print("catsup init success!")
-    print("Plese edit the generated config.ini to configure your blog. "
+    print("Please edit the generated config.ini to configure your blog. "
           "Or you can run \"catsup config\" to generate your configuration.")
 
 def catsup_config():
@@ -132,11 +129,57 @@ def catsup_config():
 
 
 def catsup_list_themes():
-    pass
+    catsup_dir = os.getcwd()
+    cwd_themes = os.path.join(catsup_dir, 'themes')
+    global_themes = os.path.join(options.catsup_path, 'themes')
+    themes = set()
+    themes_dir = os.listdir(global_themes)
+    for name in themes_dir:
+        dir_path = os.path.join(global_themes, name)
+        if os.path.isdir(dir_path):
+            themes.add(name)
+    if os.path.exists(cwd_themes):
+        themes_dir = os.listdir(cwd_themes)
+        for name in themes_dir:
+            dir_path = os.path.join(cwd_themes, name)
+            if os.path.isdir(dir_path):
+                themes.add(name)
+    print('Available themes: \n')
+    for name in themes:
+        print(name)
 
 
 def catsup_install_theme():
-    pass
+    if len(sys.argv) < 2:
+        print('Usage: catsup install theme_name')
+        sys.exit(0)
+    catsup_dir = os.getcwd()
+    cwd_themes = os.path.join(catsup_dir, 'themes')
+    global_themes = os.path.join(options.catsup_path, 'themes')
+    if not options.config_loaded:
+        print('Current working directory is not a catsup directory.')
+        sys.exit(0)
+    if not os.path.exists(cwd_themes):
+        os.makedirs(cwd_themes)
+    theme_name = sys.argv.pop(1)
+    if theme_name.endswith('.git'):
+        # The theme is a git repo
+        os.chdir(cwd_themes)
+        os.system('git clone %s' % theme_name)
+        print('Theme successfully installed.')
+        sys.exit(0)
+    theme_path = os.path.join(global_themes, theme_name)
+    install_path = os.path.join(cwd_themes, theme_name)
+    if os.path.isdir(install_path):
+        print('Theme %s has been installed.' % theme_name)
+        sys.exit(0)
+    if os.path.isdir(theme_path):
+        # The theme is in global themes directory
+        # simply copy it
+        shutil.copytree(theme_path, install_path)
+        print('Theme %s successfully installed' % theme_name)
+    else:
+        print('No available theme named %s' % theme_name)
 
 
 def catsup_build():
