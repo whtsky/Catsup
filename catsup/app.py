@@ -19,7 +19,7 @@ config.init()
 
 from catsup.tools import catsup_init, catsup_build, catsup_server
 from catsup.tools import catsup_list_themes, catsup_install_theme
-from catsup.tools import catsup_webhook, catsup_config
+from catsup.tools import catsup_webhook, catsup_config, catsup_usage
 
 if len(sys.argv) > 1:
     _args = copy.deepcopy(sys.argv)
@@ -34,7 +34,7 @@ def main():
     try:
         args = sys.argv
         if len(args) < 2:
-            print('Useage: catsup server/build/webhook')
+            catsup_usage()
             sys.exit(0)
         cmd = args.pop(1)
         if cmd == 'server':
@@ -58,8 +58,7 @@ def main():
         elif cmd == 'version':
             print('catsup v%s' % catsup.__version__)
         else:
-            print('Unknow Command: %s' % cmd)
-            sys.exit(0)
+            catsup_usage()
     except (EOFError, KeyboardInterrupt):
         print('\nExiting catsup...')
         sys.exit(0)

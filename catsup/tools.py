@@ -151,7 +151,7 @@ def catsup_list_themes():
 
 def catsup_install_theme():
     if len(sys.argv) < 2:
-        print('Usage: catsup install theme_name')
+        print('Usage: catsup install theme_name [-g]')
         sys.exit(0)
     catsup_dir = os.getcwd()
     cwd_themes = os.path.join(catsup_dir, 'themes')
@@ -161,15 +161,26 @@ def catsup_install_theme():
         sys.exit(0)
     if not os.path.exists(cwd_themes):
         os.makedirs(cwd_themes)
+    g_flag = False
+    if len(sys.argv) == 3:
+        # -g flag present
+        if sys.argv.pop(2) == '-g':
+            g_flag = True
     theme_name = sys.argv.pop(1)
     if theme_name.endswith('.git'):
         # The theme is a git repo
-        os.chdir(cwd_themes)
+        if g_flag:
+            os.chdir(global_themes)
+        else:
+            os.chdir(cwd_themes)
         os.system('git clone %s' % theme_name)
         print('Theme successfully installed.')
         sys.exit(0)
     theme_path = os.path.join(global_themes, theme_name)
-    install_path = os.path.join(cwd_themes, theme_name)
+    if g_flag:
+        install_path = os.path.join(global_themes, theme_name)
+    else:
+        install_path = os.path.join(cwd_themes, theme_name)
     if os.path.isdir(install_path):
         print('Theme %s has been installed.' % theme_name)
         sys.exit(0)
@@ -351,3 +362,21 @@ def catsup_webhook():
     http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()
+
+
+def catsup_usage():
+    print("""Usage: catsup [command] [options]
+command:
+    help          print this page.
+    version       print catsup version
+    init          initialize catsup in current working directory.
+    config        generate configuration file in current working directory.
+    server        start a catsup server.
+    build         build the site, generate posts to deploy.
+    webhook       start a catsup webhook.
+    themes        list all available themes.
+    install       install a theme
+
+options:
+    -g            with install command, to install a theme in global themes directory.
+    """)
