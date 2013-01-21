@@ -177,17 +177,15 @@ def catsup_install_theme():
         print('Theme successfully installed.')
         sys.exit(0)
     theme_path = os.path.join(global_themes, theme_name)
-    if g_flag:
-        install_path = os.path.join(global_themes, theme_name)
-    else:
-        install_path = os.path.join(cwd_themes, theme_name)
+    install_path = os.path.join(cwd_themes, theme_name)
     if os.path.isdir(install_path):
         print('Theme %s has been installed.' % theme_name)
         sys.exit(0)
     if os.path.isdir(theme_path):
         # The theme is in global themes directory
-        # simply copy it
-        shutil.copytree(theme_path, install_path)
+        # simply copy it if -g flag not present
+        if not g_flag:
+            shutil.copytree(theme_path, install_path)
         print('Theme %s successfully installed' % theme_name)
     else:
         print('No available theme named %s' % theme_name)
