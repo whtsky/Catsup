@@ -1,4 +1,4 @@
-recursive-include catsup/template *.*
+recursive-include catsup/templates *.*
 recursive-include catsup/themes *.*
 include README.rst
 include LICENSE

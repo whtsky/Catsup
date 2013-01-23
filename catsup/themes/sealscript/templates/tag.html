@@ -1,12 +1,12 @@
-{% extends 'base.html' %}
+{% extends 'layout.html' %}
 
 {% block head %}
-<meta name=description content="{{ tag.name }},{{ config.site_description }}">
-{% end %}
+<meta name=description content="{{ tag.name }},{{ theme.description }}">
+{% endblock %}
 
 {% block title %}
-{{ tag.name }} | {{ config.site_title }}
-{% end %}
+{{ tag.name }} | {{ site.name }}
+{% endblock %}
 
 {% block content %}
 <div class="article">
@@ -19,7 +19,7 @@
                     <span class="time_stamp">{{ post.date }}</span>
                     <a href="{{ post.permalink }}">{{ post.title }}</a>
                 </li>
-                {% end %}
+                {% endfor %}
             </ul>
         </div>
     </div>
@@ -28,11 +28,11 @@
 <a id="prev" href="/tag/{{ prev.name }}.html" class="v_nav" >
     <span class="icon">Prev</span>
 </a>
-{% end %}
+{% endif %}
 
 {% if next %}
 <a id="next" href="/tag/{{ next.name }}.html" class="v_nav" >
     <span class="icon">Next</span>
 </a>
-{% end %}
-{% end %}
+{% endif %}
+{% endblock %}

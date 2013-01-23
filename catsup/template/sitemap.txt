@@ -1,6 +1,0 @@
-{% for post in posts %}{{ post.permalink }}.html
-{% end %}{% for tag in tags %}{{ config.site_url }}/tag/{{ tag.name }}.html
-{% end %}{% for av in archives %}{{ config.site_url }}/archive/{{ av.name }}.html
-{% end %}{{ config.site_url }}/index.html
-{% for p in range(1, int((len(posts) + config.post_per_page - 1) / config.post_per_page)) %}{{ config.site_url }}/page_{{ p + 1 }}.html
-{% end %}

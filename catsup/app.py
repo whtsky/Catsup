@@ -2,67 +2,73 @@
 #coding=utf-8
 
 import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
 import os
 import copy
+import logging
 import tornado
-from tornado.options import options
+from catsup.options import g
+
+g.catsup_path = os.path.abspath(os.path.dirname(__file__))
+g.public_templates_path = os.path.join(g.catsup_path, 'templates')
 
 try:
     import catsup
 except ImportError:
     import site
-    site_dir = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
-    site.addsitedir(site_dir)
+    site.addsitedir(os.path.dirname(g.catsup_path))
 
-from catsup import config
-config.init()
+import catsup.config
+import catsup.server
+import catsup.themes
+from catsup.build import build
 
-from catsup.tools import catsup_init, catsup_build, catsup_server
-from catsup.tools import catsup_list_themes, catsup_install_theme
-from catsup.tools import catsup_webhook, catsup_config, catsup_usage
+from tornado.options import define
+
+define("port", type=int, default=8888, help="run on the given port")
+define('settings', type=str, default='config.json', help='config path')
 
 if len(sys.argv) > 1:
     _args = copy.deepcopy(sys.argv)
     _args.pop(1)
     tornado.options.parse_command_line(_args)
 
-# Loading user settings
-config.parse_config_file(options.settings)
-
 
 def main():
     try:
         args = sys.argv
         if len(args) < 2:
-            catsup_usage()
+            #print useage
             sys.exit(0)
         cmd = args.pop(1)
-        if cmd == 'server':
-            catsup_server()
-        elif cmd == 'build':
-            catsup_build()
-        elif cmd == 'webhook':
-            catsup_webhook()
-        elif cmd == 'init':
-            # init catsup
-            catsup_init()
-        elif cmd == 'config':
-            # generate config
-            catsup_config();
-        elif cmd == 'themes':
-            # list available themes
-            catsup_list_themes()
-        elif cmd == 'install':
-            # install a new theme
-            catsup_install_theme()
+        if cmd == 'init':
+            catsup.config.init()
+            sys.exit(0)
         elif cmd == 'version':
             print('catsup v%s' % catsup.__version__)
+            sys.exit(0)
+        elif cmd == 'themes':
+            catsup.themes.list()
+            sys.exit(0)
+
+        catsup.config.load()
+        if cmd == 'build':
+            build()
+        elif cmd == 'server':
+            catsup.server.preview()
+        elif cmd == 'webhook':
+            catsup.server.webhook()
+        elif cmd == 'install':
+            catsup.themes.install()
         else:
-            catsup_usage()
+            print('Unknow Command: %s' % cmd)
+            sys.exit(0)
     except (EOFError, KeyboardInterrupt):
-        print('\nExiting catsup...')
+        logging.info('\nExiting catsup...')
         sys.exit(0)
 
-# this is for testing catsup without install it
+
 if __name__ == '__main__':
     main()

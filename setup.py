@@ -9,9 +9,11 @@ if major >= 3:
 
 from setuptools import setup, find_packages
 
+import catsup
+
 setup(
     name='catsup',
-    version='0.0.6',
+    version=catsup.__version__,
     author='whtsky, messense',
     author_email='whtsky@me.com, wapdevelop@gmail.com',
     url='https://github.com/whtsky/catsup',

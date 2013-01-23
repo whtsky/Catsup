@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <title>{{ config.site_title }}</title>
+    <title>{{ site.name }}</title>
     <link href="{{ config.feed }}" rel="self" />
-    <link href="{{ config.site_url }}" />
-    <updated>{{ posts and posts[0]['updated_xml'] }}</updated>
-    <id>{{ config.site_url }}</id>
-    {% for post in posts[:15] %}
+    <link href="{{ site.url }}" />
+    <updated>{{ g.posts and g.posts[0]['updated_xml'] }}</updated>
+    <id>{{ site.url }}</id>
+    {% for post in g.posts[:15] %}
     <entry>
         <title><![CDATA[{{ post.title }}]]></title>
         <link href="{{ post.permalink }}"/>
@@ -18,5 +18,5 @@
             ]]>
         </content>
     </entry>
-    {% end %}
+    {% endfor %}
 </feed>
