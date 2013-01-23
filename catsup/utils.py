@@ -199,29 +199,3 @@ def update_posts():
         os.system('git pull')
     elif os.path.isdir('.hg'):
         os.system('hg pull')
-
-
-def find_theme(theme_name=''):
-    if not theme_name:
-        theme_name = config.theme['name']
-    theme_gallery = [
-        os.path.join(os.path.abspath('themes'), theme_name),
-        os.path.join(g.catsup_path, 'themes', theme_name),
-    ]
-    for path in theme_gallery:
-        if os.path.exists(path):
-            theme = ObjectDict(
-                name=theme_name,
-                author='',
-                homepage='',
-                pages=[],
-                path=path
-            )
-            meta = os.path.join(path, 'theme.py')
-            if os.path.exists(meta):
-                execfile(meta, {}, theme)
-            else:
-                logging.error("Can't find meta file for %s" % theme_name)
-            return theme
-
-    raise Exception("Can't find theme: %s" % theme_name)

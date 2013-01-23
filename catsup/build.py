@@ -151,11 +151,17 @@ def copy_static():
     shutil.copytree(os.path.join(g.theme.path, 'static'),
         config.config["static"])
 
-    favicon = os.path.join(g.theme.path, 'static', 'favicon.ico')
+    # W
+
+    favicon = os.path.join(config.config["posts"], 'favicon.ico')
+    if not os.path.exists(favicon):
+        favicon = os.path.join(g.theme.path, 'static', 'favicon.ico')
     if os.path.exists(favicon):
         shutil.copy(favicon, os.path.join(config.config["output"], 'favicon.ico'))
 
-    robots = os.path.join(g.theme.path, 'static', 'robots.txt')
+    robots = os.path.join(config.config["posts"], 'robots.txt')
+    if not os.path.exists(robots):
+        robots = os.path.join(g.theme.path, 'static', 'robots.txt')
     if os.path.exists(robots):
         shutil.copy(robots, os.path.join(config.config["output"], 'robots.txt'))
 

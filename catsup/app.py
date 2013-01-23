@@ -36,11 +36,29 @@ if len(sys.argv) > 1:
     tornado.options.parse_command_line(_args)
 
 
+def print_useage():
+    print("""
+Usage: catsup [command] [options]
+command:
+    help          print this page.
+    version       print catsup version
+    init          initialize catsup in current working directory.
+    server        start a preview server.
+    build         build the site, generate posts to deploy.
+    webhook       start a webhook server.
+    themes        list all available themes.
+    install       install a theme
+
+options:
+    -g            with install command, to install a theme in global themes directory.
+    """)
+
+
 def main():
     try:
         args = sys.argv
         if len(args) < 2:
-            #print useage
+            print_useage()
             sys.exit(0)
         cmd = args.pop(1)
         if cmd == 'init':
@@ -52,6 +70,12 @@ def main():
         elif cmd == 'themes':
             catsup.themes.list()
             sys.exit(0)
+        elif cmd == 'install':
+            catsup.themes.install()
+            sys.exit(0)
+        elif cmd == 'help':
+            print_useage()
+            sys.exit(0)
 
         catsup.config.load()
         if cmd == 'build':
@@ -60,8 +84,6 @@ def main():
             catsup.server.preview()
         elif cmd == 'webhook':
             catsup.server.webhook()
-        elif cmd == 'install':
-            catsup.themes.install()
         else:
             print('Unknow Command: %s' % cmd)
             sys.exit(0)

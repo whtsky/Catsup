@@ -1,3 +1,4 @@
+name = 'sealscript'
 author = 'Shellex'
 homepage = ''
 pages = [

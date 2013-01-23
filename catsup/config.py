@@ -3,10 +3,11 @@ from __future__ import with_statement
 import os
 import sys
 from tornado.escape import json_decode
-from catsup.options import config, g
-from catsup.utils import find_theme
-
 from tornado.options import options
+
+from catsup.options import config, g
+import catsup.themes
+
 
 def init():
 
@@ -18,12 +19,12 @@ def init():
         # to initialize catsup.
         os.chdir(sys.argv[1])
 
-    catsup_dir = os.getcwd()
-    config_path = os.path.join(catsup_dir, 'config.json')
+    current_dir = os.getcwd()
+    config_path = os.path.join(current_dir, 'config.json')
 
     if os.path.exists(config_path):
         print('These is a config.json in current directory(%s), '
-              'plese check whether you have set up catsup before.' % catsup_dir)
+              'plese check whether you have set up catsup before.' % current_dir)
         return
 
 
@@ -57,10 +58,15 @@ def parse():
         _input = raw_input("Do you wish to create a new config file?(y/n)")
         if _input.lower() == 'y':
             init()
+        else:
+            import logging
+            logging.error("Can't find config file."
+                          "Exiting catsup.")
+            sys.exit(0)
     else:
         config.update(json_decode(f.read()))
 
 
 def load():
     parse()
-    g.theme = find_theme()
+    g.theme = catsup.themes.find()
