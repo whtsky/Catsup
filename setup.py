@@ -27,6 +27,7 @@ setup(
         'tornado',
         'misaka',
         'pygments',
+        'jinja2',
     ],
     include_package_data=True,
     license='MIT License',
