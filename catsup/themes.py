@@ -17,9 +17,14 @@ def read_meta(path):
     theme = ObjectDict(
         author='',
         homepage='',
-        pages=[]
+        pages=[],
+        has_index=False,
     )
     execfile(path, {}, theme)
+    if 'index.html' in theme.pages:
+        theme.has_index = True
+        # If your theme does not have index page,
+        # catsup will rename page/1.html to index.html.
     return theme
 
 

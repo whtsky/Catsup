@@ -101,9 +101,10 @@ def build_pages():
         pager_file = os.path.join('page', "%s.html" % p)
         write(pager_file, page)
 
-    index_1 = os.path.join(config.config["output"], 'page', '1.html')
-    index = os.path.join(config.config["output"], 'index.html')
-    os.rename(index_1, index)
+    if not g.theme.has_index:
+        index_1 = os.path.join(config.config["output"], 'page', '1.html')
+        index = os.path.join(config.config["output"], 'index.html')
+        os.rename(index_1, index)
 
 
 def build_tags():
