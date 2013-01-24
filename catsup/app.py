@@ -52,8 +52,8 @@ command:
     install       install a theme
 
 options:
-    -g            with install command, to install a theme in global themes directory.
-    """)
+    -g            with install command, to install a theme in global.
+""")
 
 
 def main():

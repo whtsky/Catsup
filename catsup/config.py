@@ -24,9 +24,8 @@ def init():
 
     if os.path.exists(config_path):
         print('These is a config.json in current directory(%s), '
-              'plese check whether you have set up catsup before.' % current_dir)
+              'Have you run `catsup init` before?' % current_dir)
         return
-
 
     posts_folder = raw_input('posts folder:(posts by default)') or 'posts'
 
@@ -36,12 +35,12 @@ def init():
         os.makedirs(posts_folder)
 
     default_config_path = os.path.join(g.public_templates_path, 'config.json')
-    config = open(default_config_path, 'r').read()
-    config = config.replace('posts', posts_folder)
-    config = config.replace('deploy', deploy_folder)
+    template = open(default_config_path, 'r').read()
+    template = template.replace('posts', posts_folder)
+    template = template.replace('deploy', deploy_folder)
 
     with open(config_path, 'w') as f:
-        f.write(config)
+        f.write(template)
 
     print('catsup init success!')
     print('Plese edit the generated config.json to configure your blog. ')

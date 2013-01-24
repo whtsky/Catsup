@@ -1,6 +1,5 @@
 #coding=utf-8
 import os
-import time
 import re
 import logging
 import misaka
@@ -130,9 +129,6 @@ def load_post(file_name):
                                               '<span id="readmore"></span>')
                 post.content = md.render(content)
                 post.updated = os.stat(path).st_ctime
-                updated_xml = time.gmtime(post['updated'])
-                post.updated_xml = time.strftime('%Y-%m-%dT%H:%M:%SZ',
-                                                 updated_xml)
                 f.close()
                 return post
         logging.warning('The format of post %s is illegal,'

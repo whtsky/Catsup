@@ -15,7 +15,13 @@ def load_filters():
     def static_url(file):
         return '%s%s' % (config.config["static_prefix"], file)
 
+    def xmldatetime(t):
+        t = time.gmtime(t)
+        updated_xml = time.strftime('%Y-%m-%dT%H:%M:%SZ', t)
+        return updated_xml
+
     g.jinja.globals["static_url"] = static_url
+    g.jinja.filters["xmldatetime"] = xmldatetime
 
 
 def load_jinja():
@@ -151,21 +157,22 @@ def copy_static():
     shutil.copytree(os.path.join(g.theme.path, 'static'),
         config.config["static"])
 
-    # W
-
     favicon = os.path.join(config.config["posts"], 'favicon.ico')
     if not os.path.exists(favicon):
         favicon = os.path.join(g.theme.path, 'static', 'favicon.ico')
     if os.path.exists(favicon):
-        shutil.copy(favicon, os.path.join(config.config["output"], 'favicon.ico'))
+        shutil.copy(favicon, os.path.join(config.config["output"],
+            'favicon.ico'))
 
     robots = os.path.join(config.config["posts"], 'robots.txt')
     if not os.path.exists(robots):
         robots = os.path.join(g.theme.path, 'static', 'robots.txt')
     if os.path.exists(robots):
-        shutil.copy(robots, os.path.join(config.config["output"], 'robots.txt'))
+        shutil.copy(robots, os.path.join(config.config["output"],
+            'robots.txt'))
 
     logging.info('Done.')
+
 
 def build():
     load_jinja()
