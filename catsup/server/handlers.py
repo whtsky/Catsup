@@ -70,11 +70,16 @@ class WebhookHandler(BaseHandler):
         """Webhook support for GitHub and Bitbucket.
         """
         logging.info('Updating posts...')
+        current_dir = os.getcwd()
         os.chdir(config.config['posts'])
         if os.path.isdir('.git'):
             os.system('git pull')
         elif os.path.isdir('.hg'):
             os.system('hg pull')
+        else:
+            logging.warn("Your post folder is not a git/hg repo folder."
+                         "Can not update your posts.")
+        os.chdir(current_dir)
         catsup.build.build()
 
 

@@ -64,6 +64,7 @@ def parse():
             sys.exit(0)
     else:
         config.update(json_decode(f.read()))
+    os.chdir(os.path.abspath(os.path.dirname(options.settings)))
 
 
 def load():
