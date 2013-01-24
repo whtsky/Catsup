@@ -2,10 +2,11 @@
 import logging
 import os
 import copy
-from jinja2 import Environment, FileSystemLoader
 import shutil
-from tornado.util import ObjectDict
 import time
+import hashlib
+from tornado.util import ObjectDict
+from jinja2 import Environment, FileSystemLoader
 
 from catsup.options import config, g
 from catsup.utils import load_posts
@@ -13,7 +14,19 @@ from catsup.utils import load_posts
 
 def load_filters():
     def static_url(file):
-        return '%s%s' % (config.config["static_prefix"], file)
+
+        def get_hash(path):
+            path = os.path.join(g.theme.path, 'static', path)
+            if not os.path.exists(path):
+                logging.warn("%s does not exist." % path)
+                return ''
+
+            with open(path, 'r') as f:
+                return hashlib.md5(f.read()).hexdigest()[:4]
+
+        hsh = get_hash(file)
+
+        return '%s%s?v=%s' % (config.config["static_prefix"], file, hsh)
 
     def xmldatetime(t):
         t = time.gmtime(t)
