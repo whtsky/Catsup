@@ -11,8 +11,6 @@ from setuptools import setup, find_packages
 
 import catsup
 
-requires = [x.strip() for x in open('requirements.txt', 'r').readlines()]
-
 setup(
     name='catsup',
     version=catsup.__version__,
@@ -25,7 +23,12 @@ setup(
     entry_points={
         'console_scripts': ['catsup= catsup.app:main'],
     },
-    install_requires=requires,
+    install_requires=[
+        'tornado',
+        'misaka',
+        'pygments',
+        'jinja2'
+    ],
     include_package_data=True,
     license='MIT License',
     classifiers=[
