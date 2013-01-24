@@ -22,13 +22,13 @@ Or another hard way to install::
     python setup.py install
 
 
-Settings
-========
+Setup your blog
+===============
 
-The default settings file is at ``~/.catsuprc``,
-you can specific it by passing ``--settings=/path/to/settings`` when executing ``catsup <server/build/webhook>``
+Change directory to the directory you prefer to place your blog and run ``catsup init`` to initialize it.
 
-For simple usage, just copy and rename ``config.py`` to ``~/.catsuprc`` and modify it as you like.
+Then you can edit ``config.json`` to change your configuration.
+
 
 Write a post
 ============
@@ -41,7 +41,7 @@ Post Example::
 
     #Title
 
-    ====
+    ----
 
     Content
     ```python
@@ -70,8 +70,23 @@ The ``comment`` property defines whether the post can be commented or not.
 Post excerpt
 -------------
 You can use ``<!--more-->`` to define an excerpt of a post.
+
 Any content before that will be used as excerpt of the post.
+
 And you can choose to display excerpt rather than full content on your homepage.
+
+
+Install theme
+=============
+
+Run ``catsup themes`` to list available themes. And run ``catsup install path [-g]`` to install a new theme.
+
+If ``-g`` flag present, the theme would be install in the global themes directory.
+
+``path`` could be a url of a git repo or path to the theme folder.
+
+If it's a git repo, catsup will clone and install it automatically.
+
 
 Build your blog
 =================

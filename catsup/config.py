@@ -1,45 +1,71 @@
 #coding=utf-8
-import os.path
-from tornado.options import define, options
+from __future__ import with_statement
+import os
+import sys
+from tornado.escape import json_decode
+from tornado.options import options
 
-define('site_title', type=str, default='catsup', help='site title')
-define('site_description', type=str, default='a blog', help='site description')
-define('site_url', type=str, default='', help='site url')
-define("port", type=int, default=8888, help="run on the given port")
-
-define('comment_system', type=str, default='disqus', help='the comment system you use')
-define('disqus_shortname', type=str, default='catsup', help='disqus shortname')
-define('duoshuo_shortname', type=str, default='catsup', help='duoshuo shortname')
-
-define('static_url', type=str, default='/static', help='static resources url')
-define('feed', type=str, default='/feed.xml', help='your rss feed url')
-
-define('theme_name', type=str, default='sealscript', help='the theme you prefer')
+from catsup.options import config, g
+import catsup.themes
 
 
-define('excerpt_index', type=bool, default=False, help='display excerpt at homepage')
-define('date_in_permalink', type=bool, default=True, help='whether permalink contains date or not')
-define('post_per_page', type=int, default=3, help='post per page at homepage')
+def init():
 
-define('twitter', type=str, default='', help='your twitter username')
-define('github', type=str, default='', help='your github username')
-define('google_analytics', type=str, default='', help='google analytics ID')
+    if len(sys.argv) > 1:
+        # Please note that sys.argv.pop(1) had been executed before here.
+        # If length of sys.argv > 1, user runned command "catsup init xxx"
+        # instead of "catsup init". And now sys.argv[1] == xxx,
+        # we regard xxx as a directory relatively to current directory
+        # to initialize catsup.
+        os.chdir(sys.argv[1])
 
-define('links', type=tuple, help='your links', default=(
-    ('whtsky', 'http://whouz.com', 'I write catsup'),
-    ('messense', 'http://messense.me', 'I also write catsup'),
-    ('catsup', 'https://github.com/whtsky/catsup', 'the source of this blog'),
-))
+    current_dir = os.getcwd()
+    config_path = os.path.join(current_dir, 'config.json')
 
-# catsup system settings, edit it only if you know what you are going to do
-define('catsup_path', type=str, default=os.path.dirname(os.path.abspath(__file__)), help='catsup path')
-define('posts_path', type=str, default=os.path.join(os.path.expanduser('~'), 'posts'), help='posts path')
-define('common_template_path', type=str, default=os.path.join(options.catsup_path, 'template'), help='common template path')
-define('build_path', type=str, default=os.path.join(os.path.expanduser('~'), 'build'), help='catsup build path')
-define('themes_path', type=str, default=os.path.join(options.catsup_path, 'themes'), help='themes path')
-define('settings', type=str, default=os.path.join(os.path.expanduser('~'), '.catsuprc'), help='catsup settings file path')
+    if os.path.exists(config_path):
+        print('These is a config.json in current directory(%s), '
+              'Have you run `catsup init` before?' % current_dir)
+        return
 
-# for catsup use, do not delete them
-define('posts', type=list, default=[], help='parsed posts list')
-define('tags', type=list, default=[], help='parsed post tags list')
-define('archives', type=list, default=[], help='parsed post archives list')
+    posts_folder = raw_input('posts folder:(posts by default)') or 'posts'
+
+    deploy_folder = raw_input('output folder:(deploy by default)') or 'deploy'
+
+    if not (posts_folder.startswith('.') or os.path.exists(posts_folder)):
+        os.makedirs(posts_folder)
+
+    default_config_path = os.path.join(g.public_templates_path, 'config.json')
+    template = open(default_config_path, 'r').read()
+    template = template.replace('posts', posts_folder)
+    template = template.replace('deploy', deploy_folder)
+
+    with open(config_path, 'w') as f:
+        f.write(template)
+
+    print('catsup init success!')
+    print('Plese edit the generated config.json to configure your blog. ')
+
+
+def parse():
+    """
+    Parser json configuration file
+    """
+    try:
+        f = open(options.settings, 'r')
+    except IOError:
+        print("Can't find config file %s" % options.settings)
+        _input = raw_input("Do you wish to create a new config file?(y/n)")
+        if _input.lower() == 'y':
+            init()
+        else:
+            import logging
+            logging.error("Can't find config file."
+                          "Exiting catsup.")
+            sys.exit(0)
+    else:
+        config.update(json_decode(f.read()))
+
+
+def load():
+    parse()
+    g.theme = catsup.themes.find()

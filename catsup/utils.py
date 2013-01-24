@@ -1,49 +1,18 @@
 #coding=utf-8
-from __future__ import with_statement
-
 import os
-import time
 import re
-import misaka as m
-
 import logging
+import misaka
+
 from tornado.escape import xhtml_escape
 from tornado.util import ObjectDict
-from tornado.options import options, define
 
 from pygments import highlight
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name
+from pygments.util import ClassNotFound
 
-
-def parse_config_file(path):
-    if path and os.path.exists(path):
-        print('Parsing settings file %s' % path)
-        config = {}
-        exec(compile(open(path).read(), path, 'exec'), config, config)
-        for name in config:
-            if name in options:
-                options[name].set(config[name])
-            else:
-                define(name, config[name])
-    else:
-        print('No settings file provided or it does not exists')
-    # execute the codes below no matter whether config file exists or not
-    if 'theme_path' not in options:
-        define('theme_path', os.path.join(options.themes_path, options.theme_name))
-    if 'template_path' not in options:
-        define('template_path', os.path.join(options.theme_path, 'template'))
-    if 'static_path' not in options:
-        define('static_path', os.path.join(options.theme_path, 'static'))
-    if options.site_url.endswith('/'):
-        options.site_url = options.site_url[:-1]
-    if options.static_url.endswith('/'):
-        options.static_url = options.static_url[:-1]
-    if not (options.site_url == ''
-            or options.site_url.startswith('http://')
-            or options.site_url.startswith('https://')
-            or options.site_url.startswith('//')):
-        options.site_url = "//%s" % options.site_url
+from catsup.options import config, g
 
 
 class Post(ObjectDict):
@@ -51,14 +20,16 @@ class Post(ObjectDict):
     pass
 
 
-class CatsupRender(m.HtmlRenderer, m.SmartyPants):
+class CatsupRender(misaka.HtmlRenderer, misaka.SmartyPants):
     def block_code(self, text, lang):
-        if not lang:
+        try:
+            lexer = get_lexer_by_name(lang, stripall=True)
+        except ClassNotFound:
             text = xhtml_escape(text.strip())
             return '\n<pre><code>%s</code></pre>\n' % text
-        lexer = get_lexer_by_name(lang, stripall=True)
-        formatter = HtmlFormatter()
-        return highlight(text, lexer, formatter)
+        else:
+            formatter = HtmlFormatter()
+            return highlight(text, lexer, formatter)
 
     def autolink(self, link, is_email):
         if is_email:
@@ -71,10 +42,14 @@ class CatsupRender(m.HtmlRenderer, m.SmartyPants):
 
         return '<a href="%s">%s</a>' % (link, link)
 
+
 # Allow use raw html in .md files
-md = m.Markdown(CatsupRender(flags=m.HTML_USE_XHTML),
-    extensions=m.EXT_FENCED_CODE | m.EXT_NO_INTRA_EMPHASIS | m.EXT_AUTOLINK |
-               m.EXT_STRIKETHROUGH | m.EXT_SUPERSCRIPT)
+md = misaka.Markdown(CatsupRender(flags=misaka.HTML_USE_XHTML),
+                     extensions=misaka.EXT_FENCED_CODE |
+                     misaka.EXT_NO_INTRA_EMPHASIS |
+                     misaka.EXT_AUTOLINK |
+                     misaka.EXT_STRIKETHROUGH |
+                     misaka.EXT_SUPERSCRIPT)
 
 
 def load_post(file_name):
@@ -89,11 +64,14 @@ def load_post(file_name):
                          '*(.+?)'
                          '\n*\{%\s?endhighlight\s?%\}', re.I | re.S)
 
-    path = os.path.join(options.posts_path, file_name)
+    path = os.path.join(config.config['posts'], file_name)
     logging.info('Loading file %s' % path)
     post_permalink = file_name[:-3].lower()
+    """
+    //TODO: custome permalink
     if not options.date_in_permalink:
         post_permalink = file_name[11:-3]
+    """
     post = Post(
         file_name=post_permalink,
         tags=[],
@@ -101,54 +79,60 @@ def load_post(file_name):
         comment_disabled=False,
         has_excerpt=False,
         excerpt='',
-        format='regular',
         category='',
-        permalink='%s/%s.html' % (options.site_url, post_permalink)
+        permalink='/%s.html' % post_permalink,
     )
     try:
-        with open(path, 'r') as f:
-            lines = f.readlines()
-            for i, line in enumerate(lines):
-                line_lower = line.lower()
-                # Post title
-                if line.startswith('#'):
-                    post.title = xhtml_escape(line[1:].strip())
-                elif 'tags' in line_lower:
-                    for tag in line.split(':')[-1].strip().split(','):
-                        post.tags.append(xhtml_escape(tag.strip().lower()))
-                elif 'comment' in line_lower:
-                    status = line_lower.split(':')[-1].strip()
-                    if status in ['no', 'disabled', 'close']:
-                        post.comment_disabled = True
-                # Post properties
-                elif ':' in line_lower and '-' in line_lower:
-                    line = line.split('-')[1].strip()
-                    name, value = line.split(':')
-                    post[name.strip()] = value.strip()
-
-                elif line.startswith('---'):
-                    content = '\n'.join(lines[i+1:])
-                    if isinstance(content, str):
-                        content = content.decode('utf-8')
-                    # Provide compatibility for liquid style code highlight
-                    content = pattern.sub(_highlightcode, content)
-                    # Post excerpt support, use <!--more--> as flag
-                    if content.lower().find(u'<!--more-->'):
-                        excerpt = content.split(u'<!--more-->')[0]
-                        post.excerpt = md.render(excerpt)
-                        post.has_excerpt = True
-                        content = content.replace(u'<!--more-->',
-                            u'<span id="readmore"><!--more--></span>')
-                    post.content = md.render(content)
-                    post.updated = os.stat(path).st_ctime
-                    updated_xml = time.gmtime(post['updated'])
-                    post.updated_xml = time.strftime('%Y-%m-%dT%H:%M:%SZ',
-                        updated_xml)
-                    return post
-            logging.warning('The format of post %s is illegal,'
-                            ' ignore it.' % path)
+        f = open(path, 'r')
     except IOError:
         logging.error('Open file %s failed.' % path)
+    else:
+        lines = f.readlines()
+        for i, line in enumerate(lines):
+            line_lower = line.lower()
+            # Post title
+            if line.startswith('#'):
+                post.title = xhtml_escape(line[1:].strip())
+            elif 'tags' in line_lower:
+                tags = line.split(':')[-1].strip()
+                if tags.startswith('[') and tags.endswith(']'):
+                    # provide compatibility with jekyll's liquid style tags
+                    tags = tags[1:-1]
+                for tag in tags.split(','):
+                    post.tags.append(xhtml_escape(tag.strip().lower()))
+            elif 'comment' in line_lower:
+                status = line_lower.split(':')[-1].strip()
+                if status in ('no', 'disabled', 'close'):
+                    post.comment_disabled = True
+            # Post properties
+            elif ':' in line_lower:
+                if '-' in line_lower:
+                    # make '-' be optional in properties
+                    line = line.split('-')[1].strip()
+                name, value = line.split(':')
+                post[name.strip()] = value.strip()
+
+            elif line.startswith('---'):
+                if i == 0:
+                    # provide compatibility with jekyll,
+                    # ignore first line if it starts with `---`
+                    continue
+                content = '\n'.join(lines[i + 1:])
+                # Provide compatibility for liquid style code highlight
+                content = pattern.sub(_highlightcode, content)
+                # Post excerpt support, use <!--more--> as flag
+                if content.lower().find('<!--more-->'):
+                    excerpt = content.split('<!--more-->')[0]
+                    post.excerpt = md.render(excerpt)
+                    post.has_excerpt = True
+                    content = content.replace('<!--more-->',
+                                              '<span id="readmore"></span>')
+                post.content = md.render(content)
+                post.updated = os.stat(path).st_ctime
+                f.close()
+                return post
+        logging.warning('The format of post %s is illegal,'
+                        ' ignore it.' % path)
 
 
 def load_posts():
@@ -161,42 +145,26 @@ def load_posts():
         """
         if p1[:10] == p2[:10]:
             # Posts in the same day
-            p1_updated = os.stat(os.path.join(options.posts_path, p1)).st_ctime
-            p2_updated = os.stat(os.path.join(options.posts_path, p2)).st_ctime
-            if p1_updated > p2_updated:
-                return 1
-            elif p1_updated < p2_updated:
-                return -1
-            else:
-                return 0
-        else:
-            if p1 > p2:
-                return 1
-            elif p1 < p2:
-                return -1
-            else:
-                return 0
+            p1 = os.stat(os.path.join(config.config['posts'], p1)).st_ctime
+            p2 = os.stat(os.path.join(config.config['posts'], p2)).st_ctime
+        return cmp(p1, p2)
 
     # Post file name must match style 2012-12-24-title.md
     pattern = re.compile('^\d{4}\-\d{2}\-\d{2}\-.+\.md$', re.I)
-    post_files = os.listdir(options.posts_path)
-    post_files.sort(reverse=True, cmp=_cmp_post)
+    files = [x for x in os.listdir(config.config['posts']) if pattern.match(x)]
+    files.sort(reverse=True, cmp=_cmp_post)
     posts = []
-    for file_name in post_files:
-        if pattern.match(file_name):
-            post = load_post(file_name)
-            if post:
-                posts.append(post)
-    return posts
+    for file_name in files:
+        post = load_post(file_name)
+        if post:
+            posts.append(post)
+    g.posts = posts
 
-
-def get_infos(posts):
-    """return the tag list and archive list.
-    """
     tags = {}
     archives = {}
     for post in posts:
         for tag in post.tags:
+            tag = tag.capitalize()
             if tag in tags:
                 tags[tag].posts.append(post)
                 tags[tag].post_count += 1
@@ -216,5 +184,5 @@ def get_infos(posts):
                 posts=[post],
                 post_count=1
             )
-    return sorted(tags.itervalues(), key=lambda x: x.post_count, reverse=True),\
-           sorted(archives.itervalues(), key=lambda x: x.name, reverse=True)
+    g.tags = sorted(tags.values(), key=lambda x: x.post_count, reverse=True)
+    g.archives = sorted(archives.values(), key=lambda x: x.name, reverse=True)

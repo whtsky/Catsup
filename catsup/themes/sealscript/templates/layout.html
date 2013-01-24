@@ -1,0 +1,84 @@
+{% from "utils.html" import analytics %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    {% block head %}{% endblock %}
+    <title>{% block title %}{{ config.site_title }}{% endblock %}</title>
+    <link href='http://fonts.googleapis.com/css?family=Abel' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="{{ static_url("css/style.css") }}" type="text/css" />
+    <link rel="stylesheet" href="{{ static_url("css/pygments_style.css") }}" type="text/css" />
+    <link rel="alternate" type="application/rss+xml" href="{{ config.feed }}" title="{{ site.name }}" />
+</head>
+<body>
+<div id="header">
+    <div id="nav_wrapper">
+        <div id="nav">
+            <div class="inner">
+                <h1 id="title"><a href="/">{{ site.name }}</a></h1>
+                <div id="description" class="seal">{{ site.description }}</div>
+                <ul class="right">
+                    {% for t in g.tags[:5] %}
+                    <li><a href="/tag/{{ t.name }}.html">{{ t.name }}</a></li>
+                    <li class="dot">&bull;</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div id="header_inner">
+        <div id="social">
+            {% if theme.twitter %}
+            <a href="http://twitter.com/{{ theme.twitter }}" target="_blank" title="Follow Me @ Twitter"><img src="{{ static_url("image/ic16_twitter.png") }}"></a>
+            {% endif %}
+            {% if theme.github %}
+            <a href="http://github.com/{{ theme.github }}" target="_blank" title="Fork Me @ Github"><img src="{{ static_url("image/ic16_github.png") }}"></a>
+            {% endif %}
+            <a href="{{ config.feed }}" target="_blank" title="Subscribe My Blog"><img src="{{ static_url("image/ic16_rss.png") }}"></a>
+        </div>
+        <div class="sep"></div>
+    </div>
+</div>
+<div id="content">
+    {% block content %}
+    {% endblock %}
+</div>
+<div id="footer_wrapper">
+    <div id="footer">
+        <div id="footer_inner">
+            <div class="tag_cloud col">
+                <h2>Tag Cloud</h2>
+                {% for t in g.tags %}
+                <a class="tag" href="/tag/{{ t.name }}.html">{{ t.name }} ({{ t.post_count }})</a>
+                {% endfor %}
+            </div>
+            <div class="col">
+                <h2>Archives</h2>
+                <ul>
+                    {% for av in g.archives %}
+                    <li><a href="/archive/{{ av.name }}.html">{{ av.name }} ({{ av.post_count }})</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="col">
+                <h2>Links</h2>
+                <ul>
+                    {% for link in theme.links %}
+                    <li><a href="{{ link["url"] }}" title="{{ link["description"] }}" target="_blank">{{ link["name"] }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="copyright">
+                Powered by <a href="https://github.com/whtsky/catsup">CATSUP</a>
+                <span>&bull;</span>
+                SealScript Theme by <a href="http://shellex.info">Shellex</a>
+            </div>
+        </div>
+    </div>
+</div>
+{{ analytics() }}
+</body>
+</html>
+
+

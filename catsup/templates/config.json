@@ -1,0 +1,42 @@
+{
+    "site": {
+        "name": "catsup",
+        "url": "http://github.com/whtsky/catsup"
+    },
+
+    "author": "name",
+
+    "config": {
+        "posts": "posts",
+        "output": "deploy",
+        "static": "deploy/static",
+        "static_prefix": "/static/",
+        "feed": "/feed.xml",
+        "per_page": 20,
+        "analytics": "",
+        "excerpt_index": false
+    },
+
+    "comment": {
+        "allow": true,
+        "system": "disqus",
+        "disqus": "catsup",
+        "duoshuo": "catsup"
+    },
+
+    "theme": {
+        "name": "sealscript",
+        "vars": {
+            "description": "a blog",
+            "twitter": "whouz",
+            "github": "whtsky",
+            "links": [
+                {
+                    "name": "catsup",
+                    "url": "https://github.com/whtsky/catsup",
+                    "description": "Awesome!"
+                }
+            ]
+        }
+    }
+}

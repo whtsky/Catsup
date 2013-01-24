@@ -1,8 +1,8 @@
-{% extends 'base.html' %}
+{% extends 'layout.html' %}
 
 {% block title %}
-{{ archive.name }} | {{ config.site_title }}
-{% end %}
+{{ archive.name }} | {{ site.name }}
+{% endblock %}
 
 {% block content %}
 <div class="article">
@@ -15,7 +15,7 @@
 					<span class="time_stamp">{{ post.date }}</span>
 					<a href="{{ post.permalink }}">{{ post.title }}</a>
 				</li>
-				{% end %}
+				{% endfor %}
 			</ul>
 		</div>
 	</div>
@@ -24,12 +24,12 @@
 <a id="prev" href="/archive/{{ prev.name }}.html" class="v_nav" >
 	<span class="icon">Prev</span>
 </a>
-{% end %}
+{% endif %}
 
 {% if next %}
 <a id="next" href="/archive/{{ next.name }}.html" class="v_nav" >
 	<span class="icon">Next</span>
 </a>
-{% end %}
+{% endif %}
 
-{% end %}
+{% endblock %}

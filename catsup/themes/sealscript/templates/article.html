@@ -1,0 +1,54 @@
+{% extends 'layout.html' %}
+{% from 'utils.html' import render_comment %}
+
+{% block head %}
+<meta name="description" content="{{ post.title }},{% for tg in post.tags %}{{ tg }},{% endfor %}">
+<meta name="keywords" content="{% for tg in post.tags %}{{ tg }},{% endfor %}">
+{% endblock %}
+
+{% block title %}
+{{ post.title }} | {{ site.name }}
+{% endblock %}
+
+{% block content %}
+<div class="article">
+    <div class="inner">
+        <h2 class="article_title title"><a href="#">{{ post.title }}</a></h2>
+        <div class="article_meta">
+            <div class="share">
+                <a href="https://twitter.com/share" class="twitter-share-button" data-via="{{ theme.twitter }}" data-lang="zh-cn">Tweet</a>
+            </div>
+            <span>on</span>
+
+            {{ post.date }}
+        </div>
+
+        <div class="text">
+            {{ post.content }}
+        </div>
+        {% if post.tags %}
+        <div class="big_sep"></div>
+        <div class="article_meta">
+            <span>tagged:</span>
+            {% for tag in post.tags %}
+            <a class="tag" href="/tag/{{ tag }}.html">{{ tag }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <div class="big_sep"></div>
+        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+        {{ render_comment(post) }}
+    </div>
+</div>
+{% if prev %}
+<a id="prev" href="{{ prev.permalink }}" class="v_nav" >
+    <span class="icon">Prev</span>
+</a>
+{% endif %}
+
+{% if next %}
+<a id="next" href="{{ next.permalink }}" class="v_nav" >
+    <span class="icon">Next</span>
+</a>
+{% endif %}
+{% endblock %}

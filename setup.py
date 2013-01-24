@@ -9,9 +9,13 @@ if major >= 3:
 
 from setuptools import setup, find_packages
 
+import catsup
+
+requires = [x.strip() for x in open('requirements.txt', 'r').readlines()]
+
 setup(
     name='catsup',
-    version='0.0.5',
+    version=catsup.__version__,
     author='whtsky, messense',
     author_email='whtsky@me.com, wapdevelop@gmail.com',
     url='https://github.com/whtsky/catsup',
@@ -21,11 +25,7 @@ setup(
     entry_points={
         'console_scripts': ['catsup= catsup.app:main'],
     },
-    install_requires=[
-        'tornado',
-        'misaka',
-        'pygments',
-    ],
+    install_requires=requires,
     include_package_data=True,
     license='MIT License',
     classifiers=[
