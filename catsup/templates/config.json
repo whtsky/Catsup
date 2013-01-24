@@ -12,7 +12,7 @@
         "static": "deploy/static",
         "static_prefix": "/static/",
         "feed": "/feed.xml",
-        "per_page": 20,
+        "per_page": 3,
         "analytics": "",
         "excerpt_index": false
     },
