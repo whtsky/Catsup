@@ -155,20 +155,20 @@ def load_posts():
 
     # Post file name must match style 2012-12-24-title.md
     pattern = re.compile('^\d{4}\-\d{2}\-\d{2}\-.+\.md$', re.I)
-    post_files = os.listdir(config.config['posts'])
-    post_files.sort(reverse=True, cmp=_cmp_post)
+    files = [x for x in os.listdir(config.config['posts']) if pattern.match(x)]
+    files.sort(reverse=True, cmp=_cmp_post)
     posts = []
-    for file_name in post_files:
-        if pattern.match(file_name):
-            post = load_post(file_name)
-            if post:
-                posts.append(post)
+    for file_name in files:
+        post = load_post(file_name)
+        if post:
+            posts.append(post)
     g.posts = posts
 
     tags = {}
     archives = {}
     for post in posts:
         for tag in post.tags:
+            tag = tag.capitalize()
             if tag in tags:
                 tags[tag].posts.append(post)
                 tags[tag].post_count += 1
@@ -190,12 +190,3 @@ def load_posts():
             )
     g.tags = sorted(tags.values(), key=lambda x: x.post_count, reverse=True)
     g.archives = sorted(archives.values(), key=lambda x: x.name, reverse=True)
-
-
-def update_posts():
-    logging.info('Updating posts...')
-    os.chdir(config.config['posts'])
-    if os.path.isdir('.git'):
-        os.system('git pull')
-    elif os.path.isdir('.hg'):
-        os.system('hg pull')

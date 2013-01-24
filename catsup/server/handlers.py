@@ -1,9 +1,10 @@
 #coding=utf-8
+import os
+import logging
 import tornado.web
 
 import catsup.build
-from catsup.utils import update_posts
-from catsup.options import g
+from catsup.options import config, g
 
 
 class BaseHandler(tornado.web.RequestHandler):
@@ -68,7 +69,12 @@ class WebhookHandler(BaseHandler):
     def post(self):
         """Webhook support for GitHub and Bitbucket.
         """
-        update_posts()
+        logging.info('Updating posts...')
+        os.chdir(config.config['posts'])
+        if os.path.isdir('.git'):
+            os.system('git pull')
+        elif os.path.isdir('.hg'):
+            os.system('hg pull')
         catsup.build.build()
 
 
