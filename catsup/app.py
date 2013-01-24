@@ -2,8 +2,10 @@
 #coding=utf-8
 
 import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
+major, minor = sys.version_info[:2]
+if major < 3:
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
 
 import os
 import copy
