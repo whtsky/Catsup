@@ -77,7 +77,6 @@ def load_post(file_name):
         tags=[],
         date=file_name[:10],
         comment_disabled=False,
-        has_excerpt=False,
         excerpt='',
         category='',
         permalink='/%s.html' % post_permalink,
@@ -124,7 +123,6 @@ def load_post(file_name):
                 if content.lower().find('<!--more-->'):
                     excerpt = content.split('<!--more-->')[0]
                     post.excerpt = md.render(excerpt)
-                    post.has_excerpt = True
                     content = content.replace('<!--more-->',
                                               '<span id="readmore"></span>')
                 post.content = md.render(content)

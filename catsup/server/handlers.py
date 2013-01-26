@@ -22,7 +22,7 @@ class MainHandler(BaseHandler):
             self.redirect('/', status=301)
         p = int(p)
         posts_num = len(g.posts)
-        self.render('index.html', p=p, posts_num=posts_num)
+        self.render('page.html', p=p, posts_num=posts_num)
 
 
 class TagHandler(BaseHandler):

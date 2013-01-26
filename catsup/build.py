@@ -82,8 +82,8 @@ def build_articles():
 
 
 def build_pages():
-    logging.info('Start generating index pages')
-    template = g.jinja.get_template('index.html')
+    logging.info('Start generating pages')
+    template = g.jinja.get_template('page.html')
     p = 0
     posts_num = len(g.posts)
 
@@ -102,9 +102,9 @@ def build_pages():
         write(pager_file, page)
 
     if not g.theme.has_index:
-        index_1 = os.path.join(config.config.output, 'page', '1.html')
-        index = os.path.join(config.config.output, 'index.html')
-        os.rename(index_1, index)
+        page_1 = os.path.join(config.config.output, 'page', '1.html')
+        index = os.path.join(config.config.output, 'page.html')
+        os.rename(page_1, index)
 
 
 def build_tags():

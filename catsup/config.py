@@ -90,3 +90,7 @@ def load():
     parse(os.path.join(g.public_templates_path, 'config.json'))
     parse()
     g.theme = catsup.themes.find()
+    #  It's dirty now.Can it be better?
+    user_vars = config.theme.vars
+    update_config(config.theme.vars, g.theme.vars)
+    update_config(config.theme.vars, user_vars)

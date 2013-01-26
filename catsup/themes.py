@@ -11,20 +11,34 @@ from catsup.options import config, g
 
 def read_meta(path):
     """
-    :param path: the path for the meta file.MUST EXIST.
+    :param path: path for the theme.
     :return: Theme meta read in path.
     """
+    if not os.path.exists(path):
+        return
+    meta = os.path.join(path, 'theme.py')
+    if not os.path.exists(meta):
+        logging.warn("%s is not a catsup theme." % path)
+        return
     theme = ObjectDict(
+        name='',
         author='',
         homepage='',
         pages=[],
         has_index=False,
+        path=path,
+        vars={},
     )
-    execfile(path, {}, theme)
-    if 'index.html' in theme.pages:
-        theme.has_index = True
-        # If your theme does not have index page,
-        # catsup will rename page/1.html to index.html.
+    execfile(meta, {}, theme)
+    templates_path = os.path.join(path, 'templates')
+    for page in theme.pages:
+        if page == 'page.html':
+            theme.has_index = True
+            # If your theme does not have index page,
+            # catsup will rename page/1.html to page.html.
+        if not os.path.exists(os.path.join(templates_path, page)):
+            logging.warning("%s announces a page %s"
+                         " which not exists." % (theme.name, page))
     return theme
 
 
@@ -36,10 +50,8 @@ def find(theme_name=''):
         os.path.join(g.catsup_path, 'themes', theme_name),
     ]
     for path in theme_gallery:
-        meta = os.path.join(path, 'theme.py')
-        if os.path.exists(path) and os.path.exists(meta):
-            theme = read_meta(meta)
-            theme.path = path
+        theme = read_meta(path)
+        if theme:
             return theme
 
     raise Exception("Can't find theme: %s" % theme_name)
@@ -85,11 +97,9 @@ def install():
         os.makedirs(themes_path)
 
     if os.path.exists(path):
-        theme_meta = os.path.join(path, 'theme.py')
-        if not os.path.exists(theme_meta):
-            logging.error("%s is not a catsup theme." % path)
+        meta = read_meta(path)
+        if not meta:
             sys.exit(0)
-        meta = read_meta(theme_meta)
         name = meta.name
         logging.info("Found theme %s" % name)
 
@@ -103,12 +113,10 @@ def install():
         os.chdir(themes_path)
         os.system('git clone %s' % path)
         repo_folder = path.split('/')[-1][:-4]
-        theme_meta = os.path.join(repo_folder, 'theme.py')
-        if not os.path.exists(theme_meta):
-            logging.error("%s is not a catsup theme." % path)
+        meta = read_meta(repo_folder)
+        if not meta:
             shutil.rmtree(repo_folder)
             sys.exit(0)
-        meta = read_meta(theme_meta)
         name = meta.name
         os.rename(repo_folder, meta.name)
 
