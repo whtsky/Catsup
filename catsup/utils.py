@@ -108,8 +108,8 @@ def load_post(file_name):
             elif ':' in line_lower:
                 if '-' in line_lower:
                     # make '-' be optional in properties
-                    line = line.split('-')[1].strip()
-                name, value = line.split(':')
+                    line = '-'.join(line.split('-')[1:]).strip()
+                name, value = line.split(':')[0], ':'.join(line.split(':')[1:])
                 post[name.strip()] = value.strip()
 
             elif line.startswith('---'):

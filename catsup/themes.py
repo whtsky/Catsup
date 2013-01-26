@@ -11,7 +11,7 @@ from catsup.options import config, g
 
 def read_meta(path):
     """
-    :param path: the path for the meta file.MUST EXISTS.
+    :param path: the path for the meta file.MUST EXIST.
     :return: Theme meta read in path.
     """
     theme = ObjectDict(
@@ -77,7 +77,6 @@ def install():
     if len(sys.argv) == 3 and sys.argv.pop(2) == '-g':
         themes_path = os.path.join(g.catsup_path, 'themes')
 
-    name = 'meta["name"]'
     path = sys.argv.pop(1)
 
     logging.info('Installing theme from %s' % path)
@@ -91,7 +90,7 @@ def install():
             logging.error("%s is not a catsup theme." % path)
             sys.exit(0)
         meta = read_meta(theme_meta)
-        name = meta["name"]
+        name = meta.name
         logging.info("Found theme %s" % name)
 
         install_path = os.path.join(themes_path, name)
@@ -110,6 +109,7 @@ def install():
             shutil.rmtree(repo_folder)
             sys.exit(0)
         meta = read_meta(theme_meta)
+        name = meta.name
         os.rename(repo_folder, meta.name)
 
     else:
