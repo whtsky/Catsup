@@ -30,7 +30,7 @@ def read_meta(path):
 
 def find(theme_name=''):
     if not theme_name:
-        theme_name = config.theme['name']
+        theme_name = config.theme.name
     theme_gallery = [
         os.path.join(os.path.abspath('themes'), theme_name),
         os.path.join(g.catsup_path, 'themes', theme_name),

@@ -64,7 +64,7 @@ def load_post(file_name):
                          '*(.+?)'
                          '\n*\{%\s?endhighlight\s?%\}', re.I | re.S)
 
-    path = os.path.join(config.config['posts'], file_name)
+    path = os.path.join(config.config.source, file_name)
     logging.info('Loading file %s' % path)
     post_permalink = file_name[:-3].lower()
     """
@@ -94,12 +94,12 @@ def load_post(file_name):
             if line.startswith('#'):
                 post.title = xhtml_escape(line[1:].strip())
             elif 'tags' in line_lower:
-                tags = line.split(':')[-1].strip()
-                if tags.startswith('[') and tags.endswith(']'):
-                    # provide compatibility with jekyll's liquid style tags
-                    tags = tags[1:-1]
+                tags = line.split(':')[-1].strip().strip('[]')
+                # provide compatibility with jekyll's liquid style tags
+
                 for tag in tags.split(','):
                     post.tags.append(xhtml_escape(tag.strip().lower()))
+
             elif 'comment' in line_lower:
                 status = line_lower.split(':')[-1].strip()
                 if status in ('no', 'disabled', 'close'):
@@ -145,13 +145,13 @@ def load_posts():
         """
         if p1[:10] == p2[:10]:
             # Posts in the same day
-            p1 = os.stat(os.path.join(config.config['posts'], p1)).st_ctime
-            p2 = os.stat(os.path.join(config.config['posts'], p2)).st_ctime
+            p1 = os.stat(os.path.join(config.config.source, p1)).st_ctime
+            p2 = os.stat(os.path.join(config.config.source, p2)).st_ctime
         return cmp(p1, p2)
 
     # Post file name must match style 2012-12-24-title.md
     pattern = re.compile('^\d{4}\-\d{2}\-\d{2}\-.+\.md$', re.I)
-    files = [x for x in os.listdir(config.config['posts']) if pattern.match(x)]
+    files = [x for x in os.listdir(config.config.source) if pattern.match(x)]
     files.sort(reverse=True, cmp=_cmp_post)
     posts = []
     for file_name in files:
@@ -164,7 +164,6 @@ def load_posts():
     archives = {}
     for post in posts:
         for tag in post.tags:
-            tag = tag.capitalize()
             if tag in tags:
                 tags[tag].posts.append(post)
                 tags[tag].post_count += 1

@@ -71,7 +71,7 @@ class WebhookHandler(BaseHandler):
         """
         logging.info('Updating posts...')
         current_dir = os.getcwd()
-        os.chdir(config.config['posts'])
+        os.chdir(config.config['source'])
         if os.path.isdir('.git'):
             os.system('git pull')
         elif os.path.isdir('.hg'):
