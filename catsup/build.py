@@ -103,7 +103,7 @@ def build_pages():
 
     if not g.theme.has_index:
         page_1 = os.path.join(config.config.output, 'page', '1.html')
-        index = os.path.join(config.config.output, 'page.html')
+        index = os.path.join(config.config.output, 'index.html')
         os.rename(page_1, index)
 
 
