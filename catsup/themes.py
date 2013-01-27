@@ -78,7 +78,7 @@ def list():
         print('----')
 
 
-def install():
+def install(g):
     import shutil
 
     if len(sys.argv) < 2:
@@ -86,7 +86,7 @@ def install():
         sys.exit(0)
 
     themes_path = os.path.abspath('themes')
-    if len(sys.argv) == 3 and sys.argv.pop(2) == '-g':
+    if g:
         themes_path = os.path.join(g.catsup_path, 'themes')
 
     path = sys.argv.pop(1)

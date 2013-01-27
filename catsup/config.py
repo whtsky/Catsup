@@ -10,15 +10,10 @@ from catsup.options import config, g
 import catsup.themes
 
 
-def init():
+def init(path):
 
-    if len(sys.argv) > 1:
-        # Please note that sys.argv.pop(1) had been executed before here.
-        # If length of sys.argv > 1, user runned command "catsup init xxx"
-        # instead of "catsup init". And now sys.argv[1] == xxx,
-        # we regard xxx as a directory relatively to current directory
-        # to initialize catsup.
-        os.chdir(sys.argv[1])
+    if path:
+        os.chdir(path)
 
     current_dir = os.getcwd()
     config_path = os.path.join(current_dir, 'config.json')
@@ -60,19 +55,17 @@ def update_config(base, update):
 
 
 
-def parse(path=''):
+def parse(path):
     """
     Parser json configuration file
     """
-    if not path:
-        path = options.settings
     try:
         f = open(path, 'r')
     except IOError:
-        print("Can't find config file %s" % options.settings)
+        print("Can't find config file %s" % path)
         _input = raw_input("Do you wish to create a new config file?(y/n)")
         if _input.lower() == 'y':
-            init()
+            init('')
         else:
             import logging
             logging.error("Can't find config file."
@@ -80,15 +73,15 @@ def parse(path=''):
             sys.exit(0)
     else:
         update_config(config, json_decode(f.read()))
-    os.chdir(os.path.abspath(os.path.dirname(options.settings)))
 
 
-def load():
+def load(path):
     # Read default configuration file first.
     # So catsup can use the default value when user's conf is missing.
     # And user does't have to change conf file everytime he updates catsup.
     parse(os.path.join(g.public_templates_path, 'config.json'))
-    parse()
+    parse(path)
+    os.chdir(os.path.abspath(os.path.dirname(path)))
     g.theme = catsup.themes.find()
     #  It's dirty now.Can it be better?
     user_vars = config.theme.vars

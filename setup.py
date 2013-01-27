@@ -21,13 +21,14 @@ setup(
     description='Catsup: a lightweight static blog generator',
     long_description=open('README.rst').read(),
     entry_points={
-        'console_scripts': ['catsup= catsup.app:main'],
+        'console_scripts': ['catsup= catsup.cli:main'],
     },
     install_requires=[
         'tornado',
         'misaka',
         'pygments',
-        'jinja2'
+        'jinja2',
+        'parguments==0.1'
     ],
     include_package_data=True,
     license='MIT License',
