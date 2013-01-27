@@ -108,7 +108,8 @@ Options:
     """
     path = args.get('--settings') or 'config.json'
     catsup.config.load(path)
-    catsup.server.webhook()
+    port = args.get('--port') or '8888'
+    catsup.server.webhook(port=port)
 
 
 @parguments.command
