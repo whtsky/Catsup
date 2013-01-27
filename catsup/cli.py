@@ -35,8 +35,8 @@ Usage:
 
 Options:
     -h --help               show this screen.
-    -s --settings=<file>    specify a config file.
-    -p --port=<port>        specify the server port.
+    -s --settings=<file>    specify a config file. [default: config.json]
+    -p --port=<port>        specify the server port. [default: 8888]
     -g --global             install theme to global theme folder.
 """ % catsup.__version__
 
@@ -60,7 +60,7 @@ Usage:
 
 Options:
     -h --help               show this screen.
-    -s --settings=<file>    specify a setting file.
+    -s --settings=<file>    specify a setting file. [default: config.json]
     """
     catsup.config.init(args.get('<path>'))
 
@@ -72,9 +72,9 @@ Usage:
 
 Options:
     -h --help               show this screen.
-    -s --settings=<file>    specify a setting file.
+    -s --settings=<file>    specify a setting file. [default: config.json]
     """
-    path = args.get('--settings') or 'config.json'
+    path = args.get('--settings')
     catsup.config.load(path)
     catsup.build.build()
 
@@ -87,12 +87,12 @@ Usage:
 
 Options:
     -h --help               show this screen.
-    -s --settings=<file>    specify a setting file.
-    -p --port=<port>        specify the server port.
+    -s --settings=<file>    specify a setting file. [default: config.json]
+    -p --port=<port>        specify the server port. [default: 8888]
     """
-    path = args.get('--settings') or 'config.json'
+    path = args.get('--settings')
     catsup.config.load(path)
-    port = args.get('--port') or '8888'
+    port = args.get('--port')
     catsup.server.preview(port=port)
 
 
@@ -104,12 +104,12 @@ Usage:
 
 Options:
     -h --help               show this screen.
-    -s --settings=<file>    specify a setting file.
-    -p --port=<port>        specify the server port.
+    -s --settings=<file>    specify a setting file. [default: config.json]
+    -p --port=<port>        specify the server port. [default: 8888]
     """
-    path = args.get('--settings') or 'config.json'
+    path = args.get('--settings')
     catsup.config.load(path)
-    port = args.get('--port') or '8888'
+    port = args.get('--port')
     catsup.server.webhook(port=port)
 
 
