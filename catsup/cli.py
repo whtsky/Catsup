@@ -31,6 +31,7 @@ Usage:
     catsup themes
     catsup install <theme> [-g|--global]
     catsup -h | --help
+    catsup --version
 
 Options:
     -h --help               show this screen.
@@ -49,7 +50,7 @@ import catsup.build
 
 from parguments import Parguments
 
-parguments = Parguments(doc)
+parguments = Parguments(doc, version=catsup.__version__)
 
 @parguments.command
 def init(args):
