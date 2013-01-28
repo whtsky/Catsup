@@ -2,7 +2,7 @@
 import os
 import re
 import logging
-import misaka
+import misaka as m
 
 from tornado.escape import xhtml_escape
 from tornado.util import ObjectDict
@@ -20,7 +20,7 @@ class Post(ObjectDict):
     pass
 
 
-class CatsupRender(misaka.HtmlRenderer, misaka.SmartyPants):
+class CatsupRender(m.HtmlRenderer, m.SmartyPants):
     def block_code(self, text, lang):
         try:
             lexer = get_lexer_by_name(lang, stripall=True)
@@ -44,12 +44,19 @@ class CatsupRender(misaka.HtmlRenderer, misaka.SmartyPants):
 
 
 # Allow use raw html in .md files
-md = misaka.Markdown(CatsupRender(flags=misaka.HTML_USE_XHTML),
-                     extensions=misaka.EXT_FENCED_CODE |
-                     misaka.EXT_NO_INTRA_EMPHASIS |
-                     misaka.EXT_AUTOLINK |
-                     misaka.EXT_STRIKETHROUGH |
-                     misaka.EXT_SUPERSCRIPT)
+md_raw = m.Markdown(CatsupRender(flags=m.HTML_USE_XHTML),
+                     extensions=m.EXT_FENCED_CODE |
+                     m.EXT_NO_INTRA_EMPHASIS |
+                     m.EXT_AUTOLINK |
+                     m.EXT_STRIKETHROUGH |
+                     m.EXT_SUPERSCRIPT)
+
+md_escape = m.Markdown(CatsupRender(flags=m.HTML_ESCAPE | m.HTML_USE_XHTML),
+    extensions=m.EXT_FENCED_CODE |
+               m.EXT_NO_INTRA_EMPHASIS |
+               m.EXT_AUTOLINK |
+               m.EXT_STRIKETHROUGH |
+               m.EXT_SUPERSCRIPT)
 
 
 def load_post(file_name):
@@ -116,6 +123,12 @@ def load_post(file_name):
                     # provide compatibility with jekyll,
                     # ignore first line if it starts with `---`
                     continue
+
+                if post.get('escape', config.config.escape_md):
+                    md = md_escape
+                else:
+                    md = md_raw
+
                 content = '\n'.join(lines[i + 1:])
                 # Provide compatibility for liquid style code highlight
                 content = pattern.sub(_highlightcode, content)

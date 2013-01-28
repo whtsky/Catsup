@@ -85,19 +85,20 @@ class WebhookHandler(BaseHandler):
 
 class PageHandler(BaseHandler):
     def get(self, filename):
-        #Is this a post?
-        posts = g.posts
-        posts_num = len(posts)
-        prev = next = None
-        for i in range(posts_num):
-            post = posts[i]
-            if post.file_name == filename:
-                if i:
-                    prev = posts[i - 1]
-                if (i + 1) < posts_num:
-                    next = posts[i + 1]
-                return self.render('article.html', post=post,
-                    prev=prev, next=next)
+        if filename.endswith('.html'):
+            #Is this a post?
+            posts = g.posts
+            posts_num = len(posts)
+            prev = next = None
+            for i in range(posts_num):
+                post = posts[i]
+                if post.file_name+'.html' == filename:
+                    if i:
+                        prev = posts[i - 1]
+                    if (i + 1) < posts_num:
+                        next = posts[i + 1]
+                    return self.render('article.html', post=post,
+                        prev=prev, next=next)
 
         if filename in g.theme.pages:
             self.render(filename)

@@ -33,8 +33,21 @@ def load_filters():
         updated_xml = time.strftime('%Y-%m-%dT%H:%M:%SZ', t)
         return updated_xml
 
+    def capitalize(str):
+        return str.capitalize()
+
     g.jinja.globals["static_url"] = static_url
     g.jinja.filters["xmldatetime"] = xmldatetime
+    g.jinja.filters["capitalize"] = capitalize
+
+
+def load_theme_filters(theme):
+    filters_file = os.path.join(theme.path, 'filters.py')
+    if not os.path.exists(filters_file):
+        return
+    filters = {}
+    execfile(filters_file, {}, filters)
+    g.jinja.filters.update(filters)
 
 
 def load_jinja():
@@ -201,6 +214,7 @@ def copy_static():
 
 def build():
     load_jinja()
+    load_theme_filters(g.theme)
     logging.info('Building your blog..')
     t = time.time()
     load_posts()
