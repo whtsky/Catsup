@@ -136,7 +136,8 @@ Options:
     -h --help               show this screen.
     """
     g = args.get('--global')
-    catsup.themes.install(g=g)
+    path = args.get('<theme>')
+    catsup.themes.install(path=path, g=g)
 
 def main():
     parguments.run()
