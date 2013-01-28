@@ -78,18 +78,12 @@ def list():
         print('----')
 
 
-def install(g):
+def install(path, g):
     import shutil
-
-    if len(sys.argv) < 2:
-        print('Usage: catsup install path [-g]')
-        sys.exit(0)
 
     themes_path = os.path.abspath('themes')
     if g:
         themes_path = os.path.join(g.catsup_path, 'themes')
-
-    path = sys.argv.pop(1)
 
     logging.info('Installing theme from %s' % path)
 
