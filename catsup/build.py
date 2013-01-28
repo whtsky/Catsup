@@ -6,7 +6,7 @@ import shutil
 import time
 import hashlib
 from tornado.util import ObjectDict
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 
 from catsup.options import config, g
 from catsup.utils import load_posts
@@ -108,8 +108,13 @@ def build_pages():
 
 
 def build_tags():
+    try:
+        template = g.jinja.get_template('tag.html')
+    except TemplateNotFound:
+        # Maybe the theme doesn't need this.
+        return
+
     logging.info('Start generating tag pages')
-    template = g.jinja.get_template('tag.html')
 
     tags_path = os.path.join(config.config.output, 'tag')
 
@@ -131,8 +136,12 @@ def build_tags():
 
 
 def build_archives():
+    try:
+        template = g.jinja.get_template('archive.html')
+    except TemplateNotFound:
+        # Maybe the theme doesn't need this.
+        return
     logging.info('Start generating archive pages')
-    template = g.jinja.get_template('archive.html')
 
     archives_path = os.path.join(config.config.output, 'archive')
 
@@ -154,6 +163,8 @@ def build_archives():
 
 
 def build_others():
+    if not g.theme.pages:
+        return
     logging.info('Start generating other pages')
     for file in g.theme.pages:
         logging.info('Generating %s' % file)
