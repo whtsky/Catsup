@@ -84,6 +84,5 @@ def load(path):
     os.chdir(os.path.abspath(os.path.dirname(path)))
     g.theme = catsup.themes.find()
     #  It's dirty now.Can it be better?
-    user_vars = config.theme.vars
+    update_config(g.theme.vars, config.theme.vars)
     update_config(config.theme.vars, g.theme.vars)
-    update_config(config.theme.vars, user_vars)
