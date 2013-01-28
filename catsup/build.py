@@ -26,7 +26,7 @@ def load_filters():
 
         hsh = get_hash(file)
 
-        return '%s%s?v=%s' % (config.config["static_prefix"], file, hsh)
+        return '%s%s?v=%s' % (config.config.static_prefix, file, hsh)
 
     def xmldatetime(t):
         t = time.gmtime(t)
@@ -47,14 +47,14 @@ def load_jinja():
     g.jinja.globals["config"] = ObjectDict(**config.config)
     g.jinja.globals["author"] = config.author
     g.jinja.globals["comment"] = ObjectDict(**config.comment)
-    g.jinja.globals["theme"] = ObjectDict(**config.theme["vars"])
+    g.jinja.globals["theme"] = ObjectDict(**config.theme.vars)
     g.jinja.globals["g"] = g
 
     load_filters()
 
 
 def write(filename, content):
-    filename = os.path.join(config.config["output"], filename)
+    filename = os.path.join(config.config.output, filename)
     with open(filename, 'w') as f:
         f.write(content)
 
@@ -82,19 +82,19 @@ def build_articles():
 
 
 def build_pages():
-    logging.info('Start generating index pages')
-    template = g.jinja.get_template('index.html')
+    logging.info('Start generating pages')
+    template = g.jinja.get_template('page.html')
     p = 0
     posts_num = len(g.posts)
 
-    pages_path = os.path.join(config.config["output"], 'page')
+    pages_path = os.path.join(config.config.output, 'page')
 
     if os.path.exists(pages_path):
         shutil.rmtree(pages_path)
 
     os.makedirs(pages_path)
 
-    while posts_num > p * config.config["per_page"]:
+    while posts_num > p * config.config.per_page:
         p += 1
         logging.info('Start generating page %s' % p)
         page = template.render(p=p, posts_num=posts_num)
@@ -102,16 +102,16 @@ def build_pages():
         write(pager_file, page)
 
     if not g.theme.has_index:
-        index_1 = os.path.join(config.config["output"], 'page', '1.html')
-        index = os.path.join(config.config["output"], 'index.html')
-        os.rename(index_1, index)
+        page_1 = os.path.join(config.config.output, 'page', '1.html')
+        index = os.path.join(config.config.output, 'index.html')
+        os.rename(page_1, index)
 
 
 def build_tags():
     logging.info('Start generating tag pages')
     template = g.jinja.get_template('tag.html')
 
-    tags_path = os.path.join(config.config["output"], 'tag')
+    tags_path = os.path.join(config.config.output, 'tag')
 
     if os.path.exists(tags_path):
         shutil.rmtree(tags_path)
@@ -134,7 +134,7 @@ def build_archives():
     logging.info('Start generating archive pages')
     template = g.jinja.get_template('archive.html')
 
-    archives_path = os.path.join(config.config["output"], 'archive')
+    archives_path = os.path.join(config.config.output, 'archive')
 
     if os.path.exists(archives_path):
         shutil.rmtree(archives_path)
@@ -165,24 +165,24 @@ def build_others():
 def copy_static():
     logging.info('Copying static files.')
 
-    if os.path.exists(config.config["static"]):
-        shutil.rmtree(config.config["static"])
+    if os.path.exists(config.config.static):
+        shutil.rmtree(config.config.static)
 
     shutil.copytree(os.path.join(g.theme.path, 'static'),
-        config.config["static"])
+        config.config.static)
 
-    favicon = os.path.join(config.config["posts"], 'favicon.ico')
+    favicon = os.path.join(config.config.source, 'favicon.ico')
     if not os.path.exists(favicon):
         favicon = os.path.join(g.theme.path, 'static', 'favicon.ico')
     if os.path.exists(favicon):
-        shutil.copy(favicon, os.path.join(config.config["output"],
+        shutil.copy(favicon, os.path.join(config.config.output,
             'favicon.ico'))
 
-    robots = os.path.join(config.config["posts"], 'robots.txt')
+    robots = os.path.join(config.config.source, 'robots.txt')
     if not os.path.exists(robots):
         robots = os.path.join(g.theme.path, 'static', 'robots.txt')
     if os.path.exists(robots):
-        shutil.copy(robots, os.path.join(config.config["output"],
+        shutil.copy(robots, os.path.join(config.config.output,
             'robots.txt'))
 
     logging.info('Done.')
@@ -198,10 +198,10 @@ def build():
         logging.warning("No posts found.Stop building..")
         return
 
-    if os.path.exists(config.config['output']):
-        shutil.rmtree(config.config['output'])
+    if os.path.exists(config.config.output):
+        shutil.rmtree(config.config.output)
 
-    os.makedirs(config.config['output'])
+    os.makedirs(config.config.output)
 
     build_feed()
     build_articles()

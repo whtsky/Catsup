@@ -2,3 +2,4 @@ tornado
 misaka
 pygments
 jinja2
+parguments==0.1

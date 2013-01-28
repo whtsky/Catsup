@@ -4,20 +4,16 @@ import os
 import sys
 from tornado.escape import json_decode
 from tornado.options import options
+from tornado.util import ObjectDict
 
 from catsup.options import config, g
 import catsup.themes
 
 
-def init():
+def init(path):
 
-    if len(sys.argv) > 1:
-        # Please note that sys.argv.pop(1) had been executed before here.
-        # If length of sys.argv > 1, user runned command "catsup init xxx"
-        # instead of "catsup init". And now sys.argv[1] == xxx,
-        # we regard xxx as a directory relatively to current directory
-        # to initialize catsup.
-        os.chdir(sys.argv[1])
+    if path:
+        os.chdir(path)
 
     current_dir = os.getcwd()
     config_path = os.path.join(current_dir, 'config.json')
@@ -46,26 +42,47 @@ def init():
     print('Plese edit the generated config.json to configure your blog. ')
 
 
-def parse():
+def update_config(base, update):
+    for key in update:
+        if isinstance(update[key], dict):
+            if key in base:
+                update_config(base[key], update[key])
+            else:
+                # convert dict into ObjectDict.
+                base[key] = ObjectDict(**update[key])
+        else:
+            base[key] = update[key]
+
+
+
+def parse(path):
     """
     Parser json configuration file
     """
     try:
-        f = open(options.settings, 'r')
+        f = open(path, 'r')
     except IOError:
-        print("Can't find config file %s" % options.settings)
+        print("Can't find config file %s" % path)
         _input = raw_input("Do you wish to create a new config file?(y/n)")
         if _input.lower() == 'y':
-            init()
+            init('')
         else:
             import logging
             logging.error("Can't find config file."
                           "Exiting catsup.")
             sys.exit(0)
     else:
-        config.update(json_decode(f.read()))
+        update_config(config, json_decode(f.read()))
 
 
-def load():
-    parse()
+def load(path):
+    # Read default configuration file first.
+    # So catsup can use the default value when user's conf is missing.
+    # And user does't have to change conf file everytime he updates catsup.
+    parse(os.path.join(g.public_templates_path, 'config.json'))
+    parse(path)
+    os.chdir(os.path.abspath(os.path.dirname(path)))
     g.theme = catsup.themes.find()
+    #  It's dirty now.Can it be better?
+    update_config(g.theme.vars, config.theme.vars)
+    update_config(config.theme.vars, g.theme.vars)

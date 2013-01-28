@@ -19,6 +19,13 @@ Or another hard way to install::
 
     git clone git://github.com/whtsky/catsup.git
     cd catsup
+
+    # We use git submodules to organize out theme.
+    # If you don't want the default theme(current version is sealscript)
+    # You can skip these command.
+    git submodule init
+    git submodule update
+
     python setup.py install
 
 

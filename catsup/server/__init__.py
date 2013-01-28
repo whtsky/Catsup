@@ -3,13 +3,12 @@ import logging
 import tornado.web
 import tornado.httpserver
 import tornado.ioloop
-from tornado.options import options
 
 from catsup.options import g
 import handlers
 
 
-def preview():
+def preview(port):
     from catsup.build import load_jinja
     load_jinja()
     from catsup.utils import load_posts
@@ -23,17 +22,17 @@ def preview():
         (r'/(.*).html', handlers.PageHandler),
         ],
         static_path=os.path.join(g.theme.path, 'static'))
-    logging.info('Starting preview server at port %s' % options.port)
+    logging.info('Starting preview server at port %s' % port)
     http_server = tornado.httpserver.HTTPServer(application)
-    http_server.listen(options.port)
+    http_server.listen(port)
     tornado.ioloop.IOLoop.instance().start()
 
 
-def webhook():
+def webhook(port):
     application = tornado.web.Application([
         (r'/webhook', handlers.WebhookHandler),
         ])
-    logging.info('Starting webhook server at port %s' % options.port)
+    logging.info('Starting webhook server at port %s' % port)
     http_server = tornado.httpserver.HTTPServer(application)
-    http_server.listen(options.port)
+    http_server.listen(port)
     tornado.ioloop.IOLoop.instance().start()

@@ -3,11 +3,12 @@
     <title>{{ site.name }}</title>
     <link href="{{ config.feed }}" rel="self" />
     <link href="{{ site.url }}" />
-    <updated>{{ g.posts and g.posts[0]['updated_xml'] }}</updated>
+    <updated>{{ g.posts[0].updated | xmldatetime }}</updated>
     <id>{{ site.url }}</id>
-    {% for post in g.posts[:15] %}
+    {% for post in g.posts[:config.posts_on_feed] %}
     <entry>
         <title><![CDATA[{{ post.title }}]]></title>
+        <author><name>{{ author }}</name><uri>{{ site.url }}</uri></author>
         <link href="{{ site.url }}{{ post.permalink }}"/>
         <updated>{{ post.updated | xmldatetime }}</updated>
         <published>{{ post.updated | xmldatetime }}</published>

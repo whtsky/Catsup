@@ -1,0 +1,3 @@
+[submodule "catsup/themes/sealscript"]
+	path = catsup/themes/sealscript
+	url = git://github.com/whtsky/catsup-theme-sealscript.git
