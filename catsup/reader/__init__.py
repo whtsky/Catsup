@@ -12,7 +12,7 @@ from catsup.reader.markdown import md_escape, md_raw
 highlight_liquid = re.compile('\{%\s?highlight ([\w\-\+]+)\s?%\}\n'
                      '*(.+?)'
                      '\n*\{%\s?endhighlight\s?%\}', re.I | re.S)
-excerpt_re = re.compile('(<h[\d]+>.*?)<h[\d]+>')
+excerpt_re = re.compile('(<h[\d]+>.*?)<h[\d]+>', re.S)
 
 class Post(ObjectDict):
     """Post object"""
