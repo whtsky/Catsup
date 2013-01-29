@@ -1,5 +1,5 @@
 {% macro render_comment(post) %}
-    {% if not post.comment_disabled %}
+    {% if post.get('allow_comment', True) %}
         {% if comment.system == 'disqus' and comment.disqus %}
             <div id="disqus_thread"></div>
             <script type="text/javascript">

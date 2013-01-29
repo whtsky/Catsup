@@ -76,7 +76,11 @@ The ``comment`` property defines whether the post can be commented or not.
 
 Post excerpt
 -------------
-You can use ``<!--more-->`` to define an excerpt of a post.
+Content before first horizontal rule(like `***`) will be post excerpt by default.
+
+(If there's no horizontal rule in your post, catsup will use the content before second header(like '##xx'))
+
+You can also define your post excerpt by adding `<!--more-->` in your post.
 
 Any content before that will be used as excerpt of the post.
 

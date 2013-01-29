@@ -2,62 +2,56 @@
 import os
 import re
 import logging
-import misaka as m
 
-from tornado.escape import xhtml_escape
 from tornado.util import ObjectDict
-
-from pygments import highlight
-from pygments.formatters import HtmlFormatter
-from pygments.lexers import get_lexer_by_name
-from pygments.util import ClassNotFound
+from tornado.escape import xhtml_escape
 
 from catsup.options import config, g
+from catsup.reader.markdown import md_escape, md_raw
 
+highlight_liquid = re.compile('\{%\s?highlight ([\w\-\+]+)\s?%\}\n'
+                     '*(.+?)'
+                     '\n*\{%\s?endhighlight\s?%\}', re.I | re.S)
+excerpt_re = re.compile('(<h[\d]+>.*?)<h[\d]+>')
 
 class Post(ObjectDict):
     """Post object"""
-    pass
-
-
-class CatsupRender(m.HtmlRenderer, m.SmartyPants):
-    def block_code(self, text, lang):
-        try:
-            lexer = get_lexer_by_name(lang, stripall=True)
-        except ClassNotFound:
-            text = xhtml_escape(text.strip())
-            return '\n<pre><code>%s</code></pre>\n' % text
+    @property
+    def excerpt(self):
+        if not config.config.excerpt_index:
+            self.have_more = False
+            return self.content
+        self.have_more = True
+        if '<!--more-->' in self.source:
+            excerpt = self.source.split('<!--more-->')[0]
+            return self.render(excerpt)
+        elif '<hr>' in self.content:
+            return self.content.split('<hr>')[0]
+        elif '<h' in self.content:
+            excerpts = excerpt_re.findall(self.content)
+            if excerpts:
+                return excerpts[0]
         else:
-            formatter = HtmlFormatter()
-            return highlight(text, lexer, formatter)
+            #TAT
+            self.have_more = False
+            return self.content
 
-    def autolink(self, link, is_email):
-        if is_email:
-            return '<a href="mailto:%(link)s">%(link)s</a>' % {'link': link}
+    @property
+    def content(self):
+        return self.render(self.source.replace('<!--more-->', ''))
 
-        if '.' in link:
-            name_extension = link.split('.')[-1].lower()
-            if name_extension in ('jpg', 'png', 'git', 'jpeg'):
-                return '<img src="%s" />' % link
+    @property
+    def description(self):
+        if len(self.source) < 200:
+            return self.source
+        return '%s...' % self.source[:190]
 
-        return '<a href="%s">%s</a>' % (link, link)
-
-
-# Allow use raw html in .md files
-md_raw = m.Markdown(CatsupRender(flags=m.HTML_USE_XHTML),
-                     extensions=m.EXT_FENCED_CODE |
-                     m.EXT_NO_INTRA_EMPHASIS |
-                     m.EXT_AUTOLINK |
-                     m.EXT_STRIKETHROUGH |
-                     m.EXT_SUPERSCRIPT)
-
-md_escape = m.Markdown(CatsupRender(flags=m.HTML_ESCAPE | m.HTML_USE_XHTML),
-    extensions=m.EXT_FENCED_CODE |
-               m.EXT_NO_INTRA_EMPHASIS |
-               m.EXT_AUTOLINK |
-               m.EXT_STRIKETHROUGH |
-               m.EXT_SUPERSCRIPT)
-
+    def render(self, content):
+        if self.get('escape', config.config.escape_md):
+            md = md_escape
+        else:
+            md = md_raw
+        return md.render(content)
 
 def load_post(file_name):
     '''Load a post.return a dict.
@@ -67,26 +61,15 @@ def load_post(file_name):
         '''
         return "```%s\n%s\n```" % (m.group(1), m.group(2))
 
-    pattern = re.compile('\{%\s?highlight ([\w\-\+]+)\s?%\}\n'
-                         '*(.+?)'
-                         '\n*\{%\s?endhighlight\s?%\}', re.I | re.S)
-
     path = os.path.join(config.config.source, file_name)
     logging.info('Loading file %s' % path)
     post_permalink = file_name[:-3].lower()
-    """
-    //TODO: custome permalink
-    if not options.date_in_permalink:
-        post_permalink = file_name[11:-3]
-    """
     post = Post(
         file_name=post_permalink,
         tags=[],
         date=file_name[:10],
-        comment_disabled=False,
-        excerpt='',
-        category='',
         permalink='/%s.html' % post_permalink,
+        updated=os.stat(path).st_ctime,
     )
     try:
         f = open(path, 'r')
@@ -109,7 +92,8 @@ def load_post(file_name):
             elif 'comment' in line_lower:
                 status = line_lower.split(':')[-1].strip()
                 if status in ('no', 'disabled', 'close'):
-                    post.comment_disabled = True
+                    post.allow_comment = False
+
             # Post properties
             elif ':' in line_lower:
                 if '-' in line_lower:
@@ -124,22 +108,12 @@ def load_post(file_name):
                     # ignore first line if it starts with `---`
                     continue
 
-                if post.get('escape', config.config.escape_md):
-                    md = md_escape
-                else:
-                    md = md_raw
-
                 content = '\n'.join(lines[i + 1:])
                 # Provide compatibility for liquid style code highlight
-                content = pattern.sub(_highlightcode, content)
-                # Post excerpt support, use <!--more--> as flag
-                if content.lower().find('<!--more-->'):
-                    excerpt = content.split('<!--more-->')[0]
-                    post.excerpt = md.render(excerpt)
-                    content = content.replace('<!--more-->',
-                                              '<span id="readmore"></span>')
-                post.content = md.render(content)
-                post.updated = os.stat(path).st_ctime
+                content = highlight_liquid.sub(_highlightcode, content)
+
+                post.source = content
+
                 f.close()
                 return post
         logging.warning('The format of post %s is illegal,'

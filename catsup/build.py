@@ -9,7 +9,7 @@ from tornado.util import ObjectDict
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 
 from catsup.options import config, g
-from catsup.utils import load_posts
+from catsup.reader import load_posts
 
 
 def load_filters():

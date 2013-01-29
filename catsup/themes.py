@@ -99,10 +99,8 @@ def install(path, g):
 
         install_path = os.path.join(themes_path, name)
 
-        if not os.path.exists(install_path):
-            os.makedirs(install_path)
-
         shutil.copytree(path, install_path)
+
     elif path.lower().endswith('.git'):  # a git repo
         os.chdir(themes_path)
         os.system('git clone %s' % path)
