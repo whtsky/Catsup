@@ -1,4 +1,3 @@
-#coding=utf-8
 import os
 import re
 import logging
@@ -13,6 +12,7 @@ highlight_liquid = re.compile('\{%\s?highlight ([\w\-\+]+)\s?%\}\n'
                      '*(.+?)'
                      '\n*\{%\s?endhighlight\s?%\}', re.I | re.S)
 excerpt_re = re.compile('(<h[\d]+>.*?)<h[\d]+>', re.S)
+html_re = re.compile('(<.*?>)')
 
 class Post(ObjectDict):
     """Post object"""
@@ -42,9 +42,8 @@ class Post(ObjectDict):
 
     @property
     def description(self):
-        if len(self.source) < 200:
-            return self.source
-        return '%s...' % self.source[:190]
+        """Remove html in self.content"""
+        return html_re.sub('', self.content)[:195].replace('\n', ' ') + '...'
 
     def render(self, content):
         if self.get('escape', config.config.escape_md):

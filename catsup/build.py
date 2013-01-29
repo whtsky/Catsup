@@ -5,7 +5,6 @@ import copy
 import shutil
 import time
 import hashlib
-from tornado.util import ObjectDict
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 
 from catsup.options import config, g
@@ -56,11 +55,11 @@ def load_jinja():
         loader=FileSystemLoader([theme_path, g.public_templates_path]),
         autoescape=False)
 
-    g.jinja.globals["site"] = ObjectDict(**config.site)
-    g.jinja.globals["config"] = ObjectDict(**config.config)
+    g.jinja.globals["site"] = config.site
+    g.jinja.globals["config"] = config.config
     g.jinja.globals["author"] = config.author
-    g.jinja.globals["comment"] = ObjectDict(**config.comment)
-    g.jinja.globals["theme"] = ObjectDict(**config.theme.vars)
+    g.jinja.globals["comment"] = config.comment
+    g.jinja.globals["theme"] = config.theme.vars
     g.jinja.globals["g"] = g
 
     load_filters()

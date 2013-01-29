@@ -44,3 +44,10 @@
         </script>
     {% endif %}
 {% endmacro %}
+
+{% macro twittercard(post) %}
+<meta name="twitter:creator" content="{{ author.twitter }}">
+<meta name="twitter:url" content="{{ site.url }}{{ post.permalink }}">
+<meta name="twitter:title" content="{{ post.title }}">
+<meta name="twitter:description" content="{{ post.description }}">
+{% endmacro %}

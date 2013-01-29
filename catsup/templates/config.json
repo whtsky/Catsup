@@ -4,7 +4,10 @@
         "url": "http://github.com/whtsky/catsup"
     },
 
-    "author": "name",
+    "author": {
+        "name": "name",
+        "twitter": "twitter"
+    },
 
     "config": {
         "source": "posts",
@@ -30,7 +33,6 @@
         "name": "sealscript",
         "vars": {
             "description": "a blog",
-            "twitter": "whouz",
             "github": "whtsky",
             "links": [
                 {
