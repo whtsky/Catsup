@@ -25,8 +25,8 @@ class Post(ObjectDict):
         if '<!--more-->' in self.source:
             excerpt = self.source.split('<!--more-->')[0]
             return self.render(excerpt)
-        elif '<hr>' in self.content:
-            return self.content.split('<hr>')[0]
+        elif '<hr/>' in self.content:
+            return self.content.split('<hr/>')[0]
         elif '<h' in self.content:
             excerpts = excerpt_re.findall(self.content)
             if excerpts:
