@@ -236,4 +236,4 @@ def build():
 
     copy_static()
 
-    logging.info('Finish building in %ss' % int(time.time() - t))
+    logging.info('Finish building in %.3fs' % (time.time() - t))

@@ -18,7 +18,7 @@
         "per_page": 3,
         "posts_on_feed": 5,
         "analytics": "",
-        "excerpt_index": false,
+        "display_summary": false,
         "escape_md": false
     },
 

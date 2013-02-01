@@ -7,43 +7,17 @@ from tornado.escape import xhtml_escape
 
 from catsup.options import config, g
 from catsup.reader.markdown import md_escape, md_raw
+from .utils import get_description, get_summary
 
 highlight_liquid = re.compile('\{%\s?highlight ([\w\-\+]+)\s?%\}\n'
                      '*(.+?)'
                      '\n*\{%\s?endhighlight\s?%\}', re.I | re.S)
-excerpt_re = re.compile('(<h[\d]+>.*?)<h[\d]+>', re.S)
-html_re = re.compile('(<.*?>)')
 
 class Post(ObjectDict):
     """Post object"""
     @property
-    def excerpt(self):
-        if not config.config.excerpt_index:
-            self.has_more = False
-            return self.content
-        self.has_more = True
-        if '<!--more-->' in self.source:
-            excerpt = self.source.split('<!--more-->')[0]
-            return self.render(excerpt)
-        elif '<hr/>' in self.content:
-            return self.content.split('<hr/>')[0]
-        elif '<h' in self.content:
-            excerpts = excerpt_re.findall(self.content)
-            if excerpts:
-                return excerpts[0]
-        else:
-            #TAT
-            self.has_more = False
-            return self.content
-
-    @property
     def content(self):
         return self.render(self.source.replace('<!--more-->', ''))
-
-    @property
-    def description(self):
-        """Remove html in self.content"""
-        return html_re.sub('', self.content)[:195].replace('\n', ' ') + '...'
 
     def render(self, content):
         if self.get('escape', config.config.escape_md):
@@ -112,6 +86,11 @@ def load_post(file_name):
                 content = highlight_liquid.sub(_highlightcode, content)
 
                 post.source = content
+
+                if 'summary' not in post:
+                    post.summary = get_summary(post)
+                if 'description' not in post:
+                    post.description = get_description(post)
 
                 f.close()
                 return post
