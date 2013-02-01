@@ -19,9 +19,9 @@ class Post(ObjectDict):
     @property
     def excerpt(self):
         if not config.config.excerpt_index:
-            self.have_more = False
+            self.has_more = False
             return self.content
-        self.have_more = True
+        self.has_more = True
         if '<!--more-->' in self.source:
             excerpt = self.source.split('<!--more-->')[0]
             return self.render(excerpt)
@@ -33,7 +33,7 @@ class Post(ObjectDict):
                 return excerpts[0]
         else:
             #TAT
-            self.have_more = False
+            self.has_more = False
             return self.content
 
     @property
