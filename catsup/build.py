@@ -9,6 +9,7 @@ from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 
 from catsup.options import config, g
 from catsup.reader import load_posts
+from .utils import Pagination
 
 
 def load_filters():
@@ -96,8 +97,6 @@ def build_articles():
 def build_pages():
     logging.info('Start generating pages')
     template = g.jinja.get_template('page.html')
-    p = 0
-    posts_num = len(g.posts)
 
     pages_path = os.path.join(config.config.output, 'page')
 
@@ -106,12 +105,16 @@ def build_pages():
 
     os.makedirs(pages_path)
 
-    while posts_num > p * config.config.per_page:
-        p += 1
-        logging.info('Start generating page %s' % p)
-        page = template.render(p=p, posts_num=posts_num)
-        pager_file = os.path.join('page', "%s.html" % p)
+    pagination = Pagination(1)
+    while True:
+        logging.info('Start generating page %s' % pagination.page)
+        page = template.render(pagination=pagination)
+        pager_file = os.path.join('page', "%s.html" % pagination.page)
         write(pager_file, page)
+        if pagination.has_next:
+            pagination = Pagination(pagination.next_num)
+        else:
+            break
 
     if not g.theme.has_index:
         page_1 = os.path.join(config.config.output, 'page', '1.html')

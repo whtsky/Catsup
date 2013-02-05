@@ -2,9 +2,10 @@
 from __future__ import with_statement
 import os
 import sys
+
 from tornado.escape import json_decode
-from tornado.options import options
 from tornado.util import ObjectDict
+from parguments.cli import prompt, prompt_bool
 
 from catsup.options import config, g
 import catsup.themes
@@ -23,9 +24,9 @@ def init(path):
               'Have you run `catsup init` before?' % current_dir)
         return
 
-    posts_folder = raw_input('posts folder:(posts by default)') or 'posts'
+    posts_folder = prompt('posts folder', default='posts')
 
-    deploy_folder = raw_input('output folder:(deploy by default)') or 'deploy'
+    deploy_folder = prompt('output folder', default='deploy')
 
     if not (posts_folder.startswith('.') or os.path.exists(posts_folder)):
         os.makedirs(posts_folder)
@@ -63,8 +64,8 @@ def parse(path):
         f = open(path, 'r')
     except IOError:
         print("Can't find config file %s" % path)
-        _input = raw_input("Do you wish to create a new config file?(y/n)")
-        if _input.lower() == 'y':
+
+        if prompt_bool("Create a new config file", default=True):
             init('')
         else:
             import logging

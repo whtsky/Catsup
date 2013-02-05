@@ -5,6 +5,7 @@ import tornado.web
 
 import catsup.build
 from catsup.options import config, g
+from catsup.utils import Pagination
 
 
 class BaseHandler(tornado.web.RequestHandler):
@@ -20,9 +21,8 @@ class MainHandler(BaseHandler):
     def get(self, p=1):
         if p == '1':
             self.redirect('/', status=301)
-        p = int(p)
-        posts_num = len(g.posts)
-        self.render('page.html', p=p, posts_num=posts_num)
+        pagination = Pagination(int(p))
+        self.render('page.html', pagination=pagination)
 
 
 class TagHandler(BaseHandler):

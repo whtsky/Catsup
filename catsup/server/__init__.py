@@ -12,7 +12,7 @@ def preview(port):
     from catsup.build import load_jinja, load_theme_filters
     load_jinja()
     load_theme_filters(g.theme)
-    from catsup.utils import load_posts
+    from catsup.reader import load_posts
     load_posts()
     application = tornado.web.Application([
         (r'/', handlers.MainHandler),
