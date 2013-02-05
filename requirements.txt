@@ -1,0 +1,7 @@
+Jinja2==2.6
+Pygments==1.6
+catsup==0.0.6
+misaka==1.0.2
+parguments==0.2.1
+tornado==2.4.1
+wsgiref==0.1.2
