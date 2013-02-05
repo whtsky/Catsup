@@ -28,7 +28,7 @@ setup(
         'misaka',
         'pygments',
         'jinja2',
-        'parguments==0.2'
+        'parguments==0.2.1'
     ],
     include_package_data=True,
     license='MIT License',

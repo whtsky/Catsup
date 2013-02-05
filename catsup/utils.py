@@ -1,5 +1,6 @@
 from catsup.options import config, g
 
+
 class Pagination(object):
 
     def __init__(self, page):

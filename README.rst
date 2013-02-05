@@ -108,3 +108,14 @@ Build your blog
 =================
 run ``catsup build``
 And you can find your static blog in ``~/build/`` .
+
+Develop
+==========
+Catsup needs your code.Fork and code the repo, then run ::
+
+    python setup.py develop
+
+And start hacking catsup!
+Note that all the code must be flask8 passed ::
+
+    flake8 catsup

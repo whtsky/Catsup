@@ -8,6 +8,7 @@ try:
 except ImportError:
     curses = None
 
+
 def enable_pretty_logging(level='info'):
     """Turns on formatted logging output as configured.
 

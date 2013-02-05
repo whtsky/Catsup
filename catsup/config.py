@@ -55,7 +55,6 @@ def update_config(base, update):
             base[key] = update[key]
 
 
-
 def parse(path):
     """
     Parser json configuration file

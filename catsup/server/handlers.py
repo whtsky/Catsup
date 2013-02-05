@@ -92,7 +92,7 @@ class PageHandler(BaseHandler):
             prev = next = None
             for i in range(posts_num):
                 post = posts[i]
-                if post.file_name+'.html' == filename:
+                if post.file_name + '.html' == filename:
                     if i:
                         prev = posts[i - 1]
                     if (i + 1) < posts_num:

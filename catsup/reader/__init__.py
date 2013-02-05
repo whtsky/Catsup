@@ -13,6 +13,7 @@ highlight_liquid = re.compile('\{%\s?highlight ([\w\-\+]+)\s?%\}\n'
                      '*(.+?)'
                      '\n*\{%\s?endhighlight\s?%\}', re.I | re.S)
 
+
 class Post(ObjectDict):
     """Post object"""
     @property
@@ -25,6 +26,7 @@ class Post(ObjectDict):
         else:
             md = md_raw
         return md.render(content)
+
 
 def load_post(file_name):
     '''Load a post.return a dict.
