@@ -58,10 +58,14 @@ class Pagination(object):
         return self.total_items[start:end]
 
 
-def call(cmd, **kwargs):
-    return subprocess.call(cmd.split(), cwd=g.cwdpath, **kwargs)
-
-null = open('/dev/null')
+def call(cmd, silence=False, **kwargs):
+    if isinstance(cmd, str):
+        cmd = cmd.split()
+    if 'cwd' not in kwargs:
+        kwargs['cwd'] = g.cwdpath
+    if silence and 'stdout' not in kwargs:
+        kwargs["stdout"] = subprocess.PIPE
+    return subprocess.call(cmd, **kwargs)
 
 
 def check_git():
@@ -69,7 +73,7 @@ def check_git():
     Check if the environment has git installed
     :return: Bool. True for installed and False for not.
     """
-    return call('git --help', stdout=null) == 0
+    return call('git --help', silence=True) == 0
 
 
 def check_rsync():
@@ -77,4 +81,4 @@ def check_rsync():
     Check if the environment has rsynv installed
     :return: Bool. True for installed and False for not.
     """
-    return call('rsync --help', stdout=null) == 0
+    return call('rsync --help', silence=True) == 0

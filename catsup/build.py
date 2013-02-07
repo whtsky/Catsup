@@ -9,7 +9,7 @@ from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 
 from catsup.options import config, g
 from catsup.reader import load_posts
-from .utils import Pagination
+from .utils import Pagination, call
 
 
 def load_filters():
@@ -226,9 +226,9 @@ def build():
         return
 
     if os.path.exists(config.config.output):
-        shutil.rmtree(config.config.output)
-
-    os.makedirs(config.config.output)
+        call('rm -rf *', cwd=config.config.output)
+    else:
+        os.makedirs(config.config.output)
 
     build_feed()
     build_articles()

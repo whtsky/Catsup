@@ -1,16 +1,45 @@
 import os
 import sys
+import datetime
 import logging
 
 from catsup.options import g, config
-from catsup.utils import check_git, check_rsync
+from catsup.utils import call, check_git, check_rsync
 
 
 def git():
     if not check_git():
         logging.error("Catsup can't find git.Please install git first.")
         sys.exit(1)
-    pass
+    logging.info("Deploying your blog via git")
+
+    cwd = os.path.abspath(config.config.output)
+    def _call(*args, **kwargs):
+        return call(*args, cwd=cwd, **kwargs)
+
+    if not os.path.exists(os.path.join(cwd, '.git')):
+        _call('rm -rf *')
+        # Hasn't setup git.
+        _call('git init', silence=True)
+        _call(['git', 'remote', 'add', 'origin', config.deploy.git.repo],
+            silence=False)
+        if config.deploy.git.branch != 'master':
+            _call('git branch -m %s' % config.deploy.git.branch, silence=True)
+        _call(['git', 'pull', 'origin', config.deploy.git.branch])
+
+        logging.info("Rebuild your blog..")
+        import catsup.build
+        catsup.build.build()
+
+    # GitHub custom domain support
+    with open(os.path.join(cwd, 'CNAME'), 'w') as f:
+        f.write(config.site.url)
+
+    _call('git add .', silence=True)
+    _call(['git', 'commit',
+       '-m',"Update at %s" % str(datetime.datetime.utcnow())],
+        silence=True)
+    _call(['git', 'push', 'origin', config.deploy.git.branch])
 
 
 
