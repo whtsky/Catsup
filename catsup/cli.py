@@ -8,12 +8,15 @@ if major < 3:
     sys.setdefaultencoding('utf-8')
 
 import os
-from catsup.options import g, enable_pretty_logging
+import logging
+
+from catsup.options import config, g, enable_pretty_logging
 
 enable_pretty_logging()
 
 g.catsup_path = os.path.abspath(os.path.dirname(__file__))
 g.public_templates_path = os.path.join(g.catsup_path, 'templates')
+g.cwdpath = os.path.abspath('.')
 
 try:
     import catsup
@@ -26,6 +29,9 @@ doc = """catsup v%s
 Usage:
     catsup init [<path>]
     catsup build [-s <file>|--settings=<file>]
+    catsup deploy [-s <file>|--settings=<file>]
+    catsup git [-s <file>|--settings=<file>]
+    catsup rsync [-s <file>|--settings=<file>]
     catsup server [-s <file>|--settings=<file>] [-p <port>|--port=<port>]
     catsup webhook [-s <file>|--settings=<file>] [-p <port>|--port=<port>]
     catsup themes
@@ -44,6 +50,7 @@ import catsup.config
 import catsup.server
 import catsup.themes
 import catsup.build
+import catsup.deploy
 
 
 from parguments import Parguments
@@ -77,6 +84,56 @@ Options:
     path = args.get('--settings')
     catsup.config.load(path)
     catsup.build.build()
+
+
+@parguments.command
+def deploy(args):
+    """
+Usage:
+    catsup deploy [-s <file>|--settings=<file>]
+
+Options:
+    -h --help               show this screen.
+    -s --settings=<file>    specify a setting file. [default: config.json]
+    """
+    path = args.get('--settings')
+    catsup.config.load(path)
+    if config.deploy.default == 'git':
+        git()
+    elif config.deploy.default == 'rsync':
+        rsync()
+    else:
+        logging.error("Unknown deploy: %s" % config.deploy.default)
+
+
+@parguments.command
+def git(args):
+    """
+Usage:
+    catsup git [-s <file>|--settings=<file>]
+
+Options:
+    -h --help               show this screen.
+    -s --settings=<file>    specify a setting file. [default: config.json]
+    """
+    path = args.get('--settings')
+    catsup.config.load(path)
+    catsup.deploy.git()
+
+
+@parguments.command
+def rsync(args):
+    """
+Usage:
+    catsup rsync [-s <file>|--settings=<file>]
+
+Options:
+    -h --help               show this screen.
+    -s --settings=<file>    specify a setting file. [default: config.json]
+    """
+    path = args.get('--settings')
+    catsup.config.load(path)
+    catsup.deploy.rsync()
 
 
 @parguments.command

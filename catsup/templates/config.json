@@ -1,7 +1,7 @@
 {
     "site": {
-        "name": "catsup",
-        "url": "http://github.com/whtsky/catsup"
+        "name": "blogname",
+        "url": "http://blog.com"
     },
 
     "author": {
@@ -27,6 +27,24 @@
         "system": "disqus",
         "disqus": "catsup",
         "duoshuo": "catsup"
+    },
+
+    "deploy": {
+        "default": "rsync",
+
+        "git": {
+            "repo": "repo url here",
+            "branch": "master",
+            "delete": true
+        },
+
+        "rsync": {
+            "ssh_port": 22,
+            "ssh_user": "username",
+            "ssh_host": "123.45.6.78",
+            "document_root": "~/website.com/",
+            "delete": true
+        }
     },
 
     "theme": {
