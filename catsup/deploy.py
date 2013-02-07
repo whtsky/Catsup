@@ -33,7 +33,8 @@ def git():
 
     # GitHub custom domain support
     with open(os.path.join(cwd, 'CNAME'), 'w') as f:
-        f.write(config.site.url)
+        domain = config.site.url.split('//')[-1].rstrip('/')
+        f.write(domain)
 
     _call('git add .', silence=True)
     _call(['git', 'commit',
