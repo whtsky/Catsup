@@ -44,15 +44,14 @@ def init(path):
 
 
 def update_config(base, update):
-    for key in update:
-        if isinstance(update[key], dict):
-            if key in base:
-                update_config(base[key], update[key])
-            else:
-                # convert dict into ObjectDict.
-                base[key] = ObjectDict(**update[key])
+    for k in update:
+        v = update[k]
+        if isinstance(v, dict):
+            if k not in base:
+                base[k] = ObjectDict()
+            update_config(base[k], v)
         else:
-            base[key] = update[key]
+            base[k] = v
 
 
 def parse(path):
