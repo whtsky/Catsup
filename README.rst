@@ -65,6 +65,7 @@ Example::
     - date: 2012-12-24
     - tags: tag1, tag2
     - comment: disabled
+    - summary: this is a simple post.
 
 The ``category`` property defines the category of the post, but it's not used yet.
 
@@ -74,13 +75,21 @@ The ``tags`` property defines the tags of the post.
 
 The ``comment`` property defines whether the post can be commented or not.
 
-Post excerpt
+Post summary
 -------------
-You can use ``<!--more-->`` to define an excerpt of a post.
 
-Any content before that will be used as excerpt of the post.
+You can choose to display summary rather than full content on your homepage
+by changing `display_summary` in your configuration file.
 
-And you can choose to display excerpt rather than full content on your homepage.
+If you defined summary as a post property, catsup will use it.
+
+Otherwise, we will try to analytic the summary in order of:
+
+1. Content before`<!--more-->` in your post.
+
+2. Content before first horizontal rule(like `***`)
+
+3. Content before second header(like '##xx')
 
 
 Install theme
@@ -99,3 +108,14 @@ Build your blog
 =================
 run ``catsup build``
 And you can find your static blog in ``~/build/`` .
+
+Develop
+==========
+Catsup needs your code.Fork and code the repo, then run ::
+
+    python setup.py develop
+
+And start hacking catsup!
+Note that all the code must be flask8 passed ::
+
+    flake8 catsup

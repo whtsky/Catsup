@@ -9,9 +9,10 @@ import handlers
 
 
 def preview(port):
-    from catsup.build import load_jinja
+    from catsup.build import load_jinja, load_theme_filters
     load_jinja()
-    from catsup.utils import load_posts
+    load_theme_filters(g.theme)
+    from catsup.reader import load_posts
     load_posts()
     application = tornado.web.Application([
         (r'/', handlers.MainHandler),
@@ -19,8 +20,8 @@ def preview(port):
         (r'/archive/(.*?).html', handlers.ArchiveHandler),
         (r'/tag/(.*?).html', handlers.TagHandler),
         (r'/feed.xml', handlers.FeedHandler),
-        (r'/(.*).html', handlers.PageHandler),
-        ],
+        (r'/(.*)', handlers.PageHandler),
+        ], debug=True,
         static_path=os.path.join(g.theme.path, 'static'))
     logging.info('Starting preview server at port %s' % port)
     http_server = tornado.httpserver.HTTPServer(application)

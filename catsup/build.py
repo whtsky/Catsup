@@ -5,11 +5,11 @@ import copy
 import shutil
 import time
 import hashlib
-from tornado.util import ObjectDict
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 
 from catsup.options import config, g
-from catsup.utils import load_posts
+from catsup.reader import load_posts
+from .utils import Pagination
 
 
 def load_filters():
@@ -26,15 +26,28 @@ def load_filters():
 
         hsh = get_hash(file)
 
-        return '%s%s?v=%s' % (config.config.static_prefix, file, hsh)
+        return '%s/%s?v=%s' % (config.config.static_prefix, file, hsh)
 
     def xmldatetime(t):
         t = time.gmtime(t)
         updated_xml = time.strftime('%Y-%m-%dT%H:%M:%SZ', t)
         return updated_xml
 
+    def capitalize(str):
+        return str.capitalize()
+
     g.jinja.globals["static_url"] = static_url
     g.jinja.filters["xmldatetime"] = xmldatetime
+    g.jinja.filters["capitalize"] = capitalize
+
+
+def load_theme_filters(theme):
+    filters_file = os.path.join(theme.path, 'filters.py')
+    if not os.path.exists(filters_file):
+        return
+    filters = {}
+    execfile(filters_file, {}, filters)
+    g.jinja.filters.update(filters)
 
 
 def load_jinja():
@@ -43,11 +56,11 @@ def load_jinja():
         loader=FileSystemLoader([theme_path, g.public_templates_path]),
         autoescape=False)
 
-    g.jinja.globals["site"] = ObjectDict(**config.site)
-    g.jinja.globals["config"] = ObjectDict(**config.config)
+    g.jinja.globals["site"] = config.site
+    g.jinja.globals["config"] = config.config
     g.jinja.globals["author"] = config.author
-    g.jinja.globals["comment"] = ObjectDict(**config.comment)
-    g.jinja.globals["theme"] = ObjectDict(**config.theme.vars)
+    g.jinja.globals["comment"] = config.comment
+    g.jinja.globals["theme"] = config.theme.vars
     g.jinja.globals["g"] = g
 
     load_filters()
@@ -84,8 +97,6 @@ def build_articles():
 def build_pages():
     logging.info('Start generating pages')
     template = g.jinja.get_template('page.html')
-    p = 0
-    posts_num = len(g.posts)
 
     pages_path = os.path.join(config.config.output, 'page')
 
@@ -94,12 +105,16 @@ def build_pages():
 
     os.makedirs(pages_path)
 
-    while posts_num > p * config.config.per_page:
-        p += 1
-        logging.info('Start generating page %s' % p)
-        page = template.render(p=p, posts_num=posts_num)
-        pager_file = os.path.join('page', "%s.html" % p)
+    pagination = Pagination(1)
+    while True:
+        logging.info('Start generating page %s' % pagination.page)
+        page = template.render(pagination=pagination)
+        pager_file = os.path.join('page', "%s.html" % pagination.page)
         write(pager_file, page)
+        if pagination.has_next:
+            pagination = Pagination(pagination.next_num)
+        else:
+            break
 
     if not g.theme.has_index:
         page_1 = os.path.join(config.config.output, 'page', '1.html')
@@ -108,8 +123,13 @@ def build_pages():
 
 
 def build_tags():
+    try:
+        template = g.jinja.get_template('tag.html')
+    except TemplateNotFound:
+        # Maybe the theme doesn't need this.
+        return
+
     logging.info('Start generating tag pages')
-    template = g.jinja.get_template('tag.html')
 
     tags_path = os.path.join(config.config.output, 'tag')
 
@@ -131,8 +151,12 @@ def build_tags():
 
 
 def build_archives():
+    try:
+        template = g.jinja.get_template('archive.html')
+    except TemplateNotFound:
+        # Maybe the theme doesn't need this.
+        return
     logging.info('Start generating archive pages')
-    template = g.jinja.get_template('archive.html')
 
     archives_path = os.path.join(config.config.output, 'archive')
 
@@ -154,6 +178,8 @@ def build_archives():
 
 
 def build_others():
+    if not g.theme.pages:
+        return
     logging.info('Start generating other pages')
     for file in g.theme.pages:
         logging.info('Generating %s' % file)
@@ -190,6 +216,7 @@ def copy_static():
 
 def build():
     load_jinja()
+    load_theme_filters(g.theme)
     logging.info('Building your blog..')
     t = time.time()
     load_posts()
@@ -212,4 +239,4 @@ def build():
 
     copy_static()
 
-    logging.info('Finish building in %ss' % int(time.time() - t))
+    logging.info('Finish building in %.3fs' % (time.time() - t))

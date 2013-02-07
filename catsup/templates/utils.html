@@ -1,5 +1,5 @@
 {% macro render_comment(post) %}
-    {% if not post.comment_disabled %}
+    {% if post.get('allow_comment', True) %}
         {% if comment.system == 'disqus' and comment.disqus %}
             <div id="disqus_thread"></div>
             <script type="text/javascript">
@@ -43,4 +43,11 @@
 
         </script>
     {% endif %}
+{% endmacro %}
+
+{% macro twittercard(post) %}
+<meta name="twitter:creator" content="{{ author.twitter }}">
+<meta name="twitter:url" content="{{ site.url }}{{ post.permalink }}">
+<meta name="twitter:title" content="{{ post.title }}">
+<meta name="twitter:description" content="{{ post.description }}">
 {% endmacro %}

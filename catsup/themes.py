@@ -39,12 +39,14 @@ def read_meta(path):
         if not os.path.exists(os.path.join(templates_path, page)):
             logging.warning("%s announces a page %s"
                          " which not exists." % (theme.name, page))
+    theme.name = theme.name.lower()
     return theme
 
 
 def find(theme_name=''):
     if not theme_name:
         theme_name = config.theme.name
+    theme_name = theme_name.lower()
     theme_gallery = [
         os.path.join(os.path.abspath('themes'), theme_name),
         os.path.join(g.catsup_path, 'themes', theme_name),
@@ -99,10 +101,8 @@ def install(path, g):
 
         install_path = os.path.join(themes_path, name)
 
-        if not os.path.exists(install_path):
-            os.makedirs(install_path)
-
         shutil.copytree(path, install_path)
+
     elif path.lower().endswith('.git'):  # a git repo
         os.chdir(themes_path)
         os.system('git clone %s' % path)

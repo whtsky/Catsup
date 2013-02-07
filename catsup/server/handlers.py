@@ -5,6 +5,7 @@ import tornado.web
 
 import catsup.build
 from catsup.options import config, g
+from catsup.utils import Pagination
 
 
 class BaseHandler(tornado.web.RequestHandler):
@@ -20,9 +21,8 @@ class MainHandler(BaseHandler):
     def get(self, p=1):
         if p == '1':
             self.redirect('/', status=301)
-        p = int(p)
-        posts_num = len(g.posts)
-        self.render('page.html', p=p, posts_num=posts_num)
+        pagination = Pagination(int(p))
+        self.render('page.html', pagination=pagination)
 
 
 class TagHandler(BaseHandler):
@@ -85,19 +85,20 @@ class WebhookHandler(BaseHandler):
 
 class PageHandler(BaseHandler):
     def get(self, filename):
-        #Is this a post?
-        posts = g.posts
-        posts_num = len(posts)
-        prev = next = None
-        for i in range(posts_num):
-            post = posts[i]
-            if post.file_name == filename:
-                if i:
-                    prev = posts[i - 1]
-                if (i + 1) < posts_num:
-                    next = posts[i + 1]
-                return self.render('article.html', post=post,
-                    prev=prev, next=next)
+        if filename.endswith('.html'):
+            #Is this a post?
+            posts = g.posts
+            posts_num = len(posts)
+            prev = next = None
+            for i in range(posts_num):
+                post = posts[i]
+                if post.file_name + '.html' == filename:
+                    if i:
+                        prev = posts[i - 1]
+                    if (i + 1) < posts_num:
+                        next = posts[i + 1]
+                    return self.render('article.html', post=post,
+                        prev=prev, next=next)
 
         if filename in g.theme.pages:
             self.render(filename)

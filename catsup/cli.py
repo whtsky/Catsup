@@ -40,8 +40,6 @@ Options:
     -g --global             install theme to global theme folder.
 """ % catsup.__version__
 
-
-
 import catsup.config
 import catsup.server
 import catsup.themes
@@ -51,6 +49,7 @@ import catsup.build
 from parguments import Parguments
 
 parguments = Parguments(doc, version=catsup.__version__)
+
 
 @parguments.command
 def init(args):
@@ -63,6 +62,7 @@ Options:
     -s --settings=<file>    specify a setting file. [default: config.json]
     """
     catsup.config.init(args.get('<path>'))
+
 
 @parguments.command
 def build(args):
@@ -139,9 +139,9 @@ Options:
     path = args.get('<theme>')
     catsup.themes.install(path=path, g=g)
 
+
 def main():
     parguments.run()
-
 
 if __name__ == '__main__':
     main()

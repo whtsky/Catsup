@@ -23,13 +23,7 @@ setup(
     entry_points={
         'console_scripts': ['catsup= catsup.cli:main'],
     },
-    install_requires=[
-        'tornado',
-        'misaka',
-        'pygments',
-        'jinja2',
-        'parguments==0.1'
-    ],
+    install_requires=open("requirements.txt").readlines(),
     include_package_data=True,
     license='MIT License',
     classifiers=[
@@ -42,8 +36,9 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
-#        'Programming Language :: Python :: 3.1',
+        'Programming Language :: Python :: 3.1',
         'Programming Language :: Python :: 3.2',
+        'Programming Language :: Python :: 3.3',
     ],
     **kwargs
 )
