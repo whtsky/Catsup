@@ -83,6 +83,8 @@ def load(path):
     parse(path)
     os.chdir(os.path.abspath(os.path.dirname(path)))
     g.theme = catsup.themes.find()
-    #  It's dirty now.Can it be better?
+
     update_config(g.theme.vars, config.theme.vars)
     update_config(config.theme.vars, g.theme.vars)
+
+    config.config.static_prefix = config.config.static_prefix.rstrip('/')

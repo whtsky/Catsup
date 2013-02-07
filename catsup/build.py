@@ -26,7 +26,7 @@ def load_filters():
 
         hsh = get_hash(file)
 
-        return '%s%s?v=%s' % (config.config.static_prefix, file, hsh)
+        return '%s/%s?v=%s' % (config.config.static_prefix, file, hsh)
 
     def xmldatetime(t):
         t = time.gmtime(t)
