@@ -8,5 +8,8 @@ Contents:
 
    install
    start
+   write
+   config
+   theme
    goodies
    changelog
