@@ -5,6 +5,7 @@ catsup
     :target: https://travis-ci.org/whtsky/catsup
 
 A lightweight static blog generator.
+Document here: https://catsup.readthedocs.org/en/latest/
 
 Install
 --------
