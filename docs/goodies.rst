@@ -33,13 +33,13 @@ You need to clone your repo and start a  webhook server ::
 
 Then configure webhook on GitHub or Bitbucket. Here we use GitHub as an example:
 
-Go to `https://github.com/your_username/your_reponame/settings/hooks`
-Select **WebHook URLs**
-If your server's ip is 1.2.3.4 , you can type ::
++ Go to the “admin” page for your project
++ Click “Service Hooks”
++ In the available service hooks, click “WebHook URLs“
++ Type your url [1]_
++ Click “Update Settings”
 
-    http://1.2.3.4:12580/webhook
-
-Click `Update Settings` to save your configuration.
+.. [1] If your server's ip is 1.2.3.4 , you can type ``http://1.2.3.4:12580/webhook``
 
 Then when you push to GitHub, catsup will pull and generate your blog.
 
