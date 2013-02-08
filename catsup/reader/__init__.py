@@ -8,6 +8,8 @@ from tornado.escape import xhtml_escape
 from catsup.options import config, g
 from catsup.reader.markdown import md_escape, md_raw
 from .utils import get_description, get_summary
+from .archive import Archive
+from .tag import Tag
 
 highlight_liquid = re.compile('\{%\s?highlight ([\w\-\+]+)\s?%\}\n'
                      '*(.+?)'
@@ -52,6 +54,10 @@ def load_post(file_name):
         logging.error('Open file %s failed.' % path)
     else:
         lines = f.readlines()
+        if lines[0].startswith('---'):
+            # Support jekyll style.
+            lines.pop(0)
+
         for i, line in enumerate(lines):
             line_lower = line.lower()
             # Post title
@@ -71,18 +77,11 @@ def load_post(file_name):
 
             # Post properties
             elif ':' in line_lower:
-                if '-' in line_lower:
-                    # make '-' be optional in properties
-                    line = '-'.join(line.split('-')[1:]).strip()
-                name, value = line.split(':')[0], ':'.join(line.split(':')[1:])
+                line = line.strip().lstrip('-').strip()
+                name, value = line.split(':', maxsplit=1)
                 post[name.strip()] = value.strip()
 
             elif line.startswith('---'):
-                if i == 0:
-                    # provide compatibility with jekyll,
-                    # ignore first line if it starts with `---`
-                    continue
-
                 content = '\n'.join(lines[i + 1:])
                 # Provide compatibility for liquid style code highlight
                 content = highlight_liquid.sub(_highlightcode, content)
@@ -125,28 +124,12 @@ def load_posts():
             posts.append(post)
     g.posts = posts
 
-    tags = {}
-    archives = {}
     for post in posts:
         for tag in post.tags:
-            if tag in tags:
-                tags[tag].posts.append(post)
-                tags[tag].post_count += 1
-            else:
-                tags[tag] = ObjectDict(
-                    name=tag,
-                    posts=[post],
-                    post_count=1
-                )
+            Tag(tag).append(post)
+
         year = post.date[:4]
-        if year in archives:
-            archives[year].posts.append(post)
-            archives[year].post_count += 1
-        else:
-            archives[year] = ObjectDict(
-                name=year,
-                posts=[post],
-                post_count=1
-            )
-    g.tags = sorted(tags.values(), key=lambda x: x.post_count, reverse=True)
-    g.archives = sorted(archives.values(), key=lambda x: x.name, reverse=True)
+        Archive(year).append(post)
+
+    g.tags = Tag.sort()
+    g.archives = Archive.sort()

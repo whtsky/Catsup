@@ -83,15 +83,15 @@ def list():
 
 
 def install(path, g):
-    meta = find(path)
-    if meta:
+    theme = find(path)
+    if theme:
         # Update theme
-        if not os.path.exists(os.path.join(meta.path, '.git')):
+        if not os.path.exists(os.path.join(theme.path, '.git')):
             logging.warn("%s is not installed via git."
-                         "Can't update it." % meta.name)
+                         "Can't update it." % theme.name)
         else:
-            logging.info("Updating theme %s" % meta.name)
-            call('git pull', cwd=meta.path)
+            logging.info("Updating theme %s" % theme.name)
+            call('git pull', cwd=theme.path)
         sys.exit(0)
 
     themes_path = os.path.abspath('themes')
