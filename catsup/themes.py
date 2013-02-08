@@ -4,9 +4,11 @@ from __future__ import with_statement
 import sys
 import os
 import logging
+import shutil
 
 from tornado.util import ObjectDict
 from catsup.options import config, g
+from catsup.utils import call
 
 
 def read_meta(path):
@@ -81,7 +83,16 @@ def list():
 
 
 def install(path, g):
-    import shutil
+    meta = find(path)
+    if meta:
+        # Update theme
+        if not os.path.exists(os.path.join(meta.path, '.git')):
+            logging.warn("%s is not installed via git."
+                         "Can't update it." % meta.name)
+        else:
+            logging.info("Updating theme %s" % meta.name)
+            call('git pull', cwd=meta.path)
+        sys.exit(0)
 
     themes_path = os.path.abspath('themes')
     if g:
