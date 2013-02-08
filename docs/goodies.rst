@@ -1,6 +1,8 @@
 Goodies
 ===========
 
+.. _preview-server:
+
 Preview Server
 ----------------
 Preview your blog **without build & deploy** ::
@@ -27,7 +29,7 @@ You need to clone your repo and start a  webhook server ::
     git clone git://path/to/your/repo.git posts
     catsup webhook -p 12580
 
-.. note:: Catsup webhook is not a daemon process.That means you may need to use Supervisor_ to turn it into daemon.
+.. attention:: Catsup webhook is not a daemon process.That means you may need to use Supervisor_ to turn it into daemon.
 
 Then configure webhook on GitHub or Bitbucket. Here we use GitHub as an example:
 
