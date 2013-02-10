@@ -1,3 +1,5 @@
+import subprocess
+
 from catsup.options import config, g
 
 
@@ -54,3 +56,29 @@ class Pagination(object):
         start = (self.page - 1) * self.per_page
         end = self.page * self.per_page
         return self.total_items[start:end]
+
+
+def call(cmd, silence=False, **kwargs):
+    if isinstance(cmd, str):
+        cmd = cmd.split()
+    if 'cwd' not in kwargs:
+        kwargs['cwd'] = g.cwdpath
+    if silence and 'stdout' not in kwargs:
+        kwargs["stdout"] = subprocess.PIPE
+    return subprocess.call(cmd, **kwargs)
+
+
+def check_git():
+    """
+    Check if the environment has git installed
+    :return: Bool. True for installed and False for not.
+    """
+    return call('git --help', silence=True) == 0
+
+
+def check_rsync():
+    """
+    Check if the environment has rsynv installed
+    :return: Bool. True for installed and False for not.
+    """
+    return call('rsync --help', silence=True) == 0

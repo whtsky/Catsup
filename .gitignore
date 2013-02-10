@@ -36,3 +36,6 @@ pip-log.txt
 
 #OS X
 .DS_Store
+
+#Sphinx
+docs/_build/

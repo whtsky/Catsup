@@ -19,14 +19,12 @@ class CatsupRender(m.HtmlRenderer, m.SmartyPants):
 
     def autolink(self, link, is_email):
         if is_email:
-            return '<a href="mailto:%(link)s">%(link)s</a>' % {'link': link}
-
-        if '.' in link:
-            name_extension = link.split('.')[-1].lower()
-            if name_extension in ('jpg', 'png', 'git', 'jpeg'):
-                return '<img src="%s" />' % link
-
-        return '<a href="%s">%s</a>' % (link, link)
+            s = '<a href="mailto:{link}">{link}</a>'
+        elif link.endswith(('.jpg', '.png', '.git', '.jpeg')):
+            s = '<a href="{link}"><img src="{link}" /></a>'
+        else:
+            s = '<a href="{link}">{link}</a>'
+        return s.format(link=link)
 
 # Allow use raw html in .md files
 md_raw = m.Markdown(CatsupRender(flags=m.HTML_USE_XHTML),
