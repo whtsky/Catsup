@@ -78,7 +78,7 @@ def load_post(file_name):
             # Post properties
             elif ':' in line_lower:
                 line = line.strip().lstrip('-').strip()
-                name, value = line.split(':', maxsplit=1)
+                name, value = line.split(':', 1)
                 post[name.strip()] = value.strip()
 
             elif line.startswith('---'):
