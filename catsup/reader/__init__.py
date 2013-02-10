@@ -72,7 +72,7 @@ def load_post(file_name):
 
             elif 'comment' in line_lower:
                 status = line_lower.split(':')[-1].strip()
-                if status in ('no', 'disabled', 'close'):
+                if status == 'disabled':
                     post.allow_comment = False
 
             # Post properties
