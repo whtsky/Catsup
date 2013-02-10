@@ -45,7 +45,8 @@
     {% endif %}
 {% endmacro %}
 
-{% macro twittercard(post) %}
+{% macro meta(post) %}
+<meta name="description" content="{{ post.title }},{% for tg in post.tags %}{{ tg }},{% endfor %}, {{ post.description }}">
 <meta name="twitter:creator" content="{{ author.twitter }}">
 <meta name="twitter:url" content="{{ site.url }}{{ post.permalink }}">
 <meta name="twitter:title" content="{{ post.title }}">
