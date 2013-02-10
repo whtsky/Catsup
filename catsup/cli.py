@@ -99,9 +99,9 @@ Options:
     path = args.get('--settings')
     catsup.config.load(path)
     if config.deploy.default == 'git':
-        git()
+        catsup.deploy.git()
     elif config.deploy.default == 'rsync':
-        rsync()
+        catsup.deploy.rsync()
     else:
         logging.error("Unknown deploy: %s" % config.deploy.default)
 
