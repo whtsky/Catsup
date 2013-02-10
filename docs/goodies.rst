@@ -44,3 +44,12 @@ Then configure webhook on GitHub or Bitbucket. Here we use GitHub as an example:
 Then when you push to GitHub, catsup will pull and generate your blog.
 
 .. _Supervisor: http://pypi.python.org/pypi/supervisor/
+
+Twitter Card
+--------------
+Catsup has a build-in Twitter Card support via ``meta`` marco.
+
+Click here if you don't know what Twitter Card is : https://dev.twitter.com/docs/cards
+
+All you need to do is go to https://dev.twitter.com/form/participate-twitter-cards and submit your blog.
+Then wait for the magic works.

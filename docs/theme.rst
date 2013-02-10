@@ -12,6 +12,10 @@ Install a theme in global ::
 
     catsup install git_repo -g
 
+Update a installed theme ::
+
+    catsup install theme_name
+
 List all themes installed ::
 
     catsup themes
