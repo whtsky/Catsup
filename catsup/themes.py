@@ -83,8 +83,11 @@ def list():
 
 
 def install(path, g):
-    theme = find(path)
-    if theme:
+    try:
+        theme = find(path)
+    except Exception:
+        pass
+    else:
         # Update theme
         if not os.path.exists(os.path.join(theme.path, '.git')):
             logging.warn("%s is not installed via git."
