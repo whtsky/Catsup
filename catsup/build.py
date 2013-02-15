@@ -81,9 +81,9 @@ def build_feed():
     write('feed.xml', page)
 
 
-def build_articles():
-    logging.info('Start generating articles')
-    template = g.jinja.get_template('article.html')
+def build_posts():
+    logging.info('Start generating posts')
+    template = g.jinja.get_template('post.html')
     posts = copy.copy(g.posts)
     posts.reverse()
     prev = None
@@ -234,7 +234,7 @@ def build():
         os.makedirs(config.config.output)
 
     build_feed()
-    build_articles()
+    build_posts()
     build_pages()
     build_tags()
     build_archives()

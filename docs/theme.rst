@@ -38,12 +38,12 @@ A catsup theme should look like ::
     │   │   ├── pygments_style.css     <-------- catsup uses Pygments to highlight code
     │   │   └── style.css
     ├── templates                      <-------- template files
-    │   ├── article.html
+    │   ├── post.html
     │   ├── page.html
     ├── filters.py                     <--------- filters defined by theme
     └── theme.py                       <--------- meta file
 
-Only ``article.html`` and ``page.html`` are required.
+Only ``post.html`` and ``page.html`` are required.
 
 Meta File
 -----------
@@ -71,7 +71,7 @@ A theme meta consists of :
 What's Pages for?
 ~~~~~~~~~~~~~~~~~
 
-By default, Catsup will render ``article.html`` for post,
+By default, Catsup will render ``post.html`` for post,
 ``page.html`` for pagination,
 ``tag.html`` for tag page and
 ``archive.html`` for archive page.
@@ -107,8 +107,8 @@ Templatable Variables
 Templatable variables are only accessed in specify templates.
 
 + pagination: available in ``page.html``
-+ post: available in ``article.html``
-+ prev, next: available in ``article.html``, ``tag.html`` and ``archive.html``
++ post: available in ``post.html``
++ prev, next: available in ``post.html``, ``tag.html`` and ``archive.html``
 
 Filters and Functions
 ----------------------
@@ -149,4 +149,4 @@ Use them like ::
         </body>
     </html>
 
-This is a simple ``article.html`` template using catsup's template marco.Isn't that simple?
+This is a simple ``post.html`` template using catsup's template marco.Isn't that simple?

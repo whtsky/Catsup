@@ -1,6 +1,11 @@
 Changelog
 ==========
 
+Version 0.0.9
+--------------
+
++ Support migrate from WordPress
+
 Version 0.0.8
 --------------
 
