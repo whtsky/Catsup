@@ -19,7 +19,7 @@ class Archive(object):
     @property
     def count(self):
         return len(self.posts)
-    
+
     @property
     def posts(self):
         if self.name in Archive.instance_posts:

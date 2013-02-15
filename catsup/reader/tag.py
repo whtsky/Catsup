@@ -30,6 +30,7 @@ class Tag(object):
 
     @staticmethod
     def sort():
-        tags = sorted(Tag.instances.values(), key=lambda x: x.count, reverse=True)
+        tags = sorted(Tag.instances.values(),
+                      key=lambda x: x.count, reverse=True)
         Tag.tags = {}
         return tags

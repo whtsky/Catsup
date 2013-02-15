@@ -3,7 +3,7 @@ import sys
 import datetime
 import logging
 
-from catsup.options import g, config
+from catsup.options import config
 from catsup.utils import call, check_git, check_rsync
 
 
@@ -14,6 +14,7 @@ def git():
     logging.info("Deploying your blog via git")
 
     cwd = os.path.abspath(config.config.output)
+
     def _call(*args, **kwargs):
         return call(*args, cwd=cwd, **kwargs)
 
@@ -38,10 +39,9 @@ def git():
 
     _call('git add .', silence=True)
     _call(['git', 'commit',
-       '-m',"Update at %s" % str(datetime.datetime.utcnow())],
-        silence=True)
+             '-m', "Update at %s" % str(datetime.datetime.utcnow())],
+          silence=True)
     _call(['git', 'push', 'origin', config.deploy.git.branch])
-
 
 
 def rsync():

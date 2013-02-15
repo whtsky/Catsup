@@ -18,6 +18,9 @@ def write_posts(items, folder):
         if item.find('post_type').text != 'post':
             # Catsup supports post only.
             continue
+        elif item.find('status').text != 'publish':
+            continue
+
         tags = []
         category = []
 
@@ -43,7 +46,8 @@ def write_posts(items, folder):
 
         post.append('')
         post.append('---')
-        content = item.find('{http://purl.org/rss/1.0/modules/content/}encoded').text
+        content = '{http://purl.org/rss/1.0/modules/content/}encoded'
+        content = item.find(content).text
         post.append(content)
 
         filename = item.find('post_date').text[:10] + \
@@ -51,18 +55,24 @@ def write_posts(items, folder):
                    '.md'
         write(filename, post)
 
+
 def migrate(args):
     filename = args.get('--file')
     output = args.get('--output')
     try:
         with open(filename) as f:
-            xml = ElementTree.fromstring(f.read().replace('wp:', ''))
+            xml = f.read().replace('creativeCommons:', '')
+            xml = xml.replace('wp:', '')
+            # Some plugin may output unvailed xml
+            xml = ElementTree.fromstring(xml)
     except:
         logging.error("Unable to open wordpress output file %s" % filename)
         sys.exit(1)
     channel = xml.find('channel')
 
-    write_posts(channel.findall('item'),
+    items = channel.findall('item')
+    items.reverse()
+    write_posts(items,
                 os.path.join(output, 'posts'))
 
     name = channel.find('title').text
