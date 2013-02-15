@@ -68,6 +68,9 @@ def load_jinja():
 
 def write(filename, content):
     filename = os.path.join(config.config.output, filename)
+    path = os.path.dirname(filename)
+    if not os.path.exists(path):
+        os.makedirs(path)
     with open(filename, 'w') as f:
         f.write(content)
 
