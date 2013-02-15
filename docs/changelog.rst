@@ -5,6 +5,7 @@ Version 0.0.9
 --------------
 
 + Support migrate from WordPress
++ Support customize post permalink
 
 Version 0.0.8
 --------------

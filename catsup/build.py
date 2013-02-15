@@ -93,7 +93,7 @@ def build_posts():
         logging.info('Generating %s' % post.file_name)
         page = template.render(post=post, prev=prev,
             next=next)
-        write('%s.html' % post.file_name, page)
+        write(post.permalink.lstrip('/'), page)
         prev, post, next = post, next, len(posts) and posts.pop() or None
 
 

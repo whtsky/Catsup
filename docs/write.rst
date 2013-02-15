@@ -39,6 +39,7 @@ Metadata that catsup supports natively:
 + summary - used in pages
 + description - used for SEO and Twitter Card
 + comment - set to ``disabled`` for forbidding comment
++ permalink - permalink to the post.
 
 Note that if you don't write ``summary`` and ``description`` in post's meta, catsup will create it for you.
 
