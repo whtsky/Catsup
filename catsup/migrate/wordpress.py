@@ -1,5 +1,6 @@
 import os
 import sys
+import re
 import logging
 from xml.etree import ElementTree
 
@@ -8,9 +9,12 @@ from catsup.utils import to_unicode
 
 
 def write_posts(items, folder):
+    if os.path.exists(folder):
+        import shutil
+        shutil.rmtree(folder)
+    os.makedirs(folder)
+
     def write(filename, lines):
-        if not os.path.exists(folder):
-            os.makedirs(folder)
         with open(os.path.join(folder, filename), 'w') as f:
             f.write(to_unicode('\n'.join(lines)))
 
@@ -50,8 +54,10 @@ def write_posts(items, folder):
         content = item.find(content).text
         post.append(content)
 
+        title = title.replace(' ', '-').replace('/', '-').replace('\\', '-')
+
         filename = item.find('post_date').text[:10] + \
-                   '-' + title.replace(' ', '-') + \
+                   '-' + title + \
                    '.md'
         write(filename, post)
 
