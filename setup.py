@@ -18,7 +18,7 @@ setup(
     author_email='whtsky@me.com, wapdevelop@gmail.com',
     url='https://github.com/whtsky/catsup',
     packages=find_packages(),
-    description='Catsup: a lightweight static blog generator',
+    description='Catsup: a lightweight static site generator',
     long_description=open('README.rst').read(),
     entry_points={
         'console_scripts': ['catsup= catsup.cli:main'],

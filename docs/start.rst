@@ -5,13 +5,13 @@ Get Started
 
 This section needs you have catsup installed.If you don't, please go and :ref:`Install it <installation>`
 
-Create a blog
+Create a site
 ---------------
-It's pretty simple to create a blog using catsup ::
+It's pretty simple to create a site using catsup ::
 
     cd ~
-    mkdir blog
-    cd blog
+    mkdir site
+    cd site
     catsup init
 
 You'll be asked some questions. These questions have default value, so if you don't want to change them,
@@ -30,11 +30,11 @@ Then edit it with your favorite editor ::
 
     mate posts/2013-02-08-helloworld.md
 
-Build your blog
+Build your site
 ----------------
-Now you have written your first post.Let's build your blog ::
+Now you have written your first post.Let's build your site ::
 
-    cd ~/blog
+    cd ~/site
     catsup build
 
-You can also preview your blog before build it using :ref:`Preview Server <preview-server>`
+You can also preview your site using :ref:`Preview Server <preview-server>`

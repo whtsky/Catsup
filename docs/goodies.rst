@@ -5,14 +5,17 @@ Goodies
 
 Preview Server
 ----------------
-Preview your blog **without build & deploy** ::
+Preview your site **without deploy** ::
 
     catsup server
     catsup server -p 8000
 
+.. note:: Preview Server will build your site before running.
+.. attention:: You should never usr Preview Server in a production environment.
+
 Deploy Support
 ----------------
-Help you deploy your blog via git or rsync ::
+Help you deploy your site via git or rsync ::
 
     catsup deploy # Deploy via default way
     catsup rsync # Deploy via rsync
@@ -22,7 +25,7 @@ Help you deploy your blog via git or rsync ::
 
 Webhook
 ---------
-If you host your posts on GitHub or Bitbucket, catsup can generate your blog when you push to your repo.
+If you host your posts on GitHub or Bitbucket, catsup can generate your site when you push to your repo.
 
 You need to clone your repo and start a  webhook server ::
 
@@ -41,7 +44,7 @@ Then configure webhook on GitHub or Bitbucket. Here we use GitHub as an example:
 
 .. [1] If your server's ip is 1.2.3.4 , you can type ``http://1.2.3.4:12580/webhook``
 
-Then when you push to GitHub, catsup will pull and generate your blog.
+Then when you push to GitHub, catsup will pull and generate your site.
 
 .. _Supervisor: http://pypi.python.org/pypi/supervisor/
 
@@ -51,5 +54,5 @@ Catsup has a build-in Twitter Card support via ``meta`` marco.
 
 Click here if you don't know what Twitter Card is : https://dev.twitter.com/docs/cards
 
-All you need to do is go to https://dev.twitter.com/form/participate-twitter-cards and submit your blog.
+All you need to do is go to https://dev.twitter.com/form/participate-twitter-cards and submit your site.
 Then wait for the magic works.
