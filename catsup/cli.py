@@ -36,12 +36,15 @@ Usage:
     catsup webhook [-s <file>|--settings=<file>] [-p <port>|--port=<port>]
     catsup themes
     catsup install <theme> [-g|--global]
+    catsup migrate --wordpress [-f <file>|--file=<file>] [-o <dir>|--output=<dir>]
     catsup -h | --help
     catsup --version
 
 Options:
     -h --help               show this screen.
     -s --settings=<file>    specify a config file. [default: config.json]
+    -f --file=<file>        specify a wordpress output file. [default: wordpress.xml]
+    -o --output=<dir>       specify a output folder. [default: .]
     -p --port=<port>        specify the server port. [default: 8888]
     -g --global             install theme to global theme folder.
 """ % catsup.__version__
@@ -51,6 +54,7 @@ import catsup.server
 import catsup.themes
 import catsup.build
 import catsup.deploy
+import catsup.migrate
 
 
 from parguments import Parguments
@@ -195,6 +199,21 @@ Options:
     g = args.get('--global')
     path = args.get('<theme>')
     catsup.themes.install(path=path, g=g)
+
+
+@parguments.command
+def migrate(args):
+    """
+Usage:
+    catsup migrate --wordpress [-f <file>|--file=<file>] [-o <dir>|--output=<dir>]
+
+Options:
+    -h --help               show this screen.
+    -f --file=<file>        specify a wordpress output file. [default: wordpress.xml]
+    -o --output=<dir>       specify a output folder. [default: .]
+    """
+    if args.get('--wordpress'):
+        catsup.migrate.wordpress(args)
 
 
 def main():

@@ -1,6 +1,26 @@
+import sys
 import subprocess
 
 from catsup.options import config, g
+
+py = sys.version_info
+py3k = py >= (3, 0, 0)
+
+if py3k:
+    basestring = str
+    unicode = str
+
+
+def to_unicode(value):
+    if isinstance(value, unicode):
+        return value
+    if isinstance(value, basestring):
+        return value.decode('utf-8')
+    if isinstance(value, int):
+        return str(value)
+    if isinstance(value, bytes):
+        return value.decode('utf-8')
+    return value
 
 
 class Pagination(object):

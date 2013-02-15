@@ -11,6 +11,11 @@ from catsup.options import config, g
 import catsup.themes
 
 
+def get_template():
+    default_config_path = os.path.join(g.public_templates_path, 'config.json')
+    return open(default_config_path, 'r').read()
+
+
 def init(path):
 
     if path:
@@ -31,9 +36,7 @@ def init(path):
     if not (posts_folder.startswith('.') or os.path.exists(posts_folder)):
         os.makedirs(posts_folder)
 
-    default_config_path = os.path.join(g.public_templates_path, 'config.json')
-    template = open(default_config_path, 'r').read()
-    template = template.replace('posts', posts_folder)
+    template = get_template().replace('posts', posts_folder)
     template = template.replace('deploy', deploy_folder)
 
     with open(config_path, 'w') as f:
