@@ -90,7 +90,7 @@ def build_posts():
     post = posts.pop()
     next = len(posts) and posts.pop() or None
     while post:
-        logging.info('Generating %s' % post.file_name)
+        logging.info('Generating %s' % post.filename)
         page = template.render(post=post, prev=prev,
             next=next)
         write(post.permalink.lstrip('/'), page)

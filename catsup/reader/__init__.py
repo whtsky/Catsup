@@ -18,6 +18,15 @@ highlight_liquid = re.compile('\{%\s?highlight ([\w\-\+]+)\s?%\}\n'
 
 class Post(ObjectDict):
     """Post object"""
+
+    def __init__(self, **kwargs):
+        super(Post, self).__init__(**kwargs)
+        year, month, day = self.date.split('-')
+
+        for x in ['year', 'month', 'day']:
+            if x not in self:
+                self[x] = locals().get(x)
+
     @property
     def content(self):
         return self.render(self.source.replace('<!--more-->', ''))
@@ -30,7 +39,7 @@ class Post(ObjectDict):
         return md.render(content)
 
 
-def load_post(file_name):
+def load_post(filename):
     '''Load a post.return a dict.
     '''
     def _highlightcode(m):
@@ -38,16 +47,17 @@ def load_post(file_name):
         '''
         return "```%s\n%s\n```" % (m.group(1), m.group(2))
 
-    path = os.path.join(config.config.source, file_name)
+    path = os.path.join(config.config.source, filename)
     logging.info('Loading file %s' % path)
-    post_permalink = file_name[:-3].lower()
+    date = filename[:10]
+    filename = filename[:-3].lstrip(date).lower()
     post = Post(
-        file_name=post_permalink,
+        filename=filename,
         tags=[],
-        date=file_name[:10],
-        permalink='/%s.html' % post_permalink,
+        date=date,
         updated=os.stat(path).st_ctime,
     )
+    post.permalink = config.config.permalink.format(**post)
     try:
         f = open(path, 'r')
     except IOError:
@@ -118,8 +128,8 @@ def load_posts():
     files = [x for x in os.listdir(config.config.source) if pattern.match(x)]
     files.sort(reverse=True, cmp=_cmp_post)
     posts = []
-    for file_name in files:
-        post = load_post(file_name)
+    for filename in files:
+        post = load_post(filename)
         if post:
             posts.append(post)
     g.posts = posts

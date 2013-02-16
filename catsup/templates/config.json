@@ -14,6 +14,7 @@
         "output": "deploy",
         "static": "deploy/static",
         "static_prefix": "/static/",
+        "permalink": "/{year}-{month}-{day}-{filename}.html",
         "feed": "/feed.xml",
         "per_page": 3,
         "posts_on_feed": 5,
