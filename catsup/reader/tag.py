@@ -34,3 +34,8 @@ class Tag(object):
                       key=lambda x: x.count, reverse=True)
         Tag.tags = {}
         return tags
+
+    def __iter__(self):
+        for post in self.posts:
+            yield post
+

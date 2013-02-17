@@ -34,3 +34,7 @@ class Archive(object):
                           reverse=True)
         Archive.archives = {}
         return archives
+
+    def __iter__(self):
+        for post in self.posts:
+            yield post
