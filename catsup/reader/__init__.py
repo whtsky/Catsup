@@ -11,10 +11,6 @@ from .utils import get_description, get_summary
 from .archive import Archive
 from .tag import Tag
 
-highlight_liquid = re.compile('\{%\s?highlight ([\w\-\+]+)\s?%\}\n'
-                     '*(.+?)'
-                     '\n*\{%\s?endhighlight\s?%\}', re.I | re.S)
-
 
 class Post(ObjectDict):
     """Post object"""
@@ -64,18 +60,13 @@ def load_post(filename):
         logging.error('Open file %s failed.' % path)
     else:
         lines = f.readlines()
-        if lines[0].startswith('---'):
-            # Support jekyll style.
-            lines.pop(0)
-
         for i, line in enumerate(lines):
             line_lower = line.lower()
             # Post title
             if line.startswith('#'):
                 post.title = xhtml_escape(line[1:].strip())
             elif 'tags' in line_lower:
-                tags = line.split(':')[-1].strip().strip('[]')
-                # provide compatibility with jekyll's liquid style tags
+                tags = line.split(':', 1)[1].strip()
 
                 for tag in tags.split(','):
                     post.tags.append(xhtml_escape(tag.strip().lower()))
@@ -87,14 +78,11 @@ def load_post(filename):
 
             # Post properties
             elif ':' in line_lower:
-                line = line.strip().lstrip('-').strip()
                 name, value = line.split(':', 1)
                 post[name.strip()] = value.strip()
 
             elif line.startswith('---'):
                 content = '\n'.join(lines[i + 1:])
-                # Provide compatibility for liquid style code highlight
-                content = highlight_liquid.sub(_highlightcode, content)
 
                 post.source = content
 
