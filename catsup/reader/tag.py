@@ -1,3 +1,5 @@
+from catsup.utils import config
+
 instances = {}
 
 
@@ -12,9 +14,11 @@ class Tag(object):
     def __init__(self, name):
         self.name = name
         self.posts = []
+        self.permalink = config.permalink.tag.format(name=name)
 
     def append(self, post):
         self.posts.append(post)
+        post.tags.append(self)
 
     @property
     def count(self):
@@ -32,3 +36,5 @@ class Tag(object):
         for post in self.posts:
             yield post
 
+    def __repr__(self):
+        return self.name

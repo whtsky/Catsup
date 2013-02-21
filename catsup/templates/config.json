@@ -14,13 +14,17 @@
         "output": "deploy",
         "static": "deploy/static",
         "static_prefix": "/static/",
-        "permalink": "/{year}-{month}-{day}-{filename}.html",
         "feed": "/feed.xml",
         "per_page": 3,
         "posts_on_feed": 5,
         "analytics": "",
         "display_summary": false,
         "escape_md": false
+    },
+
+    "permalink": {
+        "post": "/{year}-{month}-{day}-{filename}.html",
+        "tag": "/tag/{name}.html"
     },
 
     "comment": {

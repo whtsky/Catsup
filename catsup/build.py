@@ -67,7 +67,11 @@ def load_jinja():
 
 
 def write(filename, content):
-    filename = os.path.join(config.config.output, filename)
+    filename = os.path.join(config.config.output, filename.lstrip('/'))
+    if filename.endswith('/'):
+        filename += 'index.html'
+    else:
+        logging.info(filename)
     path = os.path.dirname(filename)
     if not os.path.exists(path):
         os.makedirs(path)
@@ -93,7 +97,7 @@ def build_posts():
         logging.info('Generating %s' % post.filename)
         page = template.render(post=post, prev=prev,
             next=next)
-        write(post.permalink.lstrip('/'), page)
+        write(post.permalink, page)
         prev, post, next = post, next, len(posts) and posts.pop() or None
 
 
@@ -148,8 +152,7 @@ def build_tags():
         next = i < len(g.tags) and g.tags[i] or None
         page = template.render(tag=tag, prev=prev,
             next=next)
-        tag_file = os.path.join("tag", "%s.html" % tag.name.lower())
-        write(tag_file, page)
+        write(tag.permalink, page)
         prev = tag
 
 
@@ -229,7 +232,8 @@ def build():
         return
 
     if os.path.exists(config.config.output):
-        call('rm -rf *', cwd=config.config.output)
+        cwd = os.path.abspath(config.config.output)
+        call('rm -rf *', cwd=cwd)
     else:
         os.makedirs(config.config.output)
 

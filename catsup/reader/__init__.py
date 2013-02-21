@@ -53,7 +53,7 @@ def load_post(filename):
         date=date,
         updated=os.stat(path).st_ctime,
     )
-    post.permalink = config.config.permalink.format(**post)
+    post.permalink = config.permalink.post.format(**post)
     try:
         f = open(path, 'r')
     except IOError:
@@ -69,7 +69,8 @@ def load_post(filename):
                 tags = line.split(':', 1)[1].strip()
 
                 for tag in tags.split(','):
-                    post.tags.append(xhtml_escape(tag.strip().lower()))
+                    tag = Tag(xhtml_escape(tag.strip()))
+                    tag.append(post)
 
             elif 'comment' in line_lower:
                 status = line_lower.split(':')[-1].strip()
@@ -123,9 +124,6 @@ def load_posts():
     g.posts = posts
 
     for post in posts:
-        for tag in post.tags:
-            Tag(tag).append(post)
-
         year = post.date[:4]
         Archive(year).append(post)
 
