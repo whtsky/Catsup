@@ -1,17 +1,17 @@
+instances = {}
+
+
 class Tag(object):
-
-    instances = {}
-    instance_posts = {}
-
     def __new__(cls, name):
-        if name.lower() in Tag.instances:
-            return Tag.instances[name.lower()]
-        tag = super(Tag, cls).__new__(cls, name)
-        Tag.instances[name.lower()] = tag
+        if name.lower() in instances:
+            return instances[name.lower()]
+        tag = super(Tag, cls).__new__(cls)
+        instances[name.lower()] = tag
         return tag
 
     def __init__(self, name):
         self.name = name
+        self.posts = []
 
     def append(self, post):
         self.posts.append(post)
@@ -20,19 +20,12 @@ class Tag(object):
     def count(self):
         return len(self.posts)
 
-    @property
-    def posts(self):
-        if self.name in Tag.instance_posts:
-            return Tag.instance_posts[self.name]
-        posts = []
-        Tag.instance_posts[self.name] = posts
-        return posts
-
     @staticmethod
     def sort():
-        tags = sorted(Tag.instances.values(),
+        global instances
+        tags = sorted(instances.values(),
                       key=lambda x: x.count, reverse=True)
-        Tag.tags = {}
+        instances = {}
         return tags
 
     def __iter__(self):
