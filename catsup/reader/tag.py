@@ -13,7 +13,8 @@ class Tag(object):
 
     def __init__(self, name):
         self.name = name
-        self.posts = []
+        if not hasattr(self, "posts"):
+            self.posts = []
         self.permalink = config.permalink.tag.format(name=name)
 
     def append(self, post):

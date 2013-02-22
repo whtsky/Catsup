@@ -11,7 +11,8 @@ class Archive(object):
 
     def __init__(self, name):
         self.name = name
-        self.posts = []
+        if not hasattr(self, "posts"):
+            self.posts = []
 
     def append(self, post):
         self.posts.append(post)
