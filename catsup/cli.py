@@ -175,16 +175,15 @@ def themes():
 
 
 @parguments.command
-def install(theme, g):
+def install(theme):
     """
     Usage:
-        catsup install <theme> [-g|--global]
+        catsup install <theme>
 
     Options:
-        -g --global             install theme to global theme folder.
         -h --help               Show this screen and exit.
     """
-    catsup.themes.install(path=theme, g=g)
+    catsup.themes.install(path=theme)
 
 
 @parguments.command

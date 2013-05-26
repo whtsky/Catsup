@@ -82,7 +82,7 @@ def list():
         print('----')
 
 
-def install(path, g):
+def install(path):
     try:
         theme = find(path)
     except Exception:
@@ -98,8 +98,6 @@ def install(path, g):
         sys.exit(0)
 
     themes_path = os.path.abspath('themes')
-    if g:
-        themes_path = os.path.join(g.catsup_path, 'themes')
 
     logging.info('Installing theme from %s' % path)
 
