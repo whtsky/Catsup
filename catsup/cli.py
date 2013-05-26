@@ -1,13 +1,11 @@
-#!/usr/bin/env python
-
 import sys
-major, minor = sys.version_info[:2]
+import os
+import logging
+
+major = sys.version_info[0]
 if major < 3:
     reload(sys)
     sys.setdefaultencoding('utf-8')
-
-import os
-import logging
 
 from catsup.options import config, g, enable_pretty_logging
 
@@ -40,7 +38,7 @@ Usage:
     catsup --version
 
 Options:
-    -h --help               show this screen.
+    -h --help               Show this screen and exit.
     -s --settings=<file>    specify a config file. [default: config.json]
     -f --file=<file>        specify a wordpress output file.
     -o --output=<dir>       specify a output folder. [default: .]
@@ -62,45 +60,42 @@ parguments = Parguments(doc, version=catsup.__version__)
 
 
 @parguments.command
-def init(args):
+def init(path):
     """
-Usage:
-    catsup init [<path>] [-s <file>|--settings=<file>]
+    Usage:
+        catsup init [<path>]
 
-Options:
-    -h --help               show this screen.
-    -s --settings=<file>    specify a setting file. [default: config.json]
+    Options:
+        -h --help               Show this screen and exit.
     """
-    catsup.config.init(args.get('<path>'))
+    catsup.config.init(path)
 
 
 @parguments.command
-def build(args):
+def build(settings):
     """
-Usage:
-    catsup build [-s <file>|--settings=<file>]
+    Usage:
+        catsup build [-s <file>|--settings=<file>]
 
-Options:
-    -h --help               show this screen.
-    -s --settings=<file>    specify a setting file. [default: config.json]
+    Options:
+        -h --help               Show this screen and exit.
+        -s --settings=<file>    specify a setting file. [default: config.json]
     """
-    path = args.get('--settings')
-    catsup.config.load(path)
+    catsup.config.load(settings)
     catsup.build.build()
 
 
 @parguments.command
-def deploy(args):
+def deploy(settings):
     """
-Usage:
-    catsup deploy [-s <file>|--settings=<file>]
+    Usage:
+        catsup deploy [-s <file>|--settings=<file>]
 
-Options:
-    -h --help               show this screen.
-    -s --settings=<file>    specify a setting file. [default: config.json]
+    Options:
+        -h --help               Show this screen and exit.
+        -s --settings=<file>    specify a setting file. [default: config.json]
     """
-    path = args.get('--settings')
-    catsup.config.load(path)
+    catsup.config.load(settings)
     if config.deploy.default == 'git':
         catsup.deploy.git()
     elif config.deploy.default == 'rsync':
@@ -110,109 +105,101 @@ Options:
 
 
 @parguments.command
-def git(args):
+def git(settings):
     """
-Usage:
-    catsup git [-s <file>|--settings=<file>]
+    Usage:
+        catsup git [-s <file>|--settings=<file>]
 
-Options:
-    -h --help               show this screen.
-    -s --settings=<file>    specify a setting file. [default: config.json]
+    Options:
+        -h --help               Show this screen and exit.
+        -s --settings=<file>    specify a setting file. [default: config.json]
     """
-    path = args.get('--settings')
-    catsup.config.load(path)
+    catsup.config.load(settings)
     catsup.deploy.git()
 
 
 @parguments.command
-def rsync(args):
+def rsync(settings):
     """
-Usage:
-    catsup rsync [-s <file>|--settings=<file>]
+    Usage:
+        catsup rsync [-s <file>|--settings=<file>]
 
-Options:
-    -h --help               show this screen.
-    -s --settings=<file>    specify a setting file. [default: config.json]
+    Options:
+        -h --help               Show this screen and exit.
+        -s --settings=<file>    specify a setting file. [default: config.json]
     """
-    path = args.get('--settings')
-    catsup.config.load(path)
+    catsup.config.load(settings)
     catsup.deploy.rsync()
 
 
 @parguments.command
-def server(args):
+def server(settings, port):
     """
-Usage:
-    catsup server [-s <file>|--settings=<file>] [-p <port>|--port=<port>]
+    Usage:
+        catsup server [-s <file>|--settings=<file>] [-p <port>|--port=<port>]
 
-Options:
-    -h --help               show this screen.
-    -s --settings=<file>    specify a setting file. [default: config.json]
-    -p --port=<port>        specify the server port. [default: 8888]
+    Options:
+        -h --help               Show this screen and exit.
+        -s --settings=<file>    specify a setting file. [default: config.json]
+        -p --port=<port>        specify the server port. [default: 8888]
     """
-    path = args.get('--settings')
-    catsup.config.load(path)
-    port = args.get('--port')
+    catsup.config.load(settings)
     catsup.server.preview(port=port)
 
 
 @parguments.command
-def webhook(args):
+def webhook(settings, port):
     """
-Usage:
-    catsup webhook [-s <file>|--settings=<file>] [-p <port>|--port=<port>]
+    Usage:
+        catsup webhook [-s <file>|--settings=<file>] [-p <port>|--port=<port>]
 
-Options:
-    -h --help               show this screen.
-    -s --settings=<file>    specify a setting file. [default: config.json]
-    -p --port=<port>        specify the server port. [default: 8888]
+    Options:
+        -h --help               Show this screen and exit.
+        -s --settings=<file>    specify a setting file. [default: config.json]
+        -p --port=<port>        specify the server port. [default: 8888]
     """
-    path = args.get('--settings')
-    catsup.config.load(path)
-    port = args.get('--port')
+    catsup.config.load(settings)
     catsup.server.webhook(port=port)
 
 
 @parguments.command
-def themes(args):
+def themes():
     """
-Usage:
-    catsup themes
+    Usage:
+        catsup themes
 
-Options:
-    -h --help               show this screen.
+    Options:
+        -h --help               Show this screen and exit.
     """
     catsup.themes.list()
 
 
 @parguments.command
-def install(args):
+def install(theme, g):
     """
-Usage:
-    catsup install <theme> [-g|--global]
+    Usage:
+        catsup install <theme> [-g|--global]
 
-Options:
-    -g --global             install theme to global theme folder.
-    -h --help               show this screen.
+    Options:
+        -g --global             install theme to global theme folder.
+        -h --help               Show this screen and exit.
     """
-    g = args.get('--global')
-    path = args.get('<theme>')
-    catsup.themes.install(path=path, g=g)
+    catsup.themes.install(path=theme, g=g)
 
 
 @parguments.command
-def migrate(args):
+def migrate(wordpress, file, output):
     """
-Usage:
-    catsup migrate --wordpress -f <file>|--file=<file> [-o <dir>|--output=<dir>]
+    Usage:
+        catsup migrate --wordpress -f <file>|--file=<file> [-o <dir>|--output=<dir>]
 
-Options:
-    -h --help               show this screen.
-    -f --file=<file>        specify a wordpress output file.
-    -o --output=<dir>       specify a output folder. [default: .]
+    Options:
+        -h --help               Show this screen and exit.
+        -f --file=<file>        specify a wordpress output file.
+        -o --output=<dir>       specify a output folder. [default: .]
     """
-    if args.get('--wordpress'):
-        catsup.migrate.wordpress(args)
+    if wordpress:
+        catsup.migrate.wordpress(file, output)
 
 
 def main():

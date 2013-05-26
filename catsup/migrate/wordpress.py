@@ -62,9 +62,7 @@ def write_posts(items, folder):
         write(filename, post)
 
 
-def migrate(args):
-    filename = args.get('--file')
-    output = args.get('--output')
+def migrate(filename, output):
     try:
         with open(filename) as f:
             xml = f.read().replace('creativeCommons:', '')

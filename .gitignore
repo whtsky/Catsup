@@ -39,3 +39,8 @@ pip-log.txt
 
 #Sphinx
 docs/_build/
+
+#Virtualenv
+.Python
+lib/
+include/
