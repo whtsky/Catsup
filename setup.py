@@ -1,12 +1,3 @@
-#!/usr/bin/env python
-#coding=utf-8
-
-import sys
-kwargs = {}
-major, minor = sys.version_info[:2]
-if major >= 3:
-    kwargs['use_2to3'] = True
-
 from setuptools import setup, find_packages
 
 import catsup
@@ -14,8 +5,8 @@ import catsup
 setup(
     name='catsup',
     version=catsup.__version__,
-    author='whtsky, messense',
-    author_email='whtsky@me.com, wapdevelop@gmail.com',
+    author='whtsky',
+    author_email='whtsky@me.com',
     url='https://github.com/whtsky/catsup',
     packages=find_packages(),
     description='Catsup: a lightweight static site generator',
@@ -42,5 +33,4 @@ setup(
     ],
     tests_require=['nose'],
     test_suite='nose.collector',
-    **kwargs
 )
