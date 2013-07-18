@@ -1,7 +1,9 @@
+import os
 import sys
 import subprocess
 
-from catsup.options import config, g
+from tornado.util import ObjectDict
+from catsup.options import g
 
 py = sys.version_info
 py3k = py >= (3, 0, 0)
@@ -9,6 +11,26 @@ py3k = py >= (3, 0, 0)
 if py3k:
     basestring = str
     unicode = str
+
+
+def static_url(file):
+    import os
+    import hashlib
+
+    from catsup.logger import logger
+    from catsup.options import g
+
+    def get_hash(path):
+        path = os.path.join(g.theme.path, 'static', path)
+        if not os.path.exists(path):
+            logger.warn("%s does not exist." % path)
+            return ''
+
+        with open(path, 'r') as f:
+            return hashlib.md5(f.read()).hexdigest()[:4]
+
+    hsh = get_hash(file)
+    return '%s/%s?v=%s' % (g.static_prefix, file, hsh)
 
 
 def to_unicode(value):
@@ -23,59 +45,14 @@ def to_unicode(value):
     return value
 
 
-class Pagination(object):
-
-    def __init__(self, page):
-        self.total_items = g.posts
-        self.page = page
-        self.per_page = config.config.per_page
-
-    def iter_pages(self, edge=4):
-        if self.page <= edge:
-            return range(1, min(self.pages, 2 * edge + 1) + 1)
-        if self.page + edge > self.pages:
-            return range(max(self.pages - 2 * edge, 1), self.pages + 1)
-        return range(self.page - edge, min(self.pages, self.page + edge) + 1)
-
-    @property
-    def pages(self):
-        return int((self.total - 1) / self.per_page) + 1
-
-    @property
-    def has_prev(self):
-        return self.page > 1
-
-    @property
-    def prev_permalink(self):
-        if (not g.theme.has_index) and self.prev_num == 1:
-            return '/'
-        return "/page/%s.html" % self.prev_num
-
-    @property
-    def prev_num(self):
-        return self.page - 1
-
-    @property
-    def has_next(self):
-        return self.page < self.pages
-
-    @property
-    def next_permalink(self):
-        return "/page/%s.html" % self.next_num
-
-    @property
-    def next_num(self):
-        return self.page + 1
-
-    @property
-    def total(self):
-        return len(self.total_items)
-
-    @property
-    def items(self):
-        start = (self.page - 1) * self.per_page
-        end = self.page * self.per_page
-        return self.total_items[start:end]
+def update_nested_dict(a, b):
+    for k, v in b.iteritems():
+        if isinstance(v, dict):
+            d = a.setdefault(k, ObjectDict())
+            update_nested_dict(d, v)
+        else:
+            a[k] = v
+    return a
 
 
 def call(cmd, silence=False, **kwargs):
@@ -102,3 +79,29 @@ def check_rsync():
     :return: Bool. True for installed and False for not.
     """
     return call('rsync --help', silence=True) == 0
+
+
+def mkdir(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+
+def smart_copy(source, target):
+    def copy_file(source, target):
+        if os.path.exists(target):
+            if os.path.getsize(source) == os.path.getsize(target):
+                return
+        open(target, "wb").write(open(source, "rb").read())
+
+    if os.path.isfile(source):
+        return copy_file(source, target)
+
+    for f in os.listdir(source):
+        sourcefile = os.path.join(source, f)
+        targetfile = os.path.join(target, f)
+        if os.path.isfile(sourcefile):
+            smart_copy(sourcefile, targetfile)
+        else:
+            if not os.path.exists(targetfile):
+                os.makedirs(targetfile)
+            smart_copy(sourcefile, targetfile)

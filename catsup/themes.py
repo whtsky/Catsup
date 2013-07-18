@@ -7,7 +7,7 @@ import shutil
 
 from tornado.util import ObjectDict
 from catsup.logger import logger
-from catsup.options import config, g
+from catsup.options import g
 from catsup.utils import call
 
 
@@ -45,7 +45,7 @@ def read_meta(path):
     return theme
 
 
-def find(theme_name=''):
+def find(config, theme_name=''):
     if not theme_name:
         theme_name = config.theme.name
     theme_name = theme_name.lower()

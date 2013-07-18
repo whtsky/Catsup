@@ -1,37 +1,35 @@
 {
     "site": {
         "name": "blogname",
+        "description": "Just another catsup blog",
         "url": "http://blog.com"
     },
 
     "author": {
         "name": "nickname",
+        "email": "name@exmaple.com",
         "twitter": "twitter"
     },
 
     "config": {
         "source": "posts",
         "output": "deploy",
-        "static": "deploy/static",
         "static_prefix": "/static/",
-        "feed": "/feed.xml",
-        "per_page": 3,
-        "posts_on_feed": 5,
-        "analytics": "",
-        "display_summary": false,
-        "escape_md": false
+        "analytics": ""
     },
 
     "permalink": {
-        "post": "/{year}-{month}-{day}-{filename}.html",
-        "tag": "/tag/{name}.html"
+        "page": "/page/{page}/",
+        "post": "/{year}-{month}-{day}-{title}/",
+        "tag": "/tag/{name}/",
+        "tags": "/tag/index.html",
+        "archive": "/archive/{year}/",
+        "archives": "/archive/index.html",
+        "feed": "/feed.xml"
     },
 
     "comment": {
-        "allow": true,
-        "system": "disqus",
-        "disqus": "catsup",
-        "duoshuo": "catsup"
+        "disqus": "catsup"
     },
 
     "deploy": {

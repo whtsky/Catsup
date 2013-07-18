@@ -1,13 +1,14 @@
-#coding=utf-8
-from __future__ import with_statement
 import os
 import sys
 
-from tornado.escape import json_decode
 from tornado.util import ObjectDict
+from tornado.escape import json_decode
 from parguments.cli import prompt, prompt_bool
 
-from catsup.options import config, g
+from catsup.logger import logger
+from catsup.options import g
+from catsup.utils import update_nested_dict
+
 import catsup.themes
 
 
@@ -17,7 +18,6 @@ def get_template():
 
 
 def init(path):
-
     if path:
         os.chdir(path)
 
@@ -46,17 +46,6 @@ def init(path):
     print('Plese edit the generated config.json to configure your blog. ')
 
 
-def update_config(base, update):
-    for k in update:
-        v = update[k]
-        if isinstance(v, dict):
-            if k not in base:
-                base[k] = ObjectDict()
-            update_config(base[k], v)
-        else:
-            base[k] = v
-
-
 def parse(path):
     """
     Parser json configuration file
@@ -69,24 +58,28 @@ def parse(path):
         if prompt_bool("Create a new config file", default=True):
             init('')
         else:
-            import logging
-            logging.error("Can't find config file."
-                          "Exiting catsup.")
-            sys.exit(0)
-    else:
-        update_config(config, json_decode(f.read()))
+            logger.error("Can't find config file."
+                         "Exiting catsup.")
+        sys.exit(0)
+    return update_nested_dict(ObjectDict(), json_decode(f.read()))
 
 
-def load(path):
+def load(path=None):
     # Read default configuration file first.
     # So catsup can use the default value when user's conf is missing.
     # And user does't have to change conf file everytime he updates catsup.
-    parse(os.path.join(g.public_templates_path, 'config.json'))
-    parse(path)
-    os.chdir(os.path.abspath(os.path.dirname(path)))
-    g.theme = catsup.themes.find()
+    default_config = os.path.join(g.public_templates_path, 'config.json')
+    config = parse(default_config)
 
-    update_config(g.theme.vars, config.theme.vars)
-    update_config(config.theme.vars, g.theme.vars)
+    if path:
+        user_config = parse(path)
+        config = update_nested_dict(config, user_config)
+        os.chdir(os.path.abspath(os.path.dirname(path)))
+    g.theme = catsup.themes.find(config)
+    g.source = config.config.source
+    g.output = config.config.output
+    g.permalink = config.permalink
+    g.static_prefix = config.config.static_prefix.rstrip('/')
 
-    config.config.static_prefix = config.config.static_prefix.rstrip('/')
+    config.theme.vars = update_nested_dict(config.theme.vars, g.theme.vars)
+    return config

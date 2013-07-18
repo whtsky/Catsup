@@ -6,7 +6,7 @@ if major < 3:
     reload(sys)
     sys.setdefaultencoding('utf-8')
 
-from catsup.options import config, g
+from catsup.options import g
 from catsup.logger import logger, enable_pretty_logging
 
 enable_pretty_logging()
@@ -32,7 +32,7 @@ Usage:
     catsup server [-s <file>|--settings=<file>] [-p <port>|--port=<port>]
     catsup webhook [-s <file>|--settings=<file>] [-p <port>|--port=<port>]
     catsup themes
-    catsup install <theme> [-g|--global]
+    catsup install <theme>
     catsup migrate --wordpress -f <file>|--file=<file> [-o <dir>|--output=<dir>]
     catsup -h | --help
     catsup --version
@@ -45,14 +45,6 @@ Options:
     -p --port=<port>        specify the server port. [default: 8888]
     -g --global             install theme to global theme folder.
 """ % catsup.__version__
-
-import catsup.config
-import catsup.server
-import catsup.themes
-import catsup.build
-import catsup.deploy
-import catsup.migrate
-
 
 from parguments import Parguments
 
@@ -68,7 +60,8 @@ def init(path):
     Options:
         -h --help               Show this screen and exit.
     """
-    catsup.config.init(path)
+    import catsup.parser.config
+    catsup.parser.config.init(path)
 
 
 @parguments.command
@@ -81,8 +74,9 @@ def build(settings):
         -h --help               Show this screen and exit.
         -s --settings=<file>    specify a setting file. [default: config.json]
     """
-    catsup.config.load(settings)
-    catsup.build.build()
+    from catsup.generator import Generator
+    generator = Generator(settings)
+    generator.generate()
 
 
 @parguments.command
@@ -95,7 +89,9 @@ def deploy(settings):
         -h --help               Show this screen and exit.
         -s --settings=<file>    specify a setting file. [default: config.json]
     """
-    catsup.config.load(settings)
+    import catsup.parser.config
+    import catsup.deploy
+    config = catsup.parser.config.load(settings)
     if config.deploy.default == 'git':
         catsup.deploy.git()
     elif config.deploy.default == 'rsync':
@@ -114,7 +110,9 @@ def git(settings):
         -h --help               Show this screen and exit.
         -s --settings=<file>    specify a setting file. [default: config.json]
     """
-    catsup.config.load(settings)
+    import catsup.parser.config
+    import catsup.deploy
+    catsup.parser.config.load(settings)
     catsup.deploy.git()
 
 
@@ -128,7 +126,9 @@ def rsync(settings):
         -h --help               Show this screen and exit.
         -s --settings=<file>    specify a setting file. [default: config.json]
     """
-    catsup.config.load(settings)
+    import catsup.parser.config
+    import catsup.deploy
+    catsup.parser.config.load(settings)
     catsup.deploy.rsync()
 
 
@@ -143,7 +143,9 @@ def server(settings, port):
         -s --settings=<file>    specify a setting file. [default: config.json]
         -p --port=<port>        specify the server port. [default: 8888]
     """
-    catsup.config.load(settings)
+    import catsup.parser.config
+    import catsup.server
+    catsup.parser.config.load(settings)
     catsup.server.preview(port=port)
 
 
@@ -158,7 +160,9 @@ def webhook(settings, port):
         -s --settings=<file>    specify a setting file. [default: config.json]
         -p --port=<port>        specify the server port. [default: 8888]
     """
-    catsup.config.load(settings)
+    import catsup.parser.config
+    import catsup.server
+    catsup.parser.config.load(settings)
     catsup.server.webhook(port=port)
 
 
@@ -171,6 +175,7 @@ def themes():
     Options:
         -h --help               Show this screen and exit.
     """
+    import catsup.themes
     catsup.themes.list()
 
 
@@ -183,6 +188,7 @@ def install(theme):
     Options:
         -h --help               Show this screen and exit.
     """
+    import catsup.themes
     catsup.themes.install(path=theme)
 
 
@@ -197,6 +203,7 @@ def migrate(wordpress, file, output):
         -f --file=<file>        specify a wordpress output file.
         -o --output=<dir>       specify a output folder. [default: .]
     """
+    import catsup.migrate
     if wordpress:
         catsup.migrate.wordpress(file, output)
 

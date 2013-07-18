@@ -1,9 +1,10 @@
 import misaka as m
+
+from houdini import escape_html
 from pygments import highlight
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name
 from pygments.util import ClassNotFound
-from tornado.escape import xhtml_escape
 
 
 class CatsupRender(m.HtmlRenderer, m.SmartyPants):
@@ -11,7 +12,7 @@ class CatsupRender(m.HtmlRenderer, m.SmartyPants):
         try:
             lexer = get_lexer_by_name(lang, stripall=True)
         except ClassNotFound:
-            text = xhtml_escape(text.strip())
+            text = escape_html(text.strip())
             return '\n<pre><code>%s</code></pre>\n' % text
         else:
             formatter = HtmlFormatter()
@@ -26,17 +27,9 @@ class CatsupRender(m.HtmlRenderer, m.SmartyPants):
             s = '<a href="{link}">{link}</a>'
         return s.format(link=link)
 
-# Allow use raw html in .md files
-md_raw = m.Markdown(CatsupRender(flags=m.HTML_USE_XHTML),
-    extensions=m.EXT_FENCED_CODE |
-               m.EXT_NO_INTRA_EMPHASIS |
-               m.EXT_AUTOLINK |
-               m.EXT_STRIKETHROUGH |
-               m.EXT_SUPERSCRIPT)
-
-md_escape = m.Markdown(CatsupRender(flags=m.HTML_ESCAPE | m.HTML_USE_XHTML),
-    extensions=m.EXT_FENCED_CODE |
-               m.EXT_NO_INTRA_EMPHASIS |
-               m.EXT_AUTOLINK |
-               m.EXT_STRIKETHROUGH |
-               m.EXT_SUPERSCRIPT)
+md = m.Markdown(CatsupRender(flags=m.HTML_USE_XHTML),
+                    extensions=m.EXT_FENCED_CODE |
+                               m.EXT_NO_INTRA_EMPHASIS |
+                               m.EXT_AUTOLINK |
+                               m.EXT_STRIKETHROUGH |
+                               m.EXT_SUPERSCRIPT)

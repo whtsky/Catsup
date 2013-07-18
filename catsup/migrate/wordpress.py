@@ -1,10 +1,9 @@
 import os
 import sys
-import re
 import logging
 from xml.etree import ElementTree
 
-from catsup.config import get_template
+from catsup.parser.config import get_template
 from catsup.utils import to_unicode
 
 
