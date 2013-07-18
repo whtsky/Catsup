@@ -1,6 +1,7 @@
-Jinja2==2.6
-Pygments==1.6
+docopt==0.6.1
+Jinja2==2.7
+MarkupSafe==0.18
 misaka==1.0.2
-parguments==0.3.1
-tornado>=2.4.1
-wsgiref==0.1.2
+parguments==0.3.2
+Pygments==1.6
+tornado==3.1
