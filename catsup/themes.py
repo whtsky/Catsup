@@ -3,10 +3,10 @@ from __future__ import with_statement
 
 import sys
 import os
-import logging
 import shutil
 
 from tornado.util import ObjectDict
+from catsup.logger import logger
 from catsup.options import config, g
 from catsup.utils import call
 
@@ -20,7 +20,7 @@ def read_meta(path):
         return
     meta = os.path.join(path, 'theme.py')
     if not os.path.exists(meta):
-        logging.warn("%s is not a catsup theme." % path)
+        logger.warn("%s is not a catsup theme." % path)
         return
     theme = ObjectDict(
         name='',
@@ -39,8 +39,8 @@ def read_meta(path):
             # If your theme does not have index page,
             # catsup will rename page/1.html to page.html.
         if not os.path.exists(os.path.join(templates_path, page)):
-            logging.warning("%s announces a page %s"
-                         " which not exists." % (theme.name, page))
+            logger.warning("%s announces a page %s"
+                           " which not exists." % (theme.name, page))
     theme.name = theme.name.lower()
     return theme
 
@@ -90,16 +90,16 @@ def install(path):
     else:
         # Update theme
         if not os.path.exists(os.path.join(theme.path, '.git')):
-            logging.warn("%s is not installed via git."
-                         "Can't update it." % theme.name)
+            logger.warn("%s is not installed via git."
+                        "Can't update it." % theme.name)
         else:
-            logging.info("Updating theme %s" % theme.name)
+            logger.info("Updating theme %s" % theme.name)
             call('git pull', cwd=theme.path)
         sys.exit(0)
 
     themes_path = os.path.abspath('themes')
 
-    logging.info('Installing theme from %s' % path)
+    logger.info('Installing theme from %s' % path)
 
     if not os.path.exists(themes_path):
         os.makedirs(themes_path)
@@ -109,7 +109,7 @@ def install(path):
         if not meta:
             sys.exit(0)
         name = meta.name
-        logging.info("Found theme %s" % name)
+        logger.info("Found theme %s" % name)
 
         install_path = os.path.join(themes_path, name)
 
@@ -127,7 +127,7 @@ def install(path):
         os.rename(repo_folder, meta.name)
 
     else:
-        logging.error("Can't install theme from %s." % path)
+        logger.error("Can't install theme from %s." % path)
         sys.exit(0)
 
-    logging.info('Theme %s successfully installed' % name)
+    logger.info('Theme %s successfully installed' % name)

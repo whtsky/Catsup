@@ -1,13 +1,13 @@
 import sys
 import os
-import logging
 
 major = sys.version_info[0]
 if major < 3:
     reload(sys)
     sys.setdefaultencoding('utf-8')
 
-from catsup.options import config, g, enable_pretty_logging
+from catsup.options import config, g
+from catsup.logger import logger, enable_pretty_logging
 
 enable_pretty_logging()
 
@@ -101,7 +101,7 @@ def deploy(settings):
     elif config.deploy.default == 'rsync':
         catsup.deploy.rsync()
     else:
-        logging.error("Unknown deploy: %s" % config.deploy.default)
+        logger.error("Unknown deploy: %s" % config.deploy.default)
 
 
 @parguments.command

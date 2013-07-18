@@ -1,17 +1,17 @@
 import os
 import sys
 import datetime
-import logging
 
+from catsup.logger import logger
 from catsup.options import config
 from catsup.utils import call, check_git, check_rsync
 
 
 def git():
     if not check_git():
-        logging.error("Catsup can't find git.Please install git first.")
+        logger.error("Catsup can't find git.Please install git first.")
         sys.exit(1)
-    logging.info("Deploying your blog via git")
+    logger.info("Deploying your blog via git")
 
     cwd = os.path.abspath(config.config.output)
 
@@ -28,7 +28,7 @@ def git():
             _call('git branch -m %s' % config.deploy.git.branch, silence=True)
         _call(['git', 'pull', 'origin', config.deploy.git.branch])
 
-        logging.info("Rebuild your blog..")
+        logger.info("Rebuild your blog..")
         import catsup.build
         catsup.build.build()
 
@@ -46,9 +46,9 @@ def git():
 
 def rsync():
     if not check_rsync():
-        logging.error("Catsup can't find rsync.Please install rsync first.")
+        logger.error("Catsup can't find rsync.Please install rsync first.")
         sys.exit(1)
-    logging.info("Deploying your blog via rsync")
+    logger.info("Deploying your blog via rsync")
     if config.deploy.rsync.delete:
         args = "--delete"
     else:
