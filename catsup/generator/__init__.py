@@ -1,7 +1,6 @@
 import re
 import os
 import time
-import shutil
 from datetime import datetime
 import catsup.parser
 
@@ -13,8 +12,9 @@ from .models import *
 
 
 class Generator(object):
-    def __init__(self, config_path):
+    def __init__(self, config_path, base_url=None):
         self.config_path = config_path
+        self.base_url = base_url
 
     def reset(self):
         self.load_config()
@@ -23,7 +23,7 @@ class Generator(object):
         self.load_renderer()
 
     def load_config(self):
-        self.config = catsup.parser.config(self.config_path)
+        self.config = catsup.parser.config(self.config_path, self.base_url)
 
     def load_post(self, filename):
         path = os.path.join(g.source, filename)
@@ -46,7 +46,8 @@ class Generator(object):
 
             elif ':' in line_lower:  # property
                 name, value = line.split(':', 1)
-                post[name.strip()] = value.strip()
+                name = name.strip().lstrip('-').strip()
+                post[name] = value.strip()
 
             elif line.startswith('---'):
                 content = '\n'.join(lines[i + 1:])
@@ -54,7 +55,7 @@ class Generator(object):
                 post.render_content()
 
                 if "tags" in post:
-                    tag_names = post["tags"].split(",")
+                    tag_names = set(post["tags"].split(","))
                     post.tags = []
                     for tag in tag_names:
                         tag = tag.strip()

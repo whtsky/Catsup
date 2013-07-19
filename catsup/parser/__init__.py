@@ -6,5 +6,5 @@ def markdown(content, **kwargs):
     return md.render(content, **kwargs)
 
 
-def config(path):
-    return load(path)
+def config(*args, **kwargs):
+    return load(*args, **kwargs)

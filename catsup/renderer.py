@@ -3,7 +3,7 @@ import os
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 from catsup.logger import logger
 from catsup.options import g
-from catsup.utils import mkdir, static_url
+from catsup.utils import mkdir, static_url, url_for
 
 
 class Renderer(object):
@@ -22,7 +22,8 @@ class Renderer(object):
             comment=config.comment,
             theme=config.theme.vars,
             g=g,
-            static_url=static_url
+            static_url=static_url,
+            url_for=url_for
         )
 
         catsup_filter_path = os.path.join(g.catsup_path, 'filters.py')

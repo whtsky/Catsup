@@ -143,10 +143,9 @@ def server(settings, port):
         -s --settings=<file>    specify a setting file. [default: config.json]
         -p --port=<port>        specify the server port. [default: 8888]
     """
-    import catsup.parser.config
     import catsup.server
-    catsup.parser.config.load(settings)
-    catsup.server.preview(port=port)
+    server = catsup.server.PreviewServer(settings, port)
+    server.run()
 
 
 @parguments.command

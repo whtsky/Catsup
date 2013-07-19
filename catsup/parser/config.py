@@ -7,7 +7,9 @@ from parguments.cli import prompt, prompt_bool
 
 from catsup.logger import logger
 from catsup.options import g
-from catsup.utils import update_nested_dict
+from catsup.utils import update_nested_dict, urljoin
+
+from .utils import add_slash
 
 import catsup.themes
 
@@ -64,7 +66,7 @@ def parse(path):
     return update_nested_dict(ObjectDict(), json_decode(f.read()))
 
 
-def load(path=None):
+def load(path=None, base_url=None):
     # Read default configuration file first.
     # So catsup can use the default value when user's conf is missing.
     # And user does't have to change conf file everytime he updates catsup.
@@ -79,7 +81,17 @@ def load(path=None):
     g.source = config.config.source
     g.output = config.config.output
     g.permalink = config.permalink
-    g.static_prefix = config.config.static_prefix.rstrip('/')
+    if base_url:
+        g.base_url = add_slash(base_url)
+    else:
+        g.base_url = urljoin(
+            add_slash(config.site.domain),
+            add_slash(config.site.root_path)
+        )
+    g.static_prefix = urljoin(
+        g.base_url,
+        add_slash(config.config.static_prefix)
+    )
 
     config.theme.vars = update_nested_dict(config.theme.vars, g.theme.vars)
     return config
