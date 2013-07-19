@@ -147,7 +147,7 @@ class Generator(object):
         Archives(self.archives).render(self.renderer)
 
     def generate_other_pages(self):
-        pass
+        NotFound().render(self.renderer)
 
     def copy_static_files(self):
         static_path = os.path.join(
@@ -178,5 +178,6 @@ class Generator(object):
         self.generate_posts()
         self.generate_tags()
         self.generate_archives()
+        self.generate_other_pages()
         self.copy_static_files()
         logger.info("Generating finished in %.3fs" % (time.time() - t))

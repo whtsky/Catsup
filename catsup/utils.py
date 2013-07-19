@@ -40,12 +40,19 @@ def static_url(file):
 def url_for(obj):
     from catsup.options import g
     from catsup.generator.models import CatsupPage
+
+    url = ''
     if obj == 'index':
-        return g.base_url
-    if isinstance(obj, CatsupPage):
-        return obj.permalink
-    if isinstance(obj, str):
-        return g.permalink[obj]
+        url = g.base_url
+    elif isinstance(obj, CatsupPage):
+        url = obj.permalink
+    elif isinstance(obj, str):
+        url = g.permalink[obj]
+    if url:
+        return urljoin(
+            g.base_url,
+            url
+        )
 
 
 def to_unicode(value):

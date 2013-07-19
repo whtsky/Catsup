@@ -88,6 +88,7 @@ def load(path=None, base_url=None):
             add_slash(config.site.domain),
             add_slash(config.site.root_path)
         )
+    config.site.url = g.base_url
     g.static_prefix = urljoin(
         g.base_url,
         add_slash(config.config.static_prefix)

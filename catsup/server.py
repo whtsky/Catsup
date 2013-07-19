@@ -1,4 +1,5 @@
 import os
+import logging
 import tornado.web
 import tornado.httpserver
 import tornado.ioloop
@@ -26,6 +27,7 @@ class CatsupServer(object):
         pass
 
     def generate(self):
+        logging.getLogger().setLevel(logging.ERROR)  # silence Tornado
         self.generator.generate()
 
     def run(self):

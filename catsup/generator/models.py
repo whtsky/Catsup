@@ -120,3 +120,12 @@ class Feed(CatsupPage):
     def __init__(self, posts):
         self.posts = posts
         self.template_name = "feed.xml"
+
+
+class NotFound(CatsupPage):
+    def __init__(self):
+        self.template_name = "404.html"
+
+    @property
+    def permalink(self):
+        return "/404.html"

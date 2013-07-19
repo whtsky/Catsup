@@ -9,10 +9,10 @@
     <entry>
         <title><![CDATA[{{ post.title }}]]></title>
         <author><name>{{ author.name }}</name><uri>{{ site.url }}</uri></author>
-        <link href="{{ site.url }}{{ post.permalink }}"/>
+        <link href="{{ url_for(post) }}"/>
         <updated>{{ post.datetime | xmldatetime }}</updated>
         <published>{{ post.datetime | xmldatetime }}</published>
-        <id>{{ site.url }}{{ post.permalink }}</id>
+        <id>{{ url_for(post) }}</id>
         <content type="html">
             <![CDATA[
              {{ post.content }}
