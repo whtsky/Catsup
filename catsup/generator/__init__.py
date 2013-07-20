@@ -172,6 +172,9 @@ class Generator(object):
 
     def generate(self):
         self.reset()
+        if not self.posts:
+            logger.warning("Can't find any post. Stop building..")
+            exit()
         t = time.time()
         self.generate_feed()
         self.generate_pages()

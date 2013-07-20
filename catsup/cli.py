@@ -60,8 +60,8 @@ def init(path):
     Options:
         -h --help               Show this screen and exit.
     """
-    import catsup.parser.config
-    catsup.parser.config.init(path)
+    from catsup.parser.utils import create_config_file
+    create_config_file(path)
 
 
 @parguments.command
@@ -89,9 +89,9 @@ def deploy(settings):
         -h --help               Show this screen and exit.
         -s --settings=<file>    specify a setting file. [default: config.json]
     """
-    import catsup.parser.config
+    import catsup.parser
     import catsup.deploy
-    config = catsup.parser.config.load(settings)
+    config = catsup.parser.config(settings)
     if config.deploy.default == 'git':
         catsup.deploy.git()
     elif config.deploy.default == 'rsync':

@@ -45,9 +45,9 @@ def read_meta(path):
     return theme
 
 
-def find(config, theme_name=''):
+def find(theme_name=''):
     if not theme_name:
-        theme_name = config.theme.name
+        theme_name = g.theme.name
     theme_name = theme_name.lower()
     theme_gallery = [
         os.path.join(os.path.abspath('themes'), theme_name),
@@ -74,12 +74,15 @@ def list():
         for theme in names:
             themes.add(theme)
     print('Available themes: \n')
+    themes_text = []
     for name in themes:
         theme = find(name)
-        print('Name: %s' % theme.name)
-        print('Author: %s' % theme.author)
-        print('HomePage: %s' % theme.homepage)
-        print('----')
+        themes_text.append("\n".join([
+            'Name: %s' % theme.name,
+            'Author: %s' % theme.author,
+            'HomePage: %s' % theme.homepage
+        ]))
+    print("\n--------\n".join(themes_text))
 
 
 def install(path):

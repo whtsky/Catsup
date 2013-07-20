@@ -3,49 +3,15 @@ import sys
 
 from tornado.util import ObjectDict
 from tornado.escape import json_decode
-from parguments.cli import prompt, prompt_bool
 
+from parguments.cli import prompt_bool
 from catsup.logger import logger
 from catsup.options import g
 from catsup.utils import update_nested_dict, urljoin
 
-from .utils import add_slash
+from .utils import add_slash, create_config_file
 
 import catsup.themes
-
-
-def get_template():
-    default_config_path = os.path.join(g.public_templates_path, 'config.json')
-    return open(default_config_path, 'r').read()
-
-
-def init(path):
-    if path:
-        os.chdir(path)
-
-    current_dir = os.getcwd()
-    config_path = os.path.join(current_dir, 'config.json')
-
-    if os.path.exists(config_path):
-        print('These is a config.json in current directory(%s), '
-              'Have you run `catsup init` before?' % current_dir)
-        return
-
-    posts_folder = prompt('posts folder', default='posts')
-
-    deploy_folder = prompt('output folder', default='deploy')
-
-    if not (posts_folder.startswith('.') or os.path.exists(posts_folder)):
-        os.makedirs(posts_folder)
-
-    template = get_template().replace('posts', posts_folder)
-    template = template.replace('deploy', deploy_folder)
-
-    with open(config_path, 'w') as f:
-        f.write(template)
-
-    print('catsup init success!')
-    print('Plese edit the generated config.json to configure your blog. ')
 
 
 def parse(path):
@@ -58,10 +24,9 @@ def parse(path):
         print("Can't find config file %s" % path)
 
         if prompt_bool("Create a new config file", default=True):
-            init('')
+            create_config_file()
         else:
-            logger.error("Can't find config file."
-                         "Exiting catsup.")
+            logger.error("Can't find config file. Exiting..")
         sys.exit(0)
     return update_nested_dict(ObjectDict(), json_decode(f.read()))
 

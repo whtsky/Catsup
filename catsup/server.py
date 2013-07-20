@@ -5,6 +5,7 @@ import tornado.httpserver
 import tornado.ioloop
 import tornado.autoreload
 
+from tornado.log import access_log, app_log, gen_log
 from catsup.generator import Generator
 from catsup.logger import logger
 from catsup.options import g
@@ -23,15 +24,19 @@ class CatsupServer(object):
     def application(self):
         raise NotImplementedError()
 
+    def silence_tornado(self):
+        for logger in [access_log, app_log, gen_log]:
+            logger.setLevel(logging.ERROR)
+
     def prepare(self):
         pass
 
     def generate(self):
-        logging.getLogger().setLevel(logging.ERROR)  # silence Tornado
         self.generator.generate()
 
     def run(self):
         self.generate()
+        self.silence_tornado()
         self.prepare()
         http_server = tornado.httpserver.HTTPServer(self.application,
                                                     io_loop=self.ioloop)
