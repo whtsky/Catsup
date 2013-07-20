@@ -183,4 +183,4 @@ class Generator(object):
         self.generate_archives()
         self.generate_other_pages()
         self.copy_static_files()
-        logger.info("Generating finished in %.3fs" % (time.time() - t))
+        logger.info("Generated %s posts in %.3fs" % (len(self.posts), time.time() - t))
