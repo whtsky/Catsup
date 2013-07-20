@@ -1,4 +1,6 @@
 import os
+import time
+import functools
 import sys
 import subprocess
 
@@ -14,7 +16,26 @@ if py3k:
     unicode = str
 
 
-def static_url(file):
+def cache(f):
+    _cache = {}
+
+    @functools.wraps(f)
+    def wrapper(*args, **kwargs):
+        if args and kwargs:
+            return _cache.setdefault(
+                '-'.join(str(map(id, args)) + str(map(id, kwargs))),
+                f(*args, **kwargs)
+            )
+        else:
+            return _cache.setdefault(
+                "none",
+                f(*args, **kwargs)
+            )
+    return wrapper
+
+
+@cache
+def static_url(f):
     import os
     import hashlib
 
@@ -30,13 +51,14 @@ def static_url(file):
         with open(path, 'r') as f:
             return hashlib.md5(f.read()).hexdigest()[:4]
 
-    hsh = get_hash(file)
+    hsh = get_hash(f)
     return urljoin(
         g.static_prefix,
-        '%s?v=%s' % (file, hsh)
+        '%s?v=%s' % (f, hsh)
     )
 
 
+@cache
 def url_for(obj):
     from catsup.options import g
     from catsup.generator.models import CatsupPage
@@ -127,3 +149,11 @@ def smart_copy(source, target):
             if not os.path.exists(targetfile):
                 os.makedirs(targetfile)
             smart_copy(sourcefile, targetfile)
+
+
+def analytics_profile():
+    import hotshot.stats
+    stats = hotshot.stats.load("catsup.prof")
+    stats.strip_dirs()
+    stats.sort_stats('time', 'calls')
+    stats.print_stats(100)

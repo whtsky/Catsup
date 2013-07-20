@@ -1,8 +1,9 @@
 import os
 
+from tornado.util import ObjectDict
 from catsup.options import g
 from catsup.parser import markdown
-from tornado.util import ObjectDict
+from catsup.utils import cache
 from .utils import Pagination
 
 
@@ -12,11 +13,9 @@ class CatsupPage(ObjectDict):
         return self.__class__.__name__.lower()
 
     @property
+    @cache
     def permalink(self):
-        return self.setdefault(
-            "_permalink",
-            g.permalink[self.class_name].format(**self).replace(" ", "-")
-        )
+        return g.permalink[self.class_name].format(**self).replace(" ", "-")
 
     def render(self, renderer, **kwargs):
         template_name = self.get("template_name",
@@ -90,16 +89,16 @@ class Page(CatsupPage):
         self.posts = posts
         self.per_page = 5
 
-    def get_permalink(self, page):
+    @staticmethod
+    @cache
+    def get_permalink(page):
         if page == 1:
             return "/"
-        kwargs = self.copy()
-        kwargs["page"] = page
-        return g.permalink["page"].format(**kwargs)
+        return g.permalink["page"].format(page=page)
 
     @property
     def permalink(self):
-        return self.get_permalink(self.page)
+        return Page.get_permalink(self.page)
 
     def render_all(self, renderer):
         count = int((len(self.posts) - 1) / self.per_page) + 1
