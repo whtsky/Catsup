@@ -33,7 +33,6 @@ Usage:
     catsup webhook [-s <file>|--settings=<file>] [-p <port>|--port=<port>]
     catsup themes
     catsup install <theme>
-    catsup migrate --wordpress -f <file>|--file=<file> [-o <dir>|--output=<dir>]
     catsup -h | --help
     catsup --version
 
@@ -189,22 +188,6 @@ def install(theme):
     """
     import catsup.themes
     catsup.themes.install(path=theme)
-
-
-@parguments.command
-def migrate(wordpress, file, output):
-    """
-    Usage:
-        catsup migrate --wordpress -f <file>|--file=<file> [-o <dir>|--output=<dir>]
-
-    Options:
-        -h --help               Show this screen and exit.
-        -f --file=<file>        specify a wordpress output file.
-        -o --output=<dir>       specify a output folder. [default: .]
-    """
-    import catsup.migrate
-    if wordpress:
-        catsup.migrate.wordpress(file, output)
 
 
 def main():
