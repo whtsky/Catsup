@@ -32,22 +32,13 @@ def read_meta(path):
         vars={},
     )
     execfile(meta, {}, theme)
-    templates_path = os.path.join(path, 'templates')
-    for page in theme.pages:
-        if page == 'page.html':
-            theme.has_index = True
-            # If your theme does not have index page,
-            # catsup will rename page/1.html to page.html.
-        if not os.path.exists(os.path.join(templates_path, page)):
-            logger.warning("%s announces a page %s"
-                           " which not exists." % (theme.name, page))
     theme.name = theme.name.lower()
     return theme
 
 
-def find(theme_name=''):
+def find(config=None, theme_name=''):
     if not theme_name:
-        theme_name = g.theme.name
+        theme_name = config.theme.name
     theme_name = theme_name.lower()
     theme_gallery = [
         os.path.join(os.path.abspath('themes'), theme_name),
@@ -71,12 +62,14 @@ def list():
         if not os.path.exists(path):
             continue
         names = os.listdir(path)
-        for theme in names:
-            themes.add(theme)
+        for name in names:
+            theme_path = os.path.join(path, name)
+            if os.path.isdir(theme_path):
+                themes.add(name)
     print('Available themes: \n')
     themes_text = []
     for name in themes:
-        theme = find(name)
+        theme = find(theme_name=name)
         themes_text.append("\n".join([
             'Name: %s' % theme.name,
             'Author: %s' % theme.author,
