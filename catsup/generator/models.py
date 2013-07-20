@@ -13,9 +13,10 @@ class CatsupPage(ObjectDict):
 
     @property
     def permalink(self):
-        if "_permalink" in self:
-            return self.pop("_permalink")
-        return g.permalink[self.class_name].format(**self).replace(" ", "-")
+        return self.setdefault(
+            "_permalink",
+            g.permalink[self.class_name].format(**self).replace(" ", "-")
+        )
 
     def render(self, renderer, **kwargs):
         template_name = self.get("template_name",
