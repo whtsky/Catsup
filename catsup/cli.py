@@ -195,11 +195,4 @@ def main():
 
 
 if __name__ == '__main__':
-    if "--hotshot" in sys.argv:
-        sys.argv.remove("--hotshot")
-        import hotshot
-        prof = hotshot.Profile("catsup.prof")
-        prof.runcall(parguments.run)
-        prof.stop()
-    else:
-        parguments.run()
+    parguments.run()

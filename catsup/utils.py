@@ -149,11 +149,3 @@ def smart_copy(source, target):
             if not os.path.exists(targetfile):
                 os.makedirs(targetfile)
             smart_copy(sourcefile, targetfile)
-
-
-def analytics_profile():
-    import hotshot.stats
-    stats = hotshot.stats.load("catsup.prof")
-    stats.strip_dirs()
-    stats.sort_stats('time', 'calls')
-    stats.print_stats(100)
