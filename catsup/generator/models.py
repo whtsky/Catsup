@@ -3,7 +3,6 @@ import os
 from tornado.util import ObjectDict
 from catsup.options import g
 from catsup.parser import markdown
-from catsup.utils import cache
 from .utils import Pagination
 
 
@@ -13,7 +12,6 @@ class CatsupPage(ObjectDict):
         return self.__class__.__name__.lower()
 
     @property
-    @cache
     def permalink(self):
         return g.permalink[self.class_name].format(**self).replace(" ", "-")
 
@@ -90,7 +88,6 @@ class Page(CatsupPage):
         self.per_page = 5
 
     @staticmethod
-    @cache
     def get_permalink(page):
         if page == 1:
             return "/"

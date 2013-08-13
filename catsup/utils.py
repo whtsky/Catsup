@@ -16,25 +16,6 @@ if py3k:
     unicode = str
 
 
-def cache(f):
-    _cache = {}
-
-    @functools.wraps(f)
-    def wrapper(*args, **kwargs):
-        if args and kwargs:
-            return _cache.setdefault(
-                '-'.join(str(map(id, args)) + str(map(id, kwargs))),
-                f(*args, **kwargs)
-            )
-        else:
-            return _cache.setdefault(
-                "none",
-                f(*args, **kwargs)
-            )
-    return wrapper
-
-
-@cache
 def static_url(f):
     import os
     import hashlib
@@ -58,7 +39,6 @@ def static_url(f):
     )
 
 
-@cache
 def url_for(obj):
     from catsup.options import g
     from catsup.generator.models import CatsupPage

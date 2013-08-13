@@ -71,6 +71,8 @@ class WebhookHandler(tornado.web.RequestHandler):
         self.generate = generate
 
     def get(self):
+        logger.info(logger.handlers)
+
         call("git pull", cwd=self.path)
         self.generate()
         self.write("success.")
