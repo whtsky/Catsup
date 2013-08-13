@@ -1,5 +1,5 @@
 import os
-import time
+import shlex
 import functools
 import sys
 import subprocess
@@ -100,8 +100,7 @@ def update_nested_dict(a, b):
 
 
 def call(cmd, silence=False, **kwargs):
-    if isinstance(cmd, str):
-        cmd = cmd.split()
+    cmd = shlex.split(cmd)
     if 'cwd' not in kwargs:
         kwargs['cwd'] = g.cwdpath
     if silence and 'stdout' not in kwargs:

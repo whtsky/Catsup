@@ -158,10 +158,9 @@ def webhook(settings, port):
         -s --settings=<file>    specify a setting file. [default: config.json]
         -p --port=<port>        specify the server port. [default: 8888]
     """
-    import catsup.parser.config
     import catsup.server
-    catsup.parser.config.load(settings)
-    catsup.server.webhook(port=port)
+    server = catsup.server.WebhookServer(settings, port)
+    server.run()
 
 
 @parguments.command
