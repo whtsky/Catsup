@@ -1,6 +1,5 @@
 import os
 import shlex
-import functools
 import sys
 import subprocess
 
