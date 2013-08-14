@@ -23,9 +23,10 @@ class CatsupServer(object):
         raise NotImplementedError()
 
     def silence_tornado(self):
-        channel = logging.NullHandler()
         for logger in [access_log, app_log, gen_log]:
-            logger.handlers = [channel]
+            logger.handlers = []
+            logger.setLevel(logging.ERROR)
+
 
     def prepare(self):
         pass
