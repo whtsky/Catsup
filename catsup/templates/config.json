@@ -30,7 +30,10 @@
     },
 
     "comment": {
-        "disqus": "catsup"
+        "allow": true,
+        "system": "disqus",
+        "disqus": "catsup",
+        "duoshuo": "catsup"
     },
 
     "deploy": {

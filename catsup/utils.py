@@ -114,6 +114,9 @@ def smart_copy(source, target):
         if os.path.exists(target):
             if os.path.getsize(source) == os.path.getsize(target):
                 return
+        floder = os.path.dirname(target)
+        if not os.path.exists(floder):
+            os.makedirs(floder)
         open(target, "wb").write(open(source, "rb").read())
 
     if os.path.isfile(source):
