@@ -1,15 +1,40 @@
 import os
-import logging
+import catsup
 import tornado.web
 import tornado.httpserver
 import tornado.ioloop
 import tornado.autoreload
 
-from tornado.log import access_log, app_log, gen_log
 from catsup.generator import Generator
 from catsup.logger import logger
 from catsup.options import g
 from catsup.utils import call
+
+
+class CatsupHandler(tornado.web.RequestHandler):
+    def set_default_headers(self):
+        self.set_header("Server", "Catsup/%s" % catsup.__version__)
+
+    def log_exception(self, typ, value, tb):
+        pass
+
+
+class WebhookHandler(CatsupHandler):
+    def initialize(self, path, generate):
+        self.path = path
+        self.generate = generate
+
+    def get(self):
+        call("git pull", cwd=self.path)
+        self.generate()
+        self.write("success.")
+
+    def post(self):
+        self.get()
+
+
+class StaticFileHandler(CatsupHandler, tornado.web.StaticFileHandler):
+    pass
 
 
 class CatsupServer(object):
@@ -22,12 +47,6 @@ class CatsupServer(object):
     def application(self):
         raise NotImplementedError()
 
-    def silence_tornado(self):
-        for logger in [access_log, app_log, gen_log]:
-            logger.handlers = []
-            logger.setLevel(logging.ERROR)
-
-
     def prepare(self):
         pass
 
@@ -37,8 +56,10 @@ class CatsupServer(object):
     def run(self):
         self.generate()
         self.prepare()
-        self.silence_tornado()
-        http_server = tornado.httpserver.HTTPServer(self.application,
+        application = self.application
+        application.settings["log_function"] = lambda x: None
+        application.settings["static_handler_class"] = StaticFileHandler
+        http_server = tornado.httpserver.HTTPServer(application,
                                                     io_loop=self.ioloop)
         http_server.listen(self.port)
         logger.info("Start server at port %s" % self.port)
@@ -57,7 +78,7 @@ class PreviewServer(CatsupServer):
             "default_filename": "index.html"
         }
         return tornado.web.Application([
-            (r"/(.*)", tornado.web.StaticFileHandler, params),
+            (r"/(.*)", StaticFileHandler, params),
         ])
 
     def prepare(self):
@@ -66,27 +87,11 @@ class PreviewServer(CatsupServer):
         tornado.autoreload.add_reload_hook(self.generate)
 
 
-class WebhookHandler(tornado.web.RequestHandler):
-    def initialize(self, path, generate):
-        self.path = path
-        self.generate = generate
-
-    def get(self):
-        logger.info(logger.handlers)
-
-        call("git pull", cwd=self.path)
-        self.generate()
-        self.write("success.")
-
-    def post(self):
-        self.get()
-
-
 class WebhookServer(CatsupServer):
     @property
     def application(self):
         git_path = ""
-        for path in ["/", self.generator.config.config.source]:
+        for path in ["", self.generator.config.config.source]:
             path = os.path.abspath(os.path.join(
                 g.cwdpath,
                 path

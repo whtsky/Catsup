@@ -8,7 +8,7 @@ try:
 except ImportError:
     curses = None
 
-logger = logging.getLogger("catsup")
+logger = logging.getLogger()
 
 
 def enable_pretty_logging(level='info'):
