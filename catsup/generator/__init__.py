@@ -47,7 +47,7 @@ class Generator(object):
             elif ':' in line_lower:  # property
                 name, value = line.split(':', 1)
                 name = name.strip().lstrip('-').strip()
-                post[name] = value.strip()
+                setattr(post, name, value.strip())
 
             elif line.startswith('---'):
                 content = '\n'.join(lines[i + 1:])
@@ -74,6 +74,9 @@ class Generator(object):
                 else:
                     ctime = os.stat(path).st_ctime
                     post.datetime = datetime.fromtimestamp(ctime)
+
+                if "comment" not in post and not self.config.comment.allow:
+                    post["comment"] = "disabled"
                 year = post.datetime.strftime("%Y")
                 archive = self.archives.setdefault(year, Archive(year))
                 archive.add_post(post)
