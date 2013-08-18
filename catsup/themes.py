@@ -26,9 +26,8 @@ def read_meta(path):
         name='',
         author='',
         homepage='',
-        pages=[],
-        has_index=False,
         path=path,
+        post_per_page=5,
         vars={},
     )
     execfile(meta, {}, theme)

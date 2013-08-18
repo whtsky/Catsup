@@ -85,7 +85,7 @@ class Post(CatsupPage):
 class Page(CatsupPage):
     def __init__(self, posts):
         self.posts = posts
-        self.per_page = 5
+        self.per_page = g.theme.post_per_page
 
     @staticmethod
     def get_permalink(page):

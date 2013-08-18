@@ -4,9 +4,11 @@ Changelog
 Version 0.0.9
 --------------
 
-+ Support migrate from WordPress
-+ Support customize post permalink
-+ Support customize tag permalink
++ Post per page is defined by theme
++ Now catsup copy non-markdown files in source folder to deploy folder
++ Drop summary support
++ Support customize any permalink
++ Rewrite generator, parser and server
 
 Version 0.0.8
 --------------

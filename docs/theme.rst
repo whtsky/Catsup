@@ -53,9 +53,6 @@ A demo meta file ::
     name = 'sealscript'
     author = 'Lyric'
     homepage = 'https://github.com/whtsky/catsup-theme-sealscript'
-    pages = [
-        '404.html'
-    ]
     vars = {
         "github": "whtsky",
     }
@@ -65,17 +62,7 @@ A theme meta consists of :
 + name
 + author
 + homepage
-+ pages
 + vars
-
-What's Pages for?
-~~~~~~~~~~~~~~~~~
-
-By default, Catsup will render ``post.html`` for post,
-``page.html`` for pagination,
-``tag.html`` for tag page and
-``archive.html`` for archive page.
-If you want to render more template(like ``404.html``), please add template's name to ``pages``.
 
 What's Vars for?
 ~~~~~~~~~~~~~~~~~~
@@ -134,17 +121,17 @@ Use them like ::
 
     <html>
         <head>
-            <title>{{ post.title }}</title>
+            <title>{{ title }}</title>
             {% from 'utils.html' import meta, analytics %}
-            {{ meta(post) }}
-            {{ analytics }}
+            {{ meta() }}
+            {{ analytics() }}
         </head>
         <body>
             <article>
-                <h1>{{ post.title }}</h1>
-                {{ post.content }}
+                <h1>{{ title }}</h1>
+                {{ content }}
                 {% from 'utils.html' import render_comment %}
-                {{ render_comment }}
+                {{ render_comment() }}
             </article>
         </body>
     </html>
