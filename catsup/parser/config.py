@@ -59,5 +59,6 @@ def load(path=None, base_url=None):
         add_slash(config.config.static_prefix)
     )
 
-    config.theme.vars = update_nested_dict(config.theme.vars, g.theme.vars)
+    g.theme.vars = update_nested_dict(g.theme.vars, config.theme.vars)
+    config.theme.vars = g.theme.vars
     return config
