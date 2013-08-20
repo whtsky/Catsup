@@ -7,6 +7,8 @@ Version 0.0.9
 + Post per page is defined by theme
 + Now catsup copy non-markdown files in source folder to deploy folder
 + Drop summary support
++ Drop escape markdown support
++ Add root_path config
 + Support customize any permalink
 + Rewrite generator, parser and server
 

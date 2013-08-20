@@ -26,7 +26,7 @@ def static_url(f):
         path = os.path.join(g.theme.path, 'static', path)
         if not os.path.exists(path):
             logger.warn("%s does not exist." % path)
-            return ''
+            return
 
         with open(path, 'r') as f:
             return hashlib.md5(f.read()).hexdigest()[:4]
@@ -79,7 +79,8 @@ def update_nested_dict(a, b):
 
 
 def call(cmd, silence=False, **kwargs):
-    cmd = shlex.split(cmd)
+    if not isinstance(cmd, list):
+        cmd = shlex.split(cmd)
     if 'cwd' not in kwargs:
         kwargs['cwd'] = g.cwdpath
     if silence and 'stdout' not in kwargs:
@@ -113,9 +114,7 @@ def smart_copy(source, target):
         if os.path.exists(target):
             if os.path.getsize(source) == os.path.getsize(target):
                 return
-        floder = os.path.dirname(target)
-        if not os.path.exists(floder):
-            os.makedirs(floder)
+        mkdir(os.path.dirname(target))
         open(target, "wb").write(open(source, "rb").read())
 
     if os.path.isfile(source):
@@ -125,8 +124,6 @@ def smart_copy(source, target):
         sourcefile = os.path.join(source, f)
         targetfile = os.path.join(target, f)
         if os.path.isfile(sourcefile):
-            smart_copy(sourcefile, targetfile)
+            copy_file(sourcefile, targetfile)
         else:
-            if not os.path.exists(targetfile):
-                os.makedirs(targetfile)
             smart_copy(sourcefile, targetfile)
