@@ -1,12 +1,12 @@
-import re
-import os
 import time
 from datetime import datetime
-import catsup.parser
-
 from houdini import escape_html
+
+import re
+import os
+import catsup.parser
 from catsup.logger import logger
-from catsup.renderer import Renderer
+from catsup.generator.renderer import Renderer
 from catsup.utils import to_unicode, smart_copy
 from .models import *
 
