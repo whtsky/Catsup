@@ -25,7 +25,9 @@ class Renderer(object):
             url_for=url_for
         )
 
-        catsup_filter_path = os.path.join(g.catsup_path, 'filters.py')
+        catsup_filter_path = os.path.join(
+            g.catsup_path, "templates", 'filters.py'
+        )
         theme_filter_path = os.path.join(g.theme.path, 'filters.py')
         self.load_filters_from_pyfile(catsup_filter_path)
         self.load_filters_from_pyfile(theme_filter_path)
