@@ -5,10 +5,22 @@ import tornado.httpserver
 import tornado.ioloop
 import tornado.autoreload
 
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
+
 from catsup.generator import Generator
 from catsup.logger import logger
 from catsup.options import g
 from catsup.utils import call
+
+
+class CatsupEventHandler(FileSystemEventHandler):
+    def __init__(self, generator):
+        self.generator = generator
+
+    def on_any_event(self, event):
+        logger.info("Captured a file change. Regenerate..")
+        self.generator.generate()
 
 
 class CatsupHandler(tornado.web.RequestHandler):
@@ -85,6 +97,14 @@ class PreviewServer(CatsupServer):
         # Reload server when catsup modified.
         tornado.autoreload.start(self.ioloop)
         tornado.autoreload.add_reload_hook(self.generate)
+
+        event_handler = CatsupEventHandler(self.generator)
+        observer = Observer()
+        self.generator.load_config()
+        for path in [self.generator.config["config"]["source"], g.theme.path]:
+            path = os.path.abspath(path)
+            observer.schedule(event_handler, path=path, recursive=True)
+        observer.start()
 
 
 class WebhookServer(CatsupServer):

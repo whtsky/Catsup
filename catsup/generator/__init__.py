@@ -175,15 +175,15 @@ class Generator(object):
 
     def generate(self):
         self.reset()
-        if not self.posts:
-            logger.warning("Can't find any post. Stop building..")
-            exit()
         t = time.time()
-        self.generate_feed()
-        self.generate_pages()
-        self.generate_posts()
-        self.generate_tags()
-        self.generate_archives()
+        if self.posts:
+            self.generate_feed()
+            self.generate_pages()
+            self.generate_posts()
+            self.generate_tags()
+            self.generate_archives()
+        else:
+            logger.warning("Can't find any post.")
         self.generate_other_pages()
         self.copy_static_files()
         logger.info("Generated %s posts in %.3fs" % (len(self.posts), time.time() - t))
