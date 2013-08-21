@@ -42,7 +42,8 @@ class Renderer(object):
         try:
             return self.env.get_template(template).render(**kwargs)
         except TemplateNotFound:
-            logger.warning("Template not found: %s" % template)
+            # logger.warning("Template not found: %s" % template)
+            pass
 
     def render_to(self, template, path, **kwargs):
         mkdir(os.path.dirname(path))
