@@ -12,7 +12,7 @@ class Renderer(object):
             autoescape=False
         )
         config = generator.config
-        
+
         self.env.globals.update(
             generator=generator,
             site=config.site,

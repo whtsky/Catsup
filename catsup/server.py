@@ -81,7 +81,11 @@ class CatsupServer(object):
 class PreviewServer(CatsupServer):
     def __init__(self, settings, port):
         super(PreviewServer, self).__init__(settings, port)
-        self.generator = Generator(settings, base_url="http://127.0.0.1:%s/" % port)
+        self.generator = Generator(
+            settings,
+            base_url="http://127.0.0.1:%s/" %
+            port
+        )
 
     @property
     def application(self):

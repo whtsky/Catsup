@@ -28,8 +28,8 @@ class CatsupRender(m.HtmlRenderer, m.SmartyPants):
         return s.format(link=link)
 
 md = m.Markdown(CatsupRender(flags=m.HTML_USE_XHTML),
-                    extensions=m.EXT_FENCED_CODE |
-                               m.EXT_NO_INTRA_EMPHASIS |
-                               m.EXT_AUTOLINK |
-                               m.EXT_STRIKETHROUGH |
-                               m.EXT_SUPERSCRIPT)
+                extensions=m.EXT_FENCED_CODE |
+                m.EXT_NO_INTRA_EMPHASIS |
+                m.EXT_AUTOLINK |
+                m.EXT_STRIKETHROUGH |
+                m.EXT_SUPERSCRIPT)
