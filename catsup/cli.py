@@ -191,7 +191,3 @@ def install(theme):
 
 def main():
     parguments.run()
-
-
-if __name__ == '__main__':
-    parguments.run()
