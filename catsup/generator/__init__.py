@@ -34,7 +34,7 @@ class Generator(object):
             logger.error("Can't open file %s" % path)
             return
 
-        post = Post(filename=filename)
+        post = Post(filename=filename[:-3])
 
         lines = f.readlines()
         f.close()
