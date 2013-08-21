@@ -1,17 +1,14 @@
-import os
 import sys
 
+import os
 from tornado.util import ObjectDict
 from tornado.escape import json_decode
-
 from parguments.cli import prompt_bool
 from catsup.logger import logger
 from catsup.options import g
 from catsup.utils import update_nested_dict, urljoin
-
 from .utils import add_slash, create_config_file
-
-import catsup.themes
+import catsup.parser.themes
 
 
 def parse(path):
@@ -42,7 +39,7 @@ def load(path=None, base_url=None):
         user_config = parse(path)
         config = update_nested_dict(config, user_config)
         os.chdir(os.path.abspath(os.path.dirname(path)))
-    g.theme = catsup.themes.find(config)
+    g.theme = catsup.parser.themes.find(config)
     g.source = config.config.source
     g.output = config.config.output
     g.permalink = config.permalink

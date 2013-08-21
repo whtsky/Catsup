@@ -172,8 +172,8 @@ def themes():
     Options:
         -h --help               Show this screen and exit.
     """
-    import catsup.themes
-    catsup.themes.list()
+    import catsup.parser.themes
+    catsup.parser.themes.list()
 
 
 @parguments.command
@@ -185,8 +185,8 @@ def install(theme):
     Options:
         -h --help               Show this screen and exit.
     """
-    import catsup.themes
-    catsup.themes.install(path=theme)
+    import catsup.parser.themes
+    catsup.parser.themes.install(path=theme)
 
 
 def main():
