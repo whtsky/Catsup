@@ -92,9 +92,9 @@ def deploy(settings):
     import catsup.deploy
     config = catsup.parser.config(settings)
     if config.deploy.default == 'git':
-        catsup.deploy.git()
+        catsup.deploy.git(config)
     elif config.deploy.default == 'rsync':
-        catsup.deploy.rsync()
+        catsup.deploy.rsync(config)
     else:
         logger.error("Unknown deploy: %s" % config.deploy.default)
 
@@ -111,8 +111,8 @@ def git(settings):
     """
     import catsup.parser.config
     import catsup.deploy
-    catsup.parser.config.load(settings)
-    catsup.deploy.git()
+    config = catsup.parser.config(settings)
+    catsup.deploy.git(config)
 
 
 @parguments.command
@@ -127,8 +127,8 @@ def rsync(settings):
     """
     import catsup.parser.config
     import catsup.deploy
-    catsup.parser.config.load(settings)
-    catsup.deploy.rsync()
+    config = catsup.parser.config(settings)
+    catsup.deploy.rsync(config)
 
 
 @parguments.command

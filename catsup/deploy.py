@@ -1,16 +1,11 @@
 import os
-import sys
 import datetime
 
 from catsup.logger import logger
-from catsup.options import config
-from catsup.utils import call, check_git, check_rsync
+from catsup.utils import call
 
 
-def git():
-    if not check_git():
-        logger.error("Catsup can't find git.Please install git first.")
-        sys.exit(1)
+def git(config):
     logger.info("Deploying your blog via git")
 
     cwd = os.path.abspath(config.config.output)
@@ -22,32 +17,18 @@ def git():
         _call('rm -rf *')
         # Hasn't setup git.
         _call('git init', silence=True)
-        _call(['git', 'remote', 'add', 'origin', config.deploy.git.repo],
-            silence=False)
+        _call(['git', 'remote', 'add', 'origin', config.deploy.git.repo])
         if config.deploy.git.branch != 'master':
             _call('git branch -m %s' % config.deploy.git.branch, silence=True)
         _call(['git', 'pull', 'origin', config.deploy.git.branch])
 
-        logger.info("Rebuild your blog..")
-        import catsup.build
-        catsup.build.build()
-
-    # GitHub custom domain support
-    with open(os.path.join(cwd, 'CNAME'), 'w') as f:
-        domain = config.site.url.split('//')[-1].rstrip('/')
-        f.write(domain)
-
     _call('git add .', silence=True)
-    _call(['git', 'commit',
-             '-m', "Update at %s" % str(datetime.datetime.utcnow())],
+    _call('git commit -m "Update at %s" % str(datetime.datetime.utcnow())',
           silence=True)
     _call(['git', 'push', 'origin', config.deploy.git.branch])
 
 
-def rsync():
-    if not check_rsync():
-        logger.error("Catsup can't find rsync.Please install rsync first.")
-        sys.exit(1)
+def rsync(config):
     logger.info("Deploying your blog via rsync")
     if config.deploy.rsync.delete:
         args = "--delete"
@@ -62,4 +43,4 @@ def rsync():
         ssh_host=config.deploy.rsync.ssh_host,
         document_root=config.deploy.rsync.document_root
     )
-    os.system(cmd)
+    call(cmd)

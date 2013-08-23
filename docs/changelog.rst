@@ -12,6 +12,7 @@ Version 0.0.9
 + Add root_path config
 + Support customize any permalink
 + Rewrite generator, parser and server
++ Don't regenerate your site before deploy
 
 Version 0.0.8
 --------------

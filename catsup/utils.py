@@ -88,22 +88,6 @@ def call(cmd, silence=False, **kwargs):
     return subprocess.call(cmd, **kwargs)
 
 
-def check_git():
-    """
-    Check if the environment has git installed
-    :return: Bool. True for installed and False for not.
-    """
-    return call('git --help', silence=True) == 0
-
-
-def check_rsync():
-    """
-    Check if the environment has rsynv installed
-    :return: Bool. True for installed and False for not.
-    """
-    return call('rsync --help', silence=True) == 0
-
-
 def mkdir(path):
     if not os.path.exists(path):
         os.makedirs(path)
