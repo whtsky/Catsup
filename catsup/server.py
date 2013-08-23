@@ -20,7 +20,10 @@ class CatsupEventHandler(FileSystemEventHandler):
 
     def on_any_event(self, event):
         logger.info("Captured a file change. Regenerate..")
-        self.generator.generate()
+        try:
+            self.generator.generate()
+        except:
+            logger.error("Error when generating:", exc_info=True)
 
 
 class CatsupHandler(tornado.web.RequestHandler):

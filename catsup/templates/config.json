@@ -21,7 +21,7 @@
 
     "permalink": {
         "page": "/page/{page}/",
-        "post": "/{year}-{month}-{day}-{title}/",
+        "post": "/{title}/",
         "tag": "/tag/{name}/",
         "tags": "/tag/index.html",
         "archive": "/archive/{year}/",
