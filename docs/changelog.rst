@@ -11,7 +11,7 @@ Version 0.1.0
 + Now catsup copy non-markdown files in source folder to deploy folder
 + Drop summary support
 + Drop escape markdown support
-+ Add root_path config
++ Add sub path support
 + Support customize any permalink
 + Rewrite generator, parser and server
 + Don't regenerate your site before deploy
