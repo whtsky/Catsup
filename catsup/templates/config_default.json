@@ -1,0 +1,54 @@
+{
+    "site": {
+        "name": "blogname",
+        "description": "Just another catsup blog",
+        "base_url": "http://blog.com/"
+    },
+
+    "author": {
+        "name": "nickname",
+        "email": "name@exmaple.com",
+        "twitter": "twitter"
+    },
+
+    "config": {
+        "analytics": ""
+    },
+
+    "comment": {
+        "system": "disqus"
+    },
+
+    "deploy": {
+        "default": "rsync",
+
+        "git": {
+            "repo": "repo url here",
+            "branch": "master",
+            "delete": true
+        },
+
+        "rsync": {
+            "ssh_port": 22,
+            "ssh_user": "username",
+            "ssh_host": "123.45.6.78",
+            "document_root": "~/website.com/",
+            "delete": true
+        }
+    },
+
+    "theme": {
+        "name": "sealscript",
+        "vars": {
+            "description": "a blog",
+            "github": "whtsky",
+            "links": [
+                {
+                    "name": "catsup",
+                    "url": "https://github.com/whtsky/catsup",
+                    "description": "Awesome!"
+                }
+            ]
+        }
+    }
+}

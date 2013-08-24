@@ -20,7 +20,7 @@ def create_config_file(path=None):
         os.chdir(path)
 
     current_dir = os.getcwd()
-    config_path = os.path.join(current_dir, 'config.json')
+    config_path = os.path.join(current_dir, 'config_default.json')
 
     if os.path.exists(config_path):
         print('These is a config.json in current directory(%s), '
