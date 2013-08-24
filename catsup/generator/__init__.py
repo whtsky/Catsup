@@ -12,8 +12,9 @@ from .models import *
 
 
 class Generator(object):
-    def __init__(self, config_path, base_url=None):
+    def __init__(self, config_path, local=False, base_url=None):
         self.config_path = config_path
+        self.local = local
         self.base_url = base_url
 
     def reset(self):
@@ -23,7 +24,11 @@ class Generator(object):
         self.load_renderer()
 
     def load_config(self):
-        self.config = catsup.parser.config(self.config_path, self.base_url)
+        self.config = catsup.parser.config(
+            self.config_path,
+            local=self.local,
+            base_url=self.base_url
+        )
 
     def load_post(self, filename):
         path = os.path.join(g.source, filename)

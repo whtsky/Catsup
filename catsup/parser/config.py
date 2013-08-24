@@ -28,7 +28,7 @@ def parse(path):
     return update_nested_dict(ObjectDict(), json_decode(f.read()))
 
 
-def load(path=None, base_url=None):
+def load(path=None, local=False, base_url=None):
     # Read default configuration file first.
     # So catsup can use the default value when user's conf is missing.
     # And user does't have to change conf file everytime he updates catsup.
@@ -46,11 +46,11 @@ def load(path=None, base_url=None):
     if base_url:
         g.base_url = add_slash(base_url)
     else:
-        g.base_url = urljoin(
-            add_slash(config.site.domain),
-            add_slash(config.site.root_path)
-        )
+        g.base_url = add_slash(config.site.base_url)
     config.site.url = g.base_url
+    if local:
+        config.config.static_prefix = "/static/"
+
     g.static_prefix = urljoin(
         g.base_url,
         add_slash(config.config.static_prefix)

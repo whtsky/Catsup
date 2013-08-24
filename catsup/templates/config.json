@@ -2,8 +2,7 @@
     "site": {
         "name": "blogname",
         "description": "Just another catsup blog",
-        "domain": "http://blog.com/",
-        "root_path": "/"
+        "base_url": "http://blog.com/"
     },
 
     "author": {

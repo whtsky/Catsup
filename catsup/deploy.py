@@ -1,12 +1,11 @@
 import os
-import datetime
 
 from catsup.logger import logger
 from catsup.utils import call
 
 
 def git(config):
-    logger.info("Deploying your blog via git")
+    logger.info("Deploying your site via git")
 
     cwd = os.path.abspath(config.config.output)
 
@@ -25,11 +24,11 @@ def git(config):
     _call('git add .', silence=True)
     _call('git commit -m "Update at %s" % str(datetime.datetime.utcnow())',
           silence=True)
-    _call(['git', 'push', 'origin', config.deploy.git.branch])
+    _call('git push origin %s' % config.deploy.git.branch)
 
 
 def rsync(config):
-    logger.info("Deploying your blog via rsync")
+    logger.info("Deploying your site via rsync")
     if config.deploy.rsync.delete:
         args = "--delete"
     else:
