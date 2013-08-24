@@ -1,10 +1,11 @@
 Changelog
 ==========
 
-Version 0.0.9
+Version 0.1.0
 --------------
 
 + Regenerate the site when your theme or posts changed when running ``catsup server``
++ Use local static file when running ``catsup server``
 + Post per page is defined by theme
 + Now catsup copy non-markdown files in source folder to deploy folder
 + Drop summary support
