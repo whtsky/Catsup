@@ -49,7 +49,9 @@ def load(path=None, local=False, base_url=None):
         g.base_url = add_slash(config.site.base_url)
     config.site.url = g.base_url
     if local:
+        import tempfile
         config.config.static_prefix = "/static/"
+        config.config.output = tempfile.mkdtemp()
 
     g.static_prefix = urljoin(
         g.base_url,

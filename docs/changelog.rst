@@ -4,6 +4,7 @@ Changelog
 Version 0.1.0
 --------------
 
++ Add support for pages
 + Regenerate the site when your theme or posts changed when running ``catsup server``
 + Use local static file when running ``catsup server``
 + Post per page is defined by theme

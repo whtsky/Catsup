@@ -1,13 +1,11 @@
 import time
-from datetime import datetime
-from houdini import escape_html
 
-import re
 import os
 import catsup.parser
 from catsup.logger import logger
 from catsup.generator.renderer import Renderer
-from catsup.utils import to_unicode, smart_copy
+from catsup.options import g
+from catsup.utils import smart_copy
 from .models import *
 
 
@@ -18,107 +16,44 @@ class Generator(object):
         self.base_url = base_url
 
     def reset(self):
+        self.archives = g.archives = Archives()
+        self.tags = g.tags = Tags()
         self.load_config()
         self.load_posts()
-        self.load_tags_and_archives()
         self.load_renderer()
 
     def load_config(self):
-        self.config = catsup.parser.config(
+        self.config = g.config = catsup.parser.config(
             self.config_path,
             local=self.local,
             base_url=self.base_url
         )
 
-    def load_post(self, filename):
-        path = os.path.join(g.source, filename)
+    def load_post(self, filename, ext):
         logger.info('Loading file %s' % filename)
-        try:
-            f = open(path, 'r')
-        except IOError:
-            logger.error("Can't open file %s" % path)
-            return
 
-        post = Post(filename=filename[:-3])
-
-        lines = f.readlines()
-        f.close()
-
-        for i, line in enumerate(lines):
-            line_lower = line.lower()
-            if line.startswith('#'):  # title
-                post.title = escape_html(line[1:].strip())
-
-            elif ':' in line_lower:  # property
-                name, value = line.split(':', 1)
-                name = name.strip().lstrip('-').strip()
-                setattr(post, name, value.strip())
-
-            elif line.startswith('---'):
-                content = '\n'.join(lines[i + 1:])
-                post.md = to_unicode(content)
-                post.render_content()
-
-                if "tags" in post:
-                    tag_names = set(post["tags"].split(","))
-                    post.tags = []
-                    for tag in tag_names:
-                        tag = tag.strip()
-                        tag = self.tags.setdefault(
-                            tag.lower(),
-                            Tag(tag)
-                        )
-                        post.tags.append(tag)
-                        tag.add_post(post)
-                if "time" in post:
-                    post.datetime = datetime.strptime(
-                        post.pop('time'), "%Y-%m-%d %H:%M")
-                elif re.match('^\d{4}\-\d{2}\-\d{2}\-.+\.md', filename):
-                    post.datetime = datetime.strptime(
-                        filename[:10], "%Y-%m-%d")
-                else:
-                    ctime = os.stat(path).st_ctime
-                    post.datetime = datetime.fromtimestamp(ctime)
-
-                if "comment" not in post and not self.config.comment.allow:
-                    post["comment"] = "disabled"
-                year = post.datetime.strftime("%Y")
-                archive = self.archives.setdefault(year, Archive(year))
-                archive.add_post(post)
-                post.archive = archive
-                post.date = post.datetime.strftime("%Y-%m-%d")
-                post.year, post.month, post.day = post.date.split('-')
-                return post
-        logger.warning("Invalid post %s. Ignore." % filename)
+        post = Post(filename, ext)
+        if post.type == "page":
+            self.pages.append(post)
+        else:
+            self.posts.append(post)
 
     def load_posts(self):
         self.posts = []
-        self.tags = {}
-        self.archives = {}
+        self.pages = []
 
         self.static_files = []
 
-        for filename in os.listdir(g.source):
-            if filename.startswith("."):  # hidden file
+        for f in os.listdir(g.source):
+            if f.startswith("."):  # hidden file
                 continue
-            if filename.endswith(".md") or filename.endswith(".markdown"):
-                self.posts.append(self.load_post(filename))
+            filename, ext = os.path.splitext(f)
+            if ext.lower() in ['.md', '.markdown']:
+                self.load_post(filename, ext)
             else:
-                self.static_files.append(filename)
+                self.static_files.append(f)
         self.posts.sort(
             key=lambda x: x.datetime,
-            reverse=True
-        )
-
-    def load_tags_and_archives(self):
-        self.tags = self.tags.values()
-        self.tags.sort(
-            key=lambda x: x.count,
-            reverse=True
-        )
-        self.archives = self.archives.values()
-        self.archives.sort(
-            key=lambda x: x.year,
             reverse=True
         )
 
@@ -145,14 +80,10 @@ class Generator(object):
             post.render(self.renderer)
 
     def generate_tags(self):
-        for tag in self.tags:
-            tag.render(self.renderer)
-        Tags(self.tags).render(self.renderer)
+        self.tags.render(self.renderer)
 
     def generate_archives(self):
-        for archive in self.archives:
-            archive.render(self.renderer)
-        Archives(self.archives).render(self.renderer)
+        self.archives.render(self.renderer)
 
     def generate_other_pages(self):
         NotFound().render(self.renderer)

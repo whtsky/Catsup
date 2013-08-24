@@ -21,6 +21,7 @@ class Renderer(object):
             comment=config.comment,
             theme=config.theme.vars,
             g=g,
+            pages=generator.pages,
             static_url=static_url,
             url_for=url_for
         )
@@ -47,8 +48,8 @@ class Renderer(object):
             pass
 
     def render_to(self, template, path, **kwargs):
-        mkdir(os.path.dirname(path))
         html = self.render(template, **kwargs)
         if html:
+            mkdir(os.path.dirname(path))
             with open(path, "w") as f:
                 f.write(html)

@@ -1,5 +1,5 @@
-{% macro render_comment() %}
-    {% if comment != "disabled" %}
+{% macro render_comment(post) %}
+    {% if post.allow_comment %}
         {% if comment.system == 'disqus' and comment.disqus %}
             <div id="disqus_thread"></div>
             <script type="text/javascript">
@@ -46,10 +46,10 @@
     {% endif %}
 {% endmacro %}
 
-{% macro meta() %}
-<meta name="description" content="{{ description }}">
+{% macro meta(post) %}
+<meta name="description" content="{{ post.description }}">
 <meta name="twitter:creator" content="{{ author.twitter }}">
 <meta name="twitter:url" content="{{ site.url }}{{ permalink }}">
-<meta name="twitter:title" content="{{ title }}">
-<meta name="twitter:description" content="{{ description }}">
+<meta name="twitter:title" content="{{ post.title }}">
+<meta name="twitter:description" content="{{ post.description }}">
 {% endmacro %}
