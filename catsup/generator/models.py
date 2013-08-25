@@ -173,7 +173,7 @@ class Post(CatsupPage):
 
                 if "time" in self.meta:
                     self.datetime = datetime.strptime(
-                        self.pop('time'), "%Y-%m-%d %H:%M")
+                        self.meta.pop('time'), "%Y-%m-%d %H:%M")
                 elif self.DATE_RE.match(self.filename[:10]):
                     self.datetime = datetime.strptime(
                         self.filename[:10], "%Y-%m-%d"
