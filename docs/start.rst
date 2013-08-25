@@ -5,7 +5,7 @@ Get Started
 
 This section needs you have catsup installed.If you don't, please go and :ref:`Install it <installation>`
 
-Create a site
+Init your site
 ---------------
 It's pretty simple to create a site using catsup ::
 
@@ -14,21 +14,32 @@ It's pretty simple to create a site using catsup ::
     cd site
     catsup init
 
-You'll be asked some questions. These questions have default value, so if you don't want to change them,
-just hit enter.
+After that, you need to change ``config.json`` ::
 
-Create a post
+    vim config.json
+
+Writing posts and pages
 ----------------
 
-Create a post ::
+Let's write a post first ::
 
-    touch posts/2013-02-08-helloworld.md
+    vim posts/hello-world.md
 
-.. attention:: Post's filename should like ``year-month-day-title.md``. ``2013-2-2-hi.md`` is not vailed.
+Not, let's start writing the post ::
 
-Then edit it with your favorite editor ::
+    # Hello, World!
 
-    mate posts/2013-02-08-helloworld.md
+    - time: 2013-08-25 23:30
+    - tags: hello world
+
+    ---
+
+    Hello, World!
+    This is my first post in catsup.
+
+    ```python
+    print("I love python")
+    ```
 
 Build your site
 ----------------
