@@ -1,6 +1,6 @@
 {% macro render_comment(post) %}
     {% if post.allow_comment %}
-        {% if comment.system == 'disqus' and comment.disqus %}
+        {% if comment.system == 'disqus'%}
             <div id="disqus_thread"></div>
             <script type="text/javascript">
 				var disqus_title = "{{ title }}";
@@ -11,7 +11,7 @@
                 })();
             </script>
         {% endif %}
-        {% if comment.system == 'duoshuo' and comment.duoshuo %}
+        {% if comment.system == 'duoshuo'%}
             <div class="ds-thread"></div>
             <script type="text/javascript">
                 var duoshuoQuery = {short_name:"{{ comment.shortname }}"};
