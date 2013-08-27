@@ -5,6 +5,8 @@ Version 0.1.0
 --------------
 
 + Add support for pages
++ Add ``config.site.description``
++ Use ``config.comment.shortname`` to replace ``config.comment.disqus`` and ``config.comment.duoshuo``
 + Regenerate the site when your theme or posts changed when running ``catsup server``
 + Use local static file when running ``catsup server``
 + Post per page is defined by theme
