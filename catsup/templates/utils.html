@@ -6,7 +6,7 @@
 				var disqus_title = "{{ title }}";
                 (function() {
                     var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-                    dsq.src = 'http://{{ comment.disqus }}.disqus.com/embed.js';
+                    dsq.src = 'http://{{ comment.shortname }}.disqus.com/embed.js';
                     (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
                 })();
             </script>
@@ -14,7 +14,7 @@
         {% if comment.system == 'duoshuo' and comment.duoshuo %}
             <div class="ds-thread"></div>
             <script type="text/javascript">
-                var duoshuoQuery = {short_name:"{{ comment.duoshuo }}"};
+                var duoshuoQuery = {short_name:"{{ comment.shortname }}"};
                 (function() {
                     var ds = document.createElement('script');
                     ds.type = 'text/javascript';

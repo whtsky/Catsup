@@ -10,7 +10,7 @@ def add_slash(url):
 
 
 def get_template():
-    default_config_path = os.path.join(g.public_templates_path, 'config_default.json')
+    default_config_path = os.path.join(g.public_templates_path, 'config.json')
     return open(default_config_path, 'r').read()
 
 

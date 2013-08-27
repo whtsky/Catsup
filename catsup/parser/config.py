@@ -46,7 +46,7 @@ def load(path=None, local=False, base_url=None):
     if base_url:
         g.base_url = add_slash(base_url)
     else:
-        g.base_url = add_slash(config.site.base_url)
+        g.base_url = add_slash(config.site.url)
     config.site.url = g.base_url
     if local:
         import tempfile

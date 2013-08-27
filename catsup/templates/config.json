@@ -2,7 +2,7 @@
     "site": {
         "name": "blogname",
         "description": "Just another catsup blog",
-        "base_url": "http://blog.com/"
+        "url": "http://blog.com/"
     },
 
     "author": {
@@ -31,8 +31,7 @@
     "comment": {
         "allow": true,
         "system": "disqus",
-        "disqus": "catsup",
-        "duoshuo": "catsup"
+        "shortname": "catsup",
     },
 
     "deploy": {
