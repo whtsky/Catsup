@@ -13,6 +13,8 @@ Preview your site **without deploy** ::
 .. note:: Preview Server will build your site before running.
 .. attention:: You should never usr Preview Server in a production environment.
 
+.. _deploy:
+
 Deploy Support
 ----------------
 Help you deploy your site via git or rsync ::
@@ -21,7 +23,6 @@ Help you deploy your site via git or rsync ::
     catsup rsync # Deploy via rsync
     catsup git # Deploy via git
 
-.. note:: Catsup has GitHub Pages support.It will create a `CNAME` file when deploy via git.
 
 Webhook
 ---------

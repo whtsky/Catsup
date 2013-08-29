@@ -8,7 +8,7 @@ Contents:
 
    install
    start
-   write
+   post
    config
    theme
    goodies

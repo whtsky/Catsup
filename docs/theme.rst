@@ -80,7 +80,7 @@ Global Variables
 + author: ``author`` in user's config file.
 + config: ``config`` in user's config file.
 + comment: ``commment`` in user's config file.
-+ theme: ``theme.vars` in user's config file.
++ theme: ``theme.vars`` in user's config file.
 
 If you want more:
 
