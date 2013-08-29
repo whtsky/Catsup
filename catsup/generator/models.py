@@ -31,10 +31,7 @@ class CatsupPage(object):
             template_name = self.template_name
         else:
             template_name = self.class_name + ".html"
-        output_name = os.path.join(
-            "output",
-            self.permalink
-        )
+        output_name = self.permalink
         if output_name.endswith("/"):
             output_name += 'index.html'
         output_path = os.path.join(g.output, output_name.lstrip("/"))

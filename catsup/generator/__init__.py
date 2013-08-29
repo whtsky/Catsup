@@ -1,7 +1,8 @@
 import time
-
 import os
+import tempfile
 import catsup.parser
+
 from catsup.logger import logger
 from catsup.generator.renderer import Renderer
 from catsup.options import g
@@ -112,6 +113,8 @@ class Generator(object):
     def generate(self):
         self.reset()
         t = time.time()
+        if self.local:
+            g.output = self.config.config.output = tempfile.mkdtemp()
         if self.posts:
             self.generate_feed()
             self.generate_pages()

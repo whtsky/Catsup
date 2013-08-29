@@ -96,6 +96,7 @@ class PreviewServer(CatsupServer):
             "path": g.output,
             "default_filename": "index.html"
         }
+        logger.info(g.output)
         return tornado.web.Application([
             (r"/(.*)", StaticFileHandler, params),
         ])
@@ -107,8 +108,7 @@ class PreviewServer(CatsupServer):
 
         event_handler = CatsupEventHandler(self.generator)
         observer = Observer()
-        self.generator.load_config()
-        for path in [self.generator.config["config"]["source"], g.theme.path]:
+        for path in [self.generator.config.config.source, g.theme.path]:
             path = os.path.abspath(path)
             observer.schedule(event_handler, path=path, recursive=True)
         observer.start()
