@@ -57,23 +57,28 @@ class Tags(CatsupPage):
     def __init__(self, tags=None):
         if tags is None:
             tags = {}
-        self.tags = tags
+        self.tags_dict = tags
 
     def get(self, name):
-        return self.tags.setdefault(
+        return self.tags_dict.setdefault(
             name,
             Tag(name)
         )
 
     def render(self, renderer, **kwargs):
-        self.tags = self.tags.values()
-        self.tags.sort(
-            key=lambda x: x.count,
-            reverse=True
-        )
         for tag in self.tags:
             tag.render(renderer)
         super(Tags, self).render(renderer, **kwargs)
+
+    @property
+    def tags(self):
+        if not hasattr(self, "_tags"):
+            self._tags = self.tags_dict.values()
+            self._tags.sort(
+                key=lambda x: x.count,
+                reverse=True
+            )
+        return self._tags
 
     def __iter__(self):
         for tag in self.tags:
@@ -101,27 +106,32 @@ class Archives(CatsupPage):
     def __init__(self, archives=None):
         if archives is None:
             archives = {}
-        self.archives = archives
+        self.archives_dict = archives
 
     def get(self, year):
-        return self.archives.setdefault(
+        return self.archives_dict.setdefault(
             year,
             Archive(year)
         )
 
     def render(self, renderer, **kwargs):
-        self.archives = self.archives.values()
-        self.archives.sort(
-            key=lambda x: x.year,
-            reverse=True
-        )
         for tag in self.archives:
             tag.render(renderer)
         super(Archives, self).render(renderer, **kwargs)
 
+    @property
+    def archives(self):
+        if not hasattr(self, "_archives"):
+            self._archives = self.archives_dict.values()
+            self._archives.sort(
+                key=lambda x: x.year,
+                reverse=True
+            )
+        return self._archives
+
     def __iter__(self):
-        for tag in self.archives:
-            yield tag
+        for archive in self.archives:
+            yield archive
 
 
 class Post(CatsupPage):
