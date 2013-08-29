@@ -1,5 +1,4 @@
 import os
-import shlex
 import sys
 import subprocess
 
@@ -79,12 +78,11 @@ def update_nested_dict(a, b):
 
 
 def call(cmd, silence=False, **kwargs):
-    if not isinstance(cmd, list):
-        cmd = shlex.split(cmd)
     if 'cwd' not in kwargs:
         kwargs['cwd'] = g.cwdpath
     if silence and 'stdout' not in kwargs:
         kwargs["stdout"] = subprocess.PIPE
+    kwargs.setdefault("shell", True)
     return subprocess.call(cmd, **kwargs)
 
 

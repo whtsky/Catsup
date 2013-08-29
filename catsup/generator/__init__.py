@@ -79,6 +79,8 @@ class Generator(object):
     def generate_posts(self):
         for post in self.posts:
             post.render(self.renderer)
+        for page in self.pages:
+            page.render(self.renderer)
 
     def generate_tags(self):
         self.tags.render(self.renderer)

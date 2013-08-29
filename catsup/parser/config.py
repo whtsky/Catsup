@@ -60,4 +60,5 @@ def load(path=None, local=False, base_url=None):
 
     g.theme.vars = update_nested_dict(g.theme.vars, config.theme.vars)
     config.theme.vars = g.theme.vars
+    config.path = path
     return config
