@@ -15,6 +15,12 @@ Install catsup via pip is easy ::
     (sudo) pip install catsup
 
 
+Upgrade from older version
+-------------------------------
+It's also easy to upgrade your catsup ::
+
+    (sudo) pip install catsup --upgrade
+
 Install with Git
 -----------------
 Install with git can always have the latest code ::
