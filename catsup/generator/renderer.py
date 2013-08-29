@@ -47,9 +47,14 @@ class Renderer(object):
             # logger.warning("Template not found: %s" % template)
             pass
 
-    def render_to(self, template, path, **kwargs):
+    def render_to(self, template, permalink, **kwargs):
+        kwargs.setdefault("permalink", permalink)
         html = self.render(template, **kwargs)
         if html:
-            mkdir(os.path.dirname(path))
-            with open(path, "w") as f:
+            output_name = permalink
+            if output_name.endswith("/"):
+                output_name += 'index.html'
+            output_path = os.path.join(g.output, output_name.lstrip("/"))
+            mkdir(os.path.dirname(output_path))
+            with open(output_path, "w") as f:
                 f.write(html)

@@ -31,13 +31,9 @@ class CatsupPage(object):
             template_name = self.template_name
         else:
             template_name = self.class_name + ".html"
-        output_name = self.permalink
-        if output_name.endswith("/"):
-            output_name += 'index.html'
-        output_path = os.path.join(g.output, output_name.lstrip("/"))
         kwargs[self.class_name] = self
         kwargs.update(self.__dict__)
-        renderer.render_to(template_name, output_path, **kwargs)
+        renderer.render_to(template_name, self.permalink, **kwargs)
 
 
 class Tag(CatsupPage):
