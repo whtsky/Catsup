@@ -48,7 +48,10 @@ class Renderer(object):
             pass
 
     def render_to(self, template, permalink, **kwargs):
-        kwargs.setdefault("permalink", permalink)
+        kwargs.setdefault("permalink", urljoin(
+            g.base_url,
+            permalink
+        ))
         html = self.render(template, **kwargs)
         if html:
             output_name = permalink
