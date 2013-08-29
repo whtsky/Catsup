@@ -3,18 +3,20 @@
 Installation
 ==============
 
-Setuptools and Pip
--------------------
-If you have pip installed ::
+
+If you are familiar with Python, it is strongly suggested that you install everything in virtualenv.
+
+If you are using OS X , make sure you have installed the *Command Line Tools* .
+
+Install using pip
+-------------------------
+Install catsup via pip is easy ::
 
     (sudo) pip install catsup
 
-Or if you don't have pip, try easy_install instead ::
 
-    (sudo) easy_install catsup
-
-Git
-------
+Install with Git
+-----------------
 Install with git can always have the latest code ::
 
     git clone git://github.com/whtsky/catsup.git
@@ -28,16 +30,9 @@ Install with git can always have the latest code ::
 
     python setup.py install
 
-Attention
----------------------
+Cann’t find Python.h ?
+-----------------------
 Catsup uses misaka as the markdown engine.It requires C compiler.On Ubuntu, you may run ::
 
     (sudo) apt-get install python-dev
 
-If you're using a Mac, you need to install XCode and its Command Line Tools.
-
-Windows User?
---------------
-Sorry that I don't use Windows and I also don't know how to install it.That should works well with Cygwin.
-If you're using Windows and know how to install catsup on Windows,
-please fork this doc , add it and send a pull request.
