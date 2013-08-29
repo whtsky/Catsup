@@ -25,7 +25,7 @@ Now, let's configure your new site.
 Configure your site
 -----------------------
 
-Catsup can be highly customized, but you only need to change a few variable to get started :
+Catsup can be highly customized, but you only need to change a few variables to get started :
 
 + ``site.name`` : Name of your site
 + ``site.description`` : Description of your site
