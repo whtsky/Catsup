@@ -1,5 +1,7 @@
-Writing
-========
+.. _post-syntax:
+
+Post Syntax
+=============
 
 Markup
 --------
