@@ -54,6 +54,8 @@ a Hello World post looks like ::
 
     Hello, World!
     This is my first post in catsup.
+    I'm writing in **MarkDown** !
+    <strong>HTML is supported, too</strong>
 
     ```python
     print("I love python")
