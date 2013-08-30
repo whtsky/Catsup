@@ -132,9 +132,9 @@ Template Marco
 ---------------
 Catsup has some powerful marco to make your job easier
 
-+ render_comment(post): render post's comment part.
-+ meta(post): render post's meta tag.Should be used id ``<head>``.
-+ analytics(): render google analytics code.
++ render_comment(post): Render comment of the given post.
++ meta(post): Render meta tags of given post.Should be used id ``<head>``.
++ analytics(): Render analytics code.
 
 An example ``post.html`` template using built-in marco ::
 
