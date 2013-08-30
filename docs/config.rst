@@ -22,7 +22,7 @@ Note that catsup supports to be deployed in sub_directory, like ::
 
     http://example.com/catsup
 
-If you're using Google Analytics, remember to add your trace ::
+If you're using Google Analytics, remember to change ``config.analytics`` ::
 
     "config": {
             "source": "posts",
