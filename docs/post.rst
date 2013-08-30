@@ -37,6 +37,7 @@ Title
 
 Title should always on the first line and starts with ``#``
 
+.. _post-meta:
 
 Meta
 -------
