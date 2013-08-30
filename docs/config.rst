@@ -18,9 +18,6 @@ Site & Author & Config
 ------------------------
 
 It’s easy enough to configure these by yourself.
-Note that catsup supports to be deployed in sub_directory, like ::
-
-    http://example.com/catsup
 
 If you're using Google Analytics, remember to change ``config.analytics`` ::
 
@@ -46,7 +43,9 @@ There are some permalink styles for posts you may like :
 + ``/{date}/{filename}/``
 + ``/{datetime.year/{filename}/``
 
-Note that permalink defined in :ref:`Post Meta <post-meta>` will be used first. Imagine you defined your post permalink like ::
+Note that permalink defined in :ref:`Post Meta <post-meta>` will be used first.
+
+For example,  you defined your post permalink like ::
 
     "permalink": {
         "post": "/{title}/",
@@ -65,7 +64,7 @@ And in your post, you defined a permalink in :ref:`Post Meta <post-meta>` ::
 
     This is a about page
 
-And permalink of this page will be ``/about-the-site`` .
+In the end the permalink of this page will be ``/about-the-site`` .
 
 Comment
 ----------
