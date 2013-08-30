@@ -1,3 +1,6 @@
 [submodule "catsup/themes/sealscript"]
 	path = catsup/themes/sealscript
 	url = git://github.com/whtsky/catsup-theme-sealscript.git
+[submodule "docs/_themes"]
+	path = docs/_themes
+	url = git://github.com/lepture/flask-sphinx-themes.git
