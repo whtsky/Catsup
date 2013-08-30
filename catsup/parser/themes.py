@@ -11,15 +11,15 @@ from catsup.options import g
 from catsup.utils import call
 
 
-def read_meta(path):
+def read_theme(path):
     """
     :param path: path for the theme.
-    :return: Theme meta read in path.
+    :return: Theme theme read in path.
     """
     if not os.path.exists(path):
         return
-    meta = os.path.join(path, 'theme.py')
-    if not os.path.exists(meta):
+    theme_file = os.path.join(path, 'theme.py')
+    if not os.path.exists(theme_file):
         logger.warn("%s is not a catsup theme." % path)
         return
     theme = ObjectDict(
@@ -30,7 +30,7 @@ def read_meta(path):
         post_per_page=5,
         vars={},
     )
-    execfile(meta, {}, theme)
+    execfile(theme_file, {}, theme)
     theme.name = theme.name.lower()
     return theme
 
@@ -44,7 +44,7 @@ def find(config=None, theme_name=''):
         os.path.join(g.catsup_path, 'themes', theme_name),
     ]
     for path in theme_gallery:
-        theme = read_meta(path)
+        theme = read_theme(path)
         if theme:
             return theme
 
@@ -80,7 +80,7 @@ def list():
 def install(path):
     try:
         theme = find(path)
-    except Exception:
+    except:
         pass
     else:
         # Update theme
@@ -100,10 +100,10 @@ def install(path):
         os.makedirs(themes_path)
 
     if os.path.exists(path):
-        meta = read_meta(path)
-        if not meta:
+        theme = read_theme(path)
+        if not theme:
             sys.exit(0)
-        name = meta.name
+        name = theme.name
         logger.info("Found theme %s" % name)
 
         install_path = os.path.join(themes_path, name)
@@ -112,17 +112,21 @@ def install(path):
 
     elif path.lower().endswith('.git'):  # a git repo
         os.chdir(themes_path)
-        os.system('git clone %s' % path)
         repo_folder = path.split('/')[-1][:-4]
-        meta = read_meta(repo_folder)
-        if not meta:
+        if os.path.exists(repo_folder):
+            shutil.rmtree(repo_folder)
+        os.system('git clone %s' % path)
+        theme = read_theme(repo_folder)
+        if not theme:
             shutil.rmtree(repo_folder)
             sys.exit(0)
-        name = meta.name
-        os.rename(repo_folder, meta.name)
+        if os.path.exists(theme.name):
+            shutil.rmtree(theme.name)
+
+        os.rename(repo_folder, theme.name)
 
     else:
         logger.error("Can't install theme from %s." % path)
         sys.exit(0)
 
-    logger.info('Theme %s successfully installed' % name)
+    logger.info('Theme %s successfully installed' % theme.name)

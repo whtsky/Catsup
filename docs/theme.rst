@@ -8,18 +8,21 @@ Install a theme ::
 
     catsup install git_repo
 
-Install a theme in global ::
+For instance, install `Theme Clean <https://github.com/whtsky/catsup-theme-clean>`_ ::
 
-    catsup install git_repo -g
+    catsup install git@github.com:whtsky/catsup-theme-clean.git
 
 Update a installed theme ::
 
     catsup install theme_name
 
+For instance, update clean ::
+
+    catsup install clean
+
 List all themes installed ::
 
     catsup themes
-
 
 Structure
 ----------
