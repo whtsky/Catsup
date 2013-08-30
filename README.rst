@@ -1,9 +1,6 @@
 catsup
 ----------------
 
-.. image:: https://travis-ci.org/whtsky/catsup.png?branch-master
-    :target: https://travis-ci.org/whtsky/catsup
-
 .. image:: https://pypip.in/d/catsup/badge.png
         :target: https://crate.io/packages/catsup/
 
