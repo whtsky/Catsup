@@ -4,70 +4,41 @@ catsup
 .. image:: https://travis-ci.org/whtsky/catsup.png?branch-master
     :target: https://travis-ci.org/whtsky/catsup
 
-A lightweight static blog generator.
-Document here: https://catsup.readthedocs.org/en/latest/
+Catsup is a lightweight static website generator which aims to be simple and elegant.
+Documentation is available at RTFD: https://catsup.readthedocs.org/en/latest/
 
-Install
---------
+Quick Start
+===============
 
-Simple way using pip::
+First, install catsup via pip ::
 
-    pip install catsup
+    $ pip install catsup
 
+Then, craete a new catsup site ::
 
-Or another hard way to install::
+    $ mkdir site
+    $ cd site
+    $ catsup init
 
-    git clone git://github.com/whtsky/catsup.git
-    cd catsup
+Edit the config file ::
 
-    # We use git submodules to organize out theme.
-    # If you don't want the default theme(current version is sealscript)
-    # You can skip these command.
-    git submodule init
-    git submodule update
+    vim config.json
 
-    python setup.py install
+Write some posts ::
 
+    $ vim posts/hello-world.md
+    $ cat posts/hello-world.md
+    # Hello World
 
-Setup your blog
----------------
+    - tags: hello world, catsup
+    - time: 2013-08-30 12:00
 
-Change directory to the directory you prefer to place your blog and run ``catsup init`` to initialize it.
+    ---
 
-Then you can edit ``config.json`` to change your configuration.
+    Hello, World!
 
+Build your site and deploy ::
 
-Write a post
-------------
-Catsup support markup of Markdown.
-Filename should like ``year-month-day-title.md``
+    catsup build && catsup deploy
 
-(For example: ``2000-01-01-catsup.md``)
-
-Post Example::
-
-    #Title
-
-    ----
-
-    Content
-    ```python
-    print "hi,I'm coding."
-    ```
-
-Install theme
--------------
-
-Run ``catsup themes`` to list available themes. And run ``catsup install path [-g]`` to install a new theme.
-
-If ``-g`` flag present, the theme would be install in the global themes directory.
-
-``path`` could be a url of a git repo or path to the theme folder.
-
-If it's a git repo, catsup will clone and install it automatically.
-
-
-Build your blog
------------------
-run ``catsup build``
-And you can find your static blog in ``~/build/`` .
+For more information, please read the document: https://catsup.readthedocs.org/en/latest/
