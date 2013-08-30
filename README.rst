@@ -4,6 +4,9 @@ catsup
 .. image:: https://travis-ci.org/whtsky/catsup.png?branch-master
     :target: https://travis-ci.org/whtsky/catsup
 
+.. image:: https://pypip.in/d/catsup/badge.png
+        :target: https://crate.io/packages/catsup/
+
 Catsup is a lightweight static website generator which aims to be simple and elegant.
 Documentation is available at RTFD: https://catsup.readthedocs.org/en/latest/
 
