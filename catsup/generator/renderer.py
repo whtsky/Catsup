@@ -2,8 +2,7 @@ import os
 
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 from catsup.options import g
-from catsup.utils import mkdir, static_url, url_for
-from urlparse import urljoin
+from catsup.utils import mkdir, static_url, url_for, urljoin
 
 
 class Renderer(object):

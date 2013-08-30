@@ -2,7 +2,11 @@ import os
 import sys
 import subprocess
 
-from urlparse import urljoin
+try:
+    from urllib.parse import urljoin
+    assert urljoin
+except ImportError:
+    from urlparse import urljoin
 from tornado.util import ObjectDict
 from catsup.options import g
 
