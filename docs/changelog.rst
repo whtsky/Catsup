@@ -4,6 +4,7 @@ Changelog
 Version 0.1.0
 --------------
 
++ Use full md5 hash in ``static_url``
 + Add support for pages
 + Build to tempdir when running ``catsup server``
 + Add ``config.site.description``

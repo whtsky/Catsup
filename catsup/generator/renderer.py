@@ -37,7 +37,7 @@ class Renderer(object):
         if not os.path.exists(path):
             return
         filters = {}
-        execfile(path, {}, filters)
+        exec(open(path).read(), {}, filters)
         self.env.filters.update(filters)
 
     def render(self, template, **kwargs):

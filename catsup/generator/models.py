@@ -73,7 +73,7 @@ class Tags(CatsupPage):
     @property
     def tags(self):
         if not hasattr(self, "_tags"):
-            self._tags = self.tags_dict.values()
+            self._tags = list(self.tags_dict.values())
             self._tags.sort(
                 key=lambda x: x.count,
                 reverse=True
@@ -122,7 +122,7 @@ class Archives(CatsupPage):
     @property
     def archives(self):
         if not hasattr(self, "_archives"):
-            self._archives = self.archives_dict.values()
+            self._archives = list(self.archives_dict.values())
             self._archives.sort(
                 key=lambda x: x.year,
                 reverse=True

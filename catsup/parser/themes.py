@@ -30,7 +30,7 @@ def read_theme(path):
         post_per_page=5,
         vars={},
     )
-    execfile(theme_file, {}, theme)
+    exec(open(theme_file).read(), {}, theme)
     theme.name = theme.name.lower()
     return theme
 
@@ -79,7 +79,7 @@ def list():
 
 def install(path):
     try:
-        theme = find(path)
+        theme = find(theme_name=path)
     except:
         pass
     else:
@@ -102,7 +102,7 @@ def install(path):
     if os.path.exists(path):
         theme = read_theme(path)
         if not theme:
-            sys.exit(0)
+            sys.exit(1)
         name = theme.name
         logger.info("Found theme %s" % name)
 
@@ -127,6 +127,6 @@ def install(path):
 
     else:
         logger.error("Can't install theme from %s." % path)
-        sys.exit(0)
+        sys.exit(1)
 
     logger.info('Theme %s successfully installed' % theme.name)

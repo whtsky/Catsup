@@ -31,8 +31,8 @@ def static_url(f):
             logger.warn("%s does not exist." % path)
             return
 
-        with open(path, 'r') as f:
-            return hashlib.md5(f.read()).hexdigest()[:4]
+        with open(path, 'rb') as f:
+            return hashlib.md5(f.read()).hexdigest()
 
     hsh = get_hash(f)
     return urljoin(
@@ -72,7 +72,7 @@ def to_unicode(value):
 
 
 def update_nested_dict(a, b):
-    for k, v in b.iteritems():
+    for k, v in b.items():
         if isinstance(v, dict):
             d = a.setdefault(k, ObjectDict())
             update_nested_dict(d, v)
