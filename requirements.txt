@@ -1,5 +1,4 @@
 argh==0.23.3
-distribute==0.7.3
 docopt==0.6.1
 houdini.py==0.1.0
 Jinja2==2.7
