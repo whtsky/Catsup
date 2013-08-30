@@ -1,19 +1,20 @@
 {% macro render_comment(post) %}
-    {% if post.get('allow_comment', True) %}
-        {% if comment.system == 'disqus' and comment.disqus %}
+    {% if post.allow_comment %}
+        {% if comment.system == 'disqus'%}
             <div id="disqus_thread"></div>
             <script type="text/javascript">
+				var disqus_title = "{{ title }}";
                 (function() {
                     var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-                    dsq.src = 'http://{{ comment.disqus }}.disqus.com/embed.js';
+                    dsq.src = 'http://{{ comment.shortname }}.disqus.com/embed.js';
                     (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
                 })();
             </script>
         {% endif %}
-        {% if comment.system == 'duoshuo' and comment.duoshuo %}
+        {% if comment.system == 'duoshuo'%}
             <div class="ds-thread"></div>
             <script type="text/javascript">
-                var duoshuoQuery = {short_name:"{{ comment.duoshuo }}"};
+                var duoshuoQuery = {short_name:"{{ comment.shortname }}"};
                 (function() {
                     var ds = document.createElement('script');
                     ds.type = 'text/javascript';
@@ -46,9 +47,9 @@
 {% endmacro %}
 
 {% macro meta(post) %}
-<meta name="description" content="{{ post.title }},{% for tg in post.tags %}{{ tg }},{% endfor %}, {{ post.description }}">
+<meta name="description" content="{{ post.description }}">
 <meta name="twitter:creator" content="{{ author.twitter }}">
-<meta name="twitter:url" content="{{ site.url }}{{ post.permalink }}">
+<meta name="twitter:url" content="{{ site.url }}{{ permalink }}">
 <meta name="twitter:title" content="{{ post.title }}">
 <meta name="twitter:description" content="{{ post.description }}">
 {% endmacro %}

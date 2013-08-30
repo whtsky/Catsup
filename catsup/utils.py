@@ -1,84 +1,115 @@
+import os
+import sys
 import subprocess
 
-from catsup.options import config, g
+try:
+    from urllib.parse import urljoin
+    assert urljoin
+except ImportError:
+    from urlparse import urljoin
+from tornado.util import ObjectDict
+from catsup.options import g
+
+py = sys.version_info
+py3k = py >= (3, 0, 0)
+
+if py3k:
+    basestring = str
+    unicode = str
 
 
-class Pagination(object):
+def static_url(f):
+    import os
+    import hashlib
 
-    def __init__(self, page):
-        self.total_items = g.posts
-        self.page = page
-        self.per_page = config.config.per_page
+    from catsup.logger import logger
+    from catsup.options import g
 
-    def iter_pages(self, edge=4):
-        if self.page <= edge:
-            return range(1, min(self.pages, 2 * edge + 1) + 1)
-        if self.page + edge > self.pages:
-            return range(max(self.pages - 2 * edge, 1), self.pages + 1)
-        return range(self.page - edge, min(self.pages, self.page + edge) + 1)
+    def get_hash(path):
+        path = os.path.join(g.theme.path, 'static', path)
+        if not os.path.exists(path):
+            logger.warn("%s does not exist." % path)
+            return
 
-    @property
-    def pages(self):
-        return int((self.total - 1) / self.per_page) + 1
+        with open(path, 'rb') as f:
+            return hashlib.md5(f.read()).hexdigest()
 
-    @property
-    def has_prev(self):
-        return self.page > 1
+    hsh = get_hash(f)
+    return urljoin(
+        g.static_prefix,
+        '%s?v=%s' % (f, hsh)
+    )
 
-    @property
-    def prev_permalink(self):
-        if (not g.theme.has_index) and self.prev_num == 1:
-            return '/'
-        return "/page/%s.html" % self.prev_num
 
-    @property
-    def prev_num(self):
-        return self.page - 1
+def url_for(obj):
+    from catsup.options import g
+    from catsup.generator.models import CatsupPage
 
-    @property
-    def has_next(self):
-        return self.page < self.pages
+    url = ''
+    if obj == 'index':
+        url = g.base_url
+    elif isinstance(obj, CatsupPage):
+        url = obj.permalink
+    elif isinstance(obj, str):
+        url = g.permalink[obj]
+    if url:
+        return urljoin(
+            g.base_url,
+            url
+        )
 
-    @property
-    def next_permalink(self):
-        return "/page/%s.html" % self.next_num
 
-    @property
-    def next_num(self):
-        return self.page + 1
+def to_unicode(value):
+    if isinstance(value, unicode):
+        return value
+    if isinstance(value, basestring):
+        return value.decode('utf-8')
+    if isinstance(value, int):
+        return str(value)
+    if isinstance(value, bytes):
+        return value.decode('utf-8')
+    return value
 
-    @property
-    def total(self):
-        return len(self.total_items)
 
-    @property
-    def items(self):
-        start = (self.page - 1) * self.per_page
-        end = self.page * self.per_page
-        return self.total_items[start:end]
+def update_nested_dict(a, b):
+    for k, v in b.items():
+        if isinstance(v, dict):
+            d = a.setdefault(k, ObjectDict())
+            update_nested_dict(d, v)
+        else:
+            a[k] = v
+    return a
 
 
 def call(cmd, silence=False, **kwargs):
-    if isinstance(cmd, str):
-        cmd = cmd.split()
     if 'cwd' not in kwargs:
         kwargs['cwd'] = g.cwdpath
     if silence and 'stdout' not in kwargs:
         kwargs["stdout"] = subprocess.PIPE
+    kwargs.setdefault("shell", True)
     return subprocess.call(cmd, **kwargs)
 
 
-def check_git():
-    """
-    Check if the environment has git installed
-    :return: Bool. True for installed and False for not.
-    """
-    return call('git --help', silence=True) == 0
+def mkdir(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
 
 
-def check_rsync():
-    """
-    Check if the environment has rsynv installed
-    :return: Bool. True for installed and False for not.
-    """
-    return call('rsync --help', silence=True) == 0
+def smart_copy(source, target):
+    def copy_file(source, target):
+        if os.path.exists(target):
+            if os.path.getsize(source) == os.path.getsize(target):
+                return
+        mkdir(os.path.dirname(target))
+        open(target, "wb").write(open(source, "rb").read())
+
+    if os.path.isfile(source):
+        return copy_file(source, target)
+
+    for f in os.listdir(source):
+        sourcefile = os.path.join(source, f)
+        targetfile = os.path.join(target, f)
+        if os.path.isfile(sourcefile):
+            copy_file(sourcefile, targetfile)
+        else:
+            smart_copy(sourcefile, targetfile)

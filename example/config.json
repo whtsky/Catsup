@@ -2,7 +2,8 @@
     "site": {
         "name": "blogname",
         "description": "Just another catsup blog",
-        "url": "http://blog.com/"
+        "domain": "http://blog.com/",
+        "root_path": "/"
     },
 
     "author": {
@@ -20,7 +21,7 @@
 
     "permalink": {
         "page": "/page/{page}/",
-        "post": "/{title}/",
+        "post": "/{year}-{month}-{day}-{title}/",
         "tag": "/tag/{name}/",
         "tags": "/tag/index.html",
         "archive": "/archive/{year}/",
@@ -29,9 +30,7 @@
     },
 
     "comment": {
-        "allow": true,
-        "system": "disqus",
-        "shortname": "catsup"
+        "disqus": "catsup"
     },
 
     "deploy": {

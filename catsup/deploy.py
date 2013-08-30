@@ -1,54 +1,45 @@
 import os
-import sys
 import datetime
-import logging
 
-from catsup.options import g, config
-from catsup.utils import call, check_git, check_rsync
+from catsup.logger import logger
+from catsup.utils import call
 
 
-def git():
-    if not check_git():
-        logging.error("Catsup can't find git.Please install git first.")
-        sys.exit(1)
-    logging.info("Deploying your blog via git")
+def git(config):
+    logger.info("Deploying your site via git")
 
     cwd = os.path.abspath(config.config.output)
+
     def _call(*args, **kwargs):
         return call(*args, cwd=cwd, **kwargs)
 
-    if not os.path.exists(os.path.join(cwd, '.git')):
-        _call('rm -rf *')
-        # Hasn't setup git.
+    dot_git_path = os.path.join(cwd, '.git')
+
+    if os.path.exists(dot_git_path) and \
+            _call('git remote -v | grep %s' % config.deploy.git.repo) == 0:
+        if os.path.exists(dot_git_path):
+            import shutil
+            shutil.rmtree(dot_git_path)
         _call('git init', silence=True)
-        _call(['git', 'remote', 'add', 'origin', config.deploy.git.repo],
-            silence=False)
+        _call('git remote add origin %s' % config.deploy.git.repo)
         if config.deploy.git.branch != 'master':
             _call('git branch -m %s' % config.deploy.git.branch, silence=True)
-        _call(['git', 'pull', 'origin', config.deploy.git.branch])
+        _call('git pull origin %s' % config.deploy.git.branch)
+        _call('rm -rf *')
 
-        logging.info("Rebuild your blog..")
-        import catsup.build
-        catsup.build.build()
+        from catsup.generator import Generator
 
-    # GitHub custom domain support
-    with open(os.path.join(cwd, 'CNAME'), 'w') as f:
-        domain = config.site.url.split('//')[-1].rstrip('/')
-        f.write(domain)
+        generator = Generator(config.path)
+        generator.generate()
 
     _call('git add .', silence=True)
-    _call(['git', 'commit',
-       '-m',"Update at %s" % str(datetime.datetime.utcnow())],
-        silence=True)
-    _call(['git', 'push', 'origin', config.deploy.git.branch])
+    _call('git commit -m "Update at %s"' % str(datetime.datetime.utcnow()),
+          silence=True)
+    _call('git push origin %s' % config.deploy.git.branch)
 
 
-
-def rsync():
-    if not check_rsync():
-        logging.error("Catsup can't find rsync.Please install rsync first.")
-        sys.exit(1)
-    logging.info("Deploying your blog via rsync")
+def rsync(config):
+    logger.info("Deploying your site via rsync")
     if config.deploy.rsync.delete:
         args = "--delete"
     else:
@@ -62,4 +53,4 @@ def rsync():
         ssh_host=config.deploy.rsync.ssh_host,
         document_root=config.deploy.rsync.document_root
     )
-    os.system(cmd)
+    call(cmd)
