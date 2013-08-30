@@ -45,7 +45,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'catsup'
+project = u'Catsup'
 copyright = (u'2012-%s, <a href="http://whouz.com">whtsky</a> and'
              u' <a href="https://github.com/whtsky/catsup/graphs/contributors">Other Crontributors</a>'
              % time.strftime('%Y'))
@@ -224,7 +224,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'catsup', u'catsup Documentation',
+    ('index', 'catsup', u'Catsup Documentation',
      [u'whtsky'], 1)
 ]
 
@@ -238,7 +238,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'catsup', u'catsup Documentation',
+  ('index', 'catsup', u'Catsup Documentation',
    u'whtsky', 'catsup', 'One line description of project.',
    'Miscellaneous'),
 ]
