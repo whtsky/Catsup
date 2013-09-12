@@ -96,7 +96,6 @@ class PreviewServer(CatsupServer):
             "path": g.output,
             "default_filename": "index.html"
         }
-        logger.info(g.output)
         return tornado.web.Application([
             (r"/(.*)", StaticFileHandler, params),
         ])
