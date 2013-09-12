@@ -1,6 +1,12 @@
 Changelog
 ==========
 
+Version 0.2.0
+--------------
+
++ Don't generate analytics codes when running ``catsup server``
+
+
 Version 0.1.0
 --------------
 
