@@ -15,6 +15,7 @@ class Generator(object):
         self.config_path = config_path
         self.local = local
         self.base_url = base_url
+        g.generator = self
 
     def reset(self):
         self.archives = g.archives = Archives()
@@ -22,6 +23,9 @@ class Generator(object):
         self.load_config()
         self.load_posts()
         self.load_renderer()
+        self.caches = {
+            "static_url": {}
+        }
 
     def load_config(self):
         self.config = g.config = catsup.parser.config(
