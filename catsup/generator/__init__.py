@@ -24,7 +24,8 @@ class Generator(object):
         self.load_posts()
         self.load_renderer()
         self.caches = {
-            "static_url": {}
+            "static_url": {},
+            "url_for": {}
         }
 
     def load_config(self):

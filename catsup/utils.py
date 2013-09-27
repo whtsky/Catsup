@@ -47,20 +47,23 @@ def static_url(f):
 
 def url_for(obj):
     from catsup.options import g
-    from catsup.generator.models import CatsupPage
+    caches_class = g.generator.caches["url_for"]
+    key = id(obj)
+    if key not in caches_class:
+        from catsup.generator.models import CatsupPage
 
-    url = ''
-    if obj == 'index':
-        url = g.base_url
-    elif isinstance(obj, CatsupPage):
-        url = obj.permalink
-    elif isinstance(obj, str):
-        url = g.permalink[obj]
-    if url:
-        return urljoin(
+        url = ''
+        if obj == 'index':
+            url = g.base_url
+        elif isinstance(obj, CatsupPage):
+            url = obj.permalink
+        elif isinstance(obj, str):
+            url = g.permalink[obj]
+        caches_class[key] = urljoin(
             g.base_url,
             url
         )
+    return caches_class[key]
 
 
 def to_unicode(value):
