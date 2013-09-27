@@ -7,7 +7,7 @@ Version 0.2.0
 + Add cache for ``url_for``
 + Add cache for ``static_url``
 + Don't generate analytics codes when running ``catsup server``
-
++ Display time cost for loading config and posts
 
 Version 0.1.0
 --------------

@@ -122,7 +122,7 @@ class Generator(object):
         self.reset()
         finish_loading = time.time()
         logger.info(
-            "Loaded %s posts in %.3fs" %
+            "Loaded config and %s posts in %.3fs" %
             (len(self.posts), finish_loading - started_loading)
         )
         if self.local:
