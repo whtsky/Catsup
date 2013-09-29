@@ -1,5 +1,6 @@
 import os
 import re
+import pickle
 
 from datetime import datetime
 from houdini import escape_html
@@ -142,11 +143,40 @@ class Post(CatsupPage):
         path = os.path.join(g.source, "%s%s" % (filename, ext))
         self.filename = filename
         self.parse(path)
+        self.add_archive_and_tags()
+
+    def add_archive_and_tags(self):
+        if self.type != "page":
+            year = self.datetime.strftime("%Y")
+            g.archives.get(year).add_post(self)
+
+            for tag in self.meta.pop("tags", "").split(","):
+                tag = tag.strip()
+                tag = g.tags.get(tag)
+                tag.add_post(self)
+                self.tags.append(tag)
 
     def get_permalink_args(self):
         return self.meta
 
     def parse(self, path):
+        cache_file = os.path.join(
+            g.cwdpath,
+            '.catsup-cache',
+            path
+        )
+        st_ctime = os.stat(path).st_ctime
+        cache_path = os.path.dirname(cache_file)
+        if os.path.exists(cache_path):
+            if os.path.exists(cache_file):
+                with open(cache_file, "rb") as f:
+                    cache = pickle.load(f)
+                if cache["st_ctime"] == st_ctime:
+                    self.__dict__.update(cache["post"])
+                    return
+        else:
+            os.makedirs(cache_path)
+
         try:
             with open(path, "r") as f:
                 lines = f.readlines()
@@ -182,21 +212,17 @@ class Post(CatsupPage):
                         self.filename[:10], "%Y-%m-%d"
                     )
                 else:
-                    ctime = os.stat(path).st_ctime
-                    self.datetime = datetime.fromtimestamp(ctime)
+                    self.datetime = datetime.fromtimestamp(st_ctime)
                 self.date = self.datetime.strftime("%Y-%m-%d")
 
                 self.type = self.meta.pop("type", "post")
                 self.tags = []
-                if self.type != "page":
-                    year = self.datetime.strftime("%Y")
-                    g.archives.get(year).add_post(self)
-
-                    for tag in self.meta.pop("tags", "").split(","):
-                        tag = tag.strip()
-                        tag = g.tags.get(tag)
-                        tag.add_post(self)
-                        self.tags.append(tag)
+                cache = {
+                    "st_ctime": st_ctime,
+                    "post": self.__dict__
+                }
+                with open(cache_file, "wb") as f:
+                    pickle.dump(cache, f)
                 return
 
         invailed_post()
