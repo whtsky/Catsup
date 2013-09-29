@@ -4,6 +4,7 @@ Changelog
 Version 0.2.0
 --------------
 
++ Add `catsup clean` command
 + Add cache for rendering markdown
 + Add cache for ``url_for``
 + Add cache for ``static_url``
