@@ -4,6 +4,7 @@ Changelog
 Version 0.2.0
 --------------
 
++ Support generate sitemap
 + Add `catsup clean` command
 + Add cache for rendering markdown
 + Add cache for ``url_for``

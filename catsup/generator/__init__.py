@@ -140,6 +140,7 @@ class Generator(object):
             logger.warning("Can't find any post.")
         self.generate_other_pages()
         self.copy_static_files()
+        self.renderer.render_sitemap()
         finish_generating = time.time()
         logger.info(
             "Generated %s posts in %.3fs" %
