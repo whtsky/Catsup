@@ -14,6 +14,9 @@ class Generator(object):
     def __init__(self, config_path, local=False, base_url=None):
         self.config_path = config_path
         self.local = local
+        if local:
+            from catsup.cache import bytecode_cache
+            bytecode_cache.clear()
         self.base_url = base_url
         g.generator = self
 

@@ -6,6 +6,7 @@ from datetime import datetime
 from houdini import escape_html
 from tornado.util import ObjectDict
 
+from catsup.cache import get_cache_path
 from catsup.logger import logger
 from catsup.options import g
 from catsup.parser import markdown
@@ -160,22 +161,18 @@ class Post(CatsupPage):
         return self.meta
 
     def parse(self, path):
-        cache_file = os.path.join(
-            g.cwdpath,
-            '.catsup-cache',
-            path
-        )
+        cache_path = get_cache_path(path)
         st_ctime = os.stat(path).st_ctime
-        cache_path = os.path.dirname(cache_file)
-        if os.path.exists(cache_path):
-            if os.path.exists(cache_file):
-                with open(cache_file, "rb") as f:
+        cache_folder = os.path.dirname(cache_path)
+        if os.path.exists(cache_folder):
+            if os.path.exists(cache_path):
+                with open(cache_path, "rb") as f:
                     cache = pickle.load(f)
                 if cache["st_ctime"] == st_ctime:
                     self.__dict__.update(cache["post"])
                     return
         else:
-            os.makedirs(cache_path)
+            os.makedirs(cache_folder)
 
         try:
             with open(path, "r") as f:
@@ -221,7 +218,7 @@ class Post(CatsupPage):
                     "st_ctime": st_ctime,
                     "post": self.__dict__
                 }
-                with open(cache_file, "wb") as f:
+                with open(cache_path, "wb") as f:
                     pickle.dump(cache, f)
                 return
 

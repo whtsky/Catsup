@@ -1,6 +1,7 @@
 import os
 
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound
+from catsup.cache import bytecode_cache
 from catsup.options import g
 from catsup.utils import mkdir, static_url, url_for, urljoin
 
@@ -9,7 +10,8 @@ class Renderer(object):
     def __init__(self, templates_path, generator):
         self.env = Environment(
             loader=FileSystemLoader(templates_path),
-            autoescape=False
+            autoescape=False,
+            bytecode_cache=bytecode_cache
         )
         config = generator.config
 
