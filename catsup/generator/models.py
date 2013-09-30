@@ -211,6 +211,14 @@ class Post(CatsupPage):
                 else:
                     self.datetime = datetime.fromtimestamp(st_ctime)
                 self.date = self.datetime.strftime("%Y-%m-%d")
+                self.description = escape_html(self.meta.get(
+                    "description",
+                    self.md[:200]
+                ))
+                if self.meta.get("comment", None) == "disabled":
+                    self.allow_comment = False
+                else:
+                    self.allow_comment = g.config.comment.allow
 
                 self.type = self.meta.pop("type", "post")
                 self.tags = []
@@ -223,19 +231,6 @@ class Post(CatsupPage):
                 return
 
         invailed_post()
-
-    @property
-    def description(self):
-        return self.meta.get(
-            "description",
-            self.md[:200]
-        )
-
-    @property
-    def allow_comment(self):
-        if self.meta.get("comment", None) == "disabled":
-            return False
-        return g.config.comment.allow
 
 
 class Page(CatsupPage):
