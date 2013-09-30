@@ -89,6 +89,7 @@ def update_nested_dict(a, b):
 
 
 def call(cmd, silence=False, **kwargs):
+    from catsup.options import g
     if 'cwd' not in kwargs:
         kwargs['cwd'] = g.cwdpath
     if silence and 'stdout' not in kwargs:
