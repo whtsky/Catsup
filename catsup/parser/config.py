@@ -1,7 +1,7 @@
 import sys
 import os
+import ujson
 
-from tornado.escape import json_decode
 from parguments.cli import prompt_bool
 
 from catsup.logger import logger
@@ -27,7 +27,7 @@ def parse(path):
         else:
             logger.error("Can't find config file. Exiting..")
         sys.exit(0)
-    return update_nested_dict(ObjectDict(), json_decode(f.read()))
+    return update_nested_dict(ObjectDict(), ujson.loads(f.read()))
 
 
 def load(path=None, local=False, base_url=None):

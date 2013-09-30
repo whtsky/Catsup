@@ -9,4 +9,5 @@ pathtools==0.1.2
 Pygments==1.6
 PyYAML==3.10
 tornado==3.1
+ujson==1.33
 watchdog==0.6.0
