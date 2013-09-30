@@ -4,13 +4,12 @@ import pickle
 
 from datetime import datetime
 from houdini import escape_html
-from tornado.util import ObjectDict
 
 from catsup.cache import get_cache_path
 from catsup.logger import logger
 from catsup.options import g
 from catsup.parser import markdown
-from catsup.utils import to_unicode
+from catsup.utils import to_unicode, ObjectDict
 from .utils import Pagination
 
 
