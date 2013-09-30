@@ -12,6 +12,7 @@ Version 0.2.0
 + Use Jinja2's Bytecode Cache
 + Don't generate analytics codes when running ``catsup server``
 + Display time cost for loading config and posts
++ Change json engine to `ujson`
 
 Version 0.1.0
 --------------
