@@ -9,7 +9,6 @@ except ImportError:
     from urlparse import urljoin
 
 from tornado.util import ObjectDict
-from catsup.options import g
 
 py = sys.version_info
 py3k = py >= (3, 0, 0)
