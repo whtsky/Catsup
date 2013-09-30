@@ -1,13 +1,15 @@
 import sys
-
 import os
-from tornado.util import ObjectDict
+
 from tornado.escape import json_decode
 from parguments.cli import prompt_bool
+
 from catsup.logger import logger
 from catsup.options import g
-from catsup.utils import update_nested_dict, urljoin
+from catsup.utils import update_nested_dict, urljoin, ObjectDict
+
 from .utils import add_slash, create_config_file
+
 import catsup.parser.themes
 
 

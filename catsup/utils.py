@@ -7,6 +7,7 @@ try:
     assert urljoin
 except ImportError:
     from urlparse import urljoin
+
 from tornado.util import ObjectDict
 from catsup.options import g
 
