@@ -27,7 +27,7 @@ def parse(path):
         else:
             logger.error("Can't find config file. Exiting..")
         sys.exit(0)
-    return update_nested_dict(ObjectDict(), ujson.loads(f.read()))
+    return update_nested_dict(ObjectDict(), ujson.load(f))
 
 
 def load(path=None, local=False, base_url=None):
