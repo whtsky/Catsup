@@ -1,6 +1,7 @@
 import os
 
 from catsup.options import g
+from catsup.utils import mkdir
 
 
 def add_slash(url):
@@ -26,8 +27,7 @@ def create_config_file(path=None):
               'Have you run `catsup init` before?' % current_dir)
         return
 
-    if not os.path.exists("posts"):
-        os.makedirs("posts")
+    mkdir("posts")
 
     template = get_template()
 
