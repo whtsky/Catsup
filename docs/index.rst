@@ -15,4 +15,5 @@ User’s Guide
    config
    theme
    goodies
+   upgrading
    changelog
