@@ -2,15 +2,18 @@ from setuptools import setup, find_packages
 
 import catsup
 
+version = catsup.__version__
+long_description = open('README.rst').read().replace("latest", "v%s" % version)
+
 setup(
     name='catsup',
-    version=catsup.__version__,
+    version=version,
     author='whtsky',
     author_email='whtsky@me.com',
     url='https://github.com/whtsky/catsup',
     packages=find_packages(),
     description='Catsup: a lightweight static site generator',
-    long_description=open('README.rst').read(),
+    long_description=long_description,
     entry_points={
         'console_scripts': ['catsup= catsup.cli:main'],
     },
