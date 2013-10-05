@@ -1,14 +1,15 @@
 import os
 import re
+import pickle
 
 from datetime import datetime
 from houdini import escape_html
-from tornado.util import ObjectDict
 
+from catsup.cache import get_cache_path
 from catsup.logger import logger
 from catsup.options import g
 from catsup.parser import markdown
-from catsup.utils import to_unicode
+from catsup.utils import to_unicode, ObjectDict
 from .utils import Pagination
 
 
@@ -142,11 +143,36 @@ class Post(CatsupPage):
         path = os.path.join(g.source, "%s%s" % (filename, ext))
         self.filename = filename
         self.parse(path)
+        self.add_archive_and_tags()
+
+    def add_archive_and_tags(self):
+        if self.type != "page":
+            year = self.datetime.strftime("%Y")
+            g.archives.get(year).add_post(self)
+
+            for tag in self.meta.pop("tags", "").split(","):
+                tag = tag.strip()
+                tag = g.tags.get(tag)
+                tag.add_post(self)
+                self.tags.append(tag)
 
     def get_permalink_args(self):
         return self.meta
 
     def parse(self, path):
+        cache_path = get_cache_path(path)
+        st_ctime = os.stat(path).st_ctime
+        cache_folder = os.path.dirname(cache_path)
+        if os.path.exists(cache_folder):
+            if os.path.exists(cache_path):
+                with open(cache_path, "rb") as f:
+                    cache = pickle.load(f)
+                if cache["st_ctime"] == st_ctime:
+                    self.__dict__.update(cache["post"])
+                    return
+        else:
+            os.makedirs(cache_folder)
+
         try:
             with open(path, "r") as f:
                 lines = f.readlines()
@@ -182,37 +208,28 @@ class Post(CatsupPage):
                         self.filename[:10], "%Y-%m-%d"
                     )
                 else:
-                    ctime = os.stat(path).st_ctime
-                    self.datetime = datetime.fromtimestamp(ctime)
+                    self.datetime = datetime.fromtimestamp(st_ctime)
                 self.date = self.datetime.strftime("%Y-%m-%d")
+                self.description = escape_html(self.meta.get(
+                    "description",
+                    self.md[:200]
+                ))
+                if self.meta.get("comment", None) == "disabled":
+                    self.allow_comment = False
+                else:
+                    self.allow_comment = g.config.comment.allow
 
                 self.type = self.meta.pop("type", "post")
                 self.tags = []
-                if self.type != "page":
-                    year = self.datetime.strftime("%Y")
-                    g.archives.get(year).add_post(self)
-
-                    for tag in self.meta.pop("tags", "").split(","):
-                        tag = tag.strip()
-                        tag = g.tags.get(tag)
-                        tag.add_post(self)
-                        self.tags.append(tag)
+                cache = {
+                    "st_ctime": st_ctime,
+                    "post": self.__dict__
+                }
+                with open(cache_path, "wb") as f:
+                    pickle.dump(cache, f)
                 return
 
         invailed_post()
-
-    @property
-    def description(self):
-        return self.meta.get(
-            "description",
-            self.md[:200]
-        )
-
-    @property
-    def allow_comment(self):
-        if self.meta.get("comment", None) == "disabled":
-            return False
-        return g.config.comment.allow
 
 
 class Page(CatsupPage):

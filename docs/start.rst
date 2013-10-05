@@ -3,11 +3,11 @@
 Get Started
 ================
 
-This section needs you have catsup installed.If you don't, please go and :ref:`Install it <installation>`
+This section needs you have Catsup installed.If you don't, please go and :ref:`Install it <installation>`
 
 Create a new site
 -------------------
-It's pretty simple to create a site using catsup ::
+It's pretty simple to create a site using Catsup ::
 
     $ mkdir site
     $ cd site
@@ -18,7 +18,7 @@ Let's see what happened ::
     $ ls
     config.json posts
 
-After running ``catsup init``, catsup generates a sample config file ``config.json`` and an empty post folder ``posts``.
+After running ``catsup init``, Catsup generates a sample config file ``config.json`` and an empty post folder ``posts``.
 
 Now, let's configure your new site.
 

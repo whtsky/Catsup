@@ -29,7 +29,7 @@
 {% endmacro %}
 
 {% macro analytics() %}
-    {% if config.analytics %}
+    {% if config.analytics and not generator.local %}
         <script type="text/javascript">
 
             var _gaq = _gaq || [];

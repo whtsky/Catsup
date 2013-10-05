@@ -5,10 +5,9 @@ import sys
 import os
 import shutil
 
-from tornado.util import ObjectDict
 from catsup.logger import logger
 from catsup.options import g
-from catsup.utils import call
+from catsup.utils import call, ObjectDict
 
 
 def read_theme(path):

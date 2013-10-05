@@ -41,7 +41,7 @@ There are some permalink styles for posts you may like :
 + ``/{date}/{title}/``
 + ``/{filename}/``
 + ``/{date}/{filename}/``
-+ ``/{datetime.year/{filename}/``
++ ``/{datetime.year}/{filename}/``
 
 Note that permalink defined in :ref:`Post Meta <post-meta>` will be used first.
 

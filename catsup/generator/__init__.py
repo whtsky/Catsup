@@ -14,7 +14,11 @@ class Generator(object):
     def __init__(self, config_path, local=False, base_url=None):
         self.config_path = config_path
         self.local = local
+        if local:
+            from catsup.cache import bytecode_cache
+            bytecode_cache.clear()
         self.base_url = base_url
+        g.generator = self
 
     def reset(self):
         self.archives = g.archives = Archives()
@@ -22,6 +26,10 @@ class Generator(object):
         self.load_config()
         self.load_posts()
         self.load_renderer()
+        self.caches = {
+            "static_url": {},
+            "url_for": {}
+        }
 
     def load_config(self):
         self.config = g.config = catsup.parser.config(
@@ -113,8 +121,13 @@ class Generator(object):
             smart_copy(source, target)
 
     def generate(self):
+        started_loading = time.time()
         self.reset()
-        t = time.time()
+        finish_loading = time.time()
+        logger.info(
+            "Loaded config and %s posts in %.3fs" %
+            (len(self.posts), finish_loading - started_loading)
+        )
         if self.local:
             g.output = self.config.config.output = tempfile.mkdtemp()
         if self.posts:
@@ -127,7 +140,13 @@ class Generator(object):
             logger.warning("Can't find any post.")
         self.generate_other_pages()
         self.copy_static_files()
+        self.renderer.render_sitemap()
+        finish_generating = time.time()
         logger.info(
             "Generated %s posts in %.3fs" %
-            (len(self.posts), time.time() - t)
+            (len(self.posts), finish_generating - finish_loading)
+        )
+        logger.info(
+            "Generating finished in %.3fs" %
+            (finish_generating - started_loading)
         )

@@ -1,3 +1,3 @@
-from tornado.util import ObjectDict
+from catsup.utils import ObjectDict
 
 g = ObjectDict()

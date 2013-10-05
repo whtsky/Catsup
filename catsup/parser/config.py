@@ -1,13 +1,15 @@
 import sys
-
 import os
-from tornado.util import ObjectDict
-from tornado.escape import json_decode
+import ujson
+
 from parguments.cli import prompt_bool
+
 from catsup.logger import logger
 from catsup.options import g
-from catsup.utils import update_nested_dict, urljoin
+from catsup.utils import update_nested_dict, urljoin, ObjectDict
+
 from .utils import add_slash, create_config_file
+
 import catsup.parser.themes
 
 
@@ -25,7 +27,7 @@ def parse(path):
         else:
             logger.error("Can't find config file. Exiting..")
         sys.exit(0)
-    return update_nested_dict(ObjectDict(), json_decode(f.read()))
+    return update_nested_dict(ObjectDict(), ujson.load(f))
 
 
 def load(path=None, local=False, base_url=None):

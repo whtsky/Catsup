@@ -31,7 +31,9 @@ Usage:
     catsup rsync [-s <file>|--settings=<file>]
     catsup server [-s <file>|--settings=<file>] [-p <port>|--port=<port>]
     catsup webhook [-s <file>|--settings=<file>] [-p <port>|--port=<port>]
+    catsup watch [-s <file>|--settings=<file>]
     catsup themes
+    catsup clean [-s <file>|--settings=<file>]
     catsup install <theme>
     catsup -h | --help
     catsup --version
@@ -164,6 +166,32 @@ def webhook(settings, port):
 
 
 @parguments.command
+def watch(settings):
+    """
+    Usage:
+        catsup watch [-s <file>|--settings=<file>]
+
+    Options:
+        -h --help               Show this screen and exit.
+        -s --settings=<file>    specify a setting file. [default: config.json]
+    """
+    from catsup.generator import Generator
+    from catsup.server import CatsupEventHandler
+    from watchdog.observers import Observer
+
+    generator = Generator(settings)
+    generator.generate()
+    event_handler = CatsupEventHandler(generator)
+    observer = Observer()
+    for path in [generator.config.config.source, g.theme.path]:
+        path = os.path.abspath(path)
+        observer.schedule(event_handler, path=path, recursive=True)
+    observer.start()
+    while True:
+        pass
+
+
+@parguments.command
 def themes():
     """
     Usage:
@@ -174,6 +202,28 @@ def themes():
     """
     import catsup.parser.themes
     catsup.parser.themes.list()
+
+
+@parguments.command
+def clean(settings):
+    """
+    Usage:
+        catsup clean [-s <file>|--settings=<file>]
+
+    Options:
+        -s --settings=<file>    specify a setting file. [default: config.json]
+        -h --help               Show this screen and exit.
+    """
+    import catsup.parser.config
+    import shutil
+    config = catsup.parser.config(settings)
+    if os.path.exists(".catsup-cache"):
+        shutil.rmtree(".catsup-cache")
+        logger.info("Removed cache folder.")
+    output_path = config.config.output
+    if os.path.exists(output_path):
+        shutil.rmtree(output_path)
+        logger.info("Removed output folder.")
 
 
 @parguments.command

@@ -7,8 +7,8 @@ try:
     assert urljoin
 except ImportError:
     from urlparse import urljoin
+
 from tornado.util import ObjectDict
-from catsup.options import g
 
 py = sys.version_info
 py3k = py >= (3, 0, 0)
@@ -19,44 +19,51 @@ if py3k:
 
 
 def static_url(f):
-    import os
-    import hashlib
-
-    from catsup.logger import logger
     from catsup.options import g
+    caches_class = g.generator.caches["static_url"]
+    if f not in caches_class:
+        import os
+        import hashlib
 
-    def get_hash(path):
-        path = os.path.join(g.theme.path, 'static', path)
-        if not os.path.exists(path):
-            logger.warn("%s does not exist." % path)
-            return
+        from catsup.logger import logger
 
-        with open(path, 'rb') as f:
-            return hashlib.md5(f.read()).hexdigest()
+        def get_hash(path):
+            path = os.path.join(g.theme.path, 'static', path)
+            if not os.path.exists(path):
+                logger.warn("%s does not exist." % path)
+                return
 
-    hsh = get_hash(f)
-    return urljoin(
-        g.static_prefix,
-        '%s?v=%s' % (f, hsh)
-    )
+            with open(path, 'rb') as f:
+                return hashlib.md5(f.read()).hexdigest()
+
+        hsh = get_hash(f)
+        url = urljoin(
+            g.static_prefix,
+            '%s?v=%s' % (f, hsh)
+        )
+        caches_class[f] = url
+    return caches_class[f]
 
 
 def url_for(obj):
     from catsup.options import g
-    from catsup.generator.models import CatsupPage
+    caches_class = g.generator.caches["url_for"]
+    key = id(obj)
+    if key not in caches_class:
+        from catsup.generator.models import CatsupPage
 
-    url = ''
-    if obj == 'index':
-        url = g.base_url
-    elif isinstance(obj, CatsupPage):
-        url = obj.permalink
-    elif isinstance(obj, str):
-        url = g.permalink[obj]
-    if url:
-        return urljoin(
+        url = ''
+        if obj == 'index':
+            url = g.base_url
+        elif isinstance(obj, CatsupPage):
+            url = obj.permalink
+        elif isinstance(obj, str):
+            url = g.permalink[obj]
+        caches_class[key] = urljoin(
             g.base_url,
             url
         )
+    return caches_class[key]
 
 
 def to_unicode(value):
@@ -82,6 +89,7 @@ def update_nested_dict(a, b):
 
 
 def call(cmd, silence=False, **kwargs):
+    from catsup.options import g
     if 'cwd' not in kwargs:
         kwargs['cwd'] = g.cwdpath
     if silence and 'stdout' not in kwargs:

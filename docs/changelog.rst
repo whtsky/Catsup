@@ -1,6 +1,20 @@
 Changelog
 ==========
 
+Version 0.2.0
+--------------
+
++ Support generate sitemap
++ Add `catsup watch` command
++ Add `catsup clean` command
++ Add cache for rendering markdown
++ Add cache for ``url_for``
++ Add cache for ``static_url``
++ Use Jinja2's Bytecode Cache
++ Don't generate analytics codes when running ``catsup server``
++ Display time cost for loading config and posts
++ Change json engine to `ujson`
+
 Version 0.1.0
 --------------
 
