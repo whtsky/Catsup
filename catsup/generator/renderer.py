@@ -58,7 +58,6 @@ class Renderer(object):
         kwargs.setdefault("permalink", permalink)
         html = self.render(template, **kwargs)
         if html:
-            output_name = permalink
             self.rendered_permalinks.append(permalink)
             if output_name.endswith("/") or "." not in output_name:
                 output_name = output_name.rstrip("/")

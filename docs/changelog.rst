@@ -1,6 +1,11 @@
 Changelog
 ==========
 
+Version 0.2.1
+--------------
+
++ Fix build bugs.
+
 Version 0.2.0
 --------------
 
