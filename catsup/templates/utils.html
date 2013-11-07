@@ -49,7 +49,7 @@
 {% macro meta(post) %}
 <meta name="description" content="{{ post.description }}">
 <meta name="twitter:creator" content="{{ author.twitter }}">
-<meta name="twitter:url" content="{{ site.url }}{{ permalink }}">
+<meta name="twitter:url" content="{{ url_for(post) }}">
 <meta name="twitter:title" content="{{ post.title }}">
 <meta name="twitter:description" content="{{ post.description }}">
 {% endmacro %}
