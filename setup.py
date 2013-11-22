@@ -2,6 +2,7 @@ from setuptools import setup, find_packages
 
 import catsup
 
+
 setup(
     name='catsup',
     version=catsup.__version__,
