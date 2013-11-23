@@ -1,18 +1,18 @@
 import os
 
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound
-from catsup.cache import bytecode_cache
 from catsup.options import g
 from catsup.utils import mkdir, static_url, url_for, urljoin
 
 
 class Renderer(object):
-    def __init__(self, templates_path, generator):
+    def __init__(self, templates_path, generator, bytecode_cache=None):
         self.env = Environment(
             loader=FileSystemLoader(templates_path),
-            autoescape=False,
-            bytecode_cache=bytecode_cache
+            autoescape=False
         )
+        if bytecode_cache is not None:
+            self.env.bytecode_cache = bytecode_cache
         config = generator.config
 
         self.env.globals.update(

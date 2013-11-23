@@ -14,9 +14,13 @@ class Generator(object):
     def __init__(self, config_path, local=False, base_url=None):
         self.config_path = config_path
         self.local = local
-        if local:
+
+        if not local:
             from catsup.cache import bytecode_cache
-            bytecode_cache.clear()
+            self.bytecode_cache = bytecode_cache
+        else:
+            self.bytecode_cache = None
+
         self.base_url = base_url
         g.generator = self
 
@@ -73,7 +77,8 @@ class Generator(object):
         ]
         self.renderer = Renderer(
             templates_path=templates_path,
-            generator=self
+            generator=self,
+            bytecode_cache=self.bytecode_cache
         )
 
     def generate_feed(self):
