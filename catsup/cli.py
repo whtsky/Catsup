@@ -145,6 +145,8 @@ def server(settings, port):
         -p --port=<port>        specify the server port. [default: 8888]
     """
     import catsup.server
+    from catsup.options import g
+    g.enable_cache = False
     server = catsup.server.PreviewServer(settings, port)
     server.run()
 
