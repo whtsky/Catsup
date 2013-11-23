@@ -168,7 +168,7 @@ class Post(CatsupPage):
         )
         if "***" in description:
             description = description.split("***")[0]
-            description.replace("\n", "    ")
+            description = description.replace("\n", "  ")
         else:
             description = description.split("\n")[0]
         if len(description) > 150:
@@ -177,18 +177,19 @@ class Post(CatsupPage):
         return escape_html(description)
 
     def parse(self, path):
-        cache_path = get_cache_path(path)
         st_ctime = os.stat(path).st_ctime
-        cache_folder = os.path.dirname(cache_path)
-        if os.path.exists(cache_folder):
-            if os.path.exists(cache_path):
-                with open(cache_path, "rb") as f:
-                    cache = pickle.load(f)
-                if cache["st_ctime"] == st_ctime:
-                    self.__dict__.update(cache["post"])
-                    return
-        else:
-            os.makedirs(cache_folder)
+        if g.enable_cache:
+            cache_path = get_cache_path(path)
+            cache_folder = os.path.dirname(cache_path)
+            if os.path.exists(cache_folder):
+                if os.path.exists(cache_path):
+                    with open(cache_path, "rb") as f:
+                        cache = pickle.load(f)
+                    if cache["st_ctime"] == st_ctime:
+                        self.__dict__.update(cache["post"])
+                        return
+            else:
+                os.makedirs(cache_folder)
 
         try:
             with open(path, "r") as f:
@@ -239,8 +240,9 @@ class Post(CatsupPage):
                     "st_ctime": st_ctime,
                     "post": self.__dict__
                 }
-                with open(cache_path, "wb") as f:
-                    pickle.dump(cache, f)
+                if g.enable_cache:
+                    with open(cache_path, "wb") as f:
+                        pickle.dump(cache, f)
                 return
 
         invailed_post()
