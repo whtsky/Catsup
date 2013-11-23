@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import os
 import re
 import pickle
@@ -159,6 +161,21 @@ class Post(CatsupPage):
     def get_permalink_args(self):
         return self.meta
 
+    def create_description(self):
+        description = self.meta.get(
+            "description",
+            self.md
+        )
+        if "***" in description:
+            description = description.split("***")[0]
+            description.replace("\n", "    ")
+        else:
+            description = description.split("\n")[0]
+        if len(description) > 150:
+            description = description[:150]
+        description = description.strip()
+        return escape_html(description)
+
     def parse(self, path):
         cache_path = get_cache_path(path)
         st_ctime = os.stat(path).st_ctime
@@ -210,10 +227,7 @@ class Post(CatsupPage):
                 else:
                     self.datetime = datetime.fromtimestamp(st_ctime)
                 self.date = self.datetime.strftime("%Y-%m-%d")
-                self.description = escape_html(self.meta.get(
-                    "description",
-                    self.md[:200]
-                ))
+                self.description = self.create_description()
                 if self.meta.get("comment", None) == "disabled":
                     self.allow_comment = False
                 else:
