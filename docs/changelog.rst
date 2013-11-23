@@ -6,6 +6,7 @@ Version 0.3.0
 
 + Correct the url for Twitter Card Support
 + Don't use cache when running `catsup server`
++ Improve description creator
 
 Version 0.2.1
 --------------
