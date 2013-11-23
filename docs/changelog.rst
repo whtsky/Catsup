@@ -4,8 +4,8 @@ Changelog
 Version 0.3.0
 --------------
 
-+ Adds support for Open Graph
 + Correct the url for Twitter Card Support
++ Don't use cache when running `catsup server`
 
 Version 0.2.1
 --------------

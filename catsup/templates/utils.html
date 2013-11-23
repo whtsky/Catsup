@@ -49,13 +49,6 @@
 {% macro meta(post) %}
 <meta name="description" content="{{ post.description }}">
 
-<meta property="og:title" content="{{ post.title }}"/>
-<meta property="og:description" content="{{ post.description }}"/>
-<meta property="og:url" content="{{ url_for(post) }}"/>
-{# <meta property="og:image" content=""/> #}
-<meta property="og:type" content="article"/>
-<meta property="og:site_name" content="{{ site.name}} "/>
-
 <meta name="twitter:creator" content="{{ author.twitter }}">
 <meta name="twitter:url" content="{{ url_for(post) }}">
 <meta name="twitter:title" content="{{ post.title }}">
