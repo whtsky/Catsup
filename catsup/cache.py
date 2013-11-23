@@ -1,4 +1,5 @@
 import os
+import shutil
 
 from jinja2 import BytecodeCache
 from catsup.options import g
@@ -14,6 +15,11 @@ def get_cache_path(name):
         ".catsup-cache",
         name
     )
+
+
+def remove_cache_path():
+    if os.path.exists(".catsup-cache"):
+        shutil.rmtree(".catsup-cache")
 
 
 class CatsupJinjaCache(BytecodeCache):

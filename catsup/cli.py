@@ -214,12 +214,13 @@ def clean(settings):
         -s --settings=<file>    specify a setting file. [default: config.json]
         -h --help               Show this screen and exit.
     """
-    import catsup.parser.config
     import shutil
+    import catsup.parser.config
+    import catsup.cache
     config = catsup.parser.config(settings)
-    if os.path.exists(".catsup-cache"):
-        shutil.rmtree(".catsup-cache")
-        logger.info("Removed cache folder.")
+
+    catsup.cache.remove_cache_path()
+    logger.info("Removed cache folder.")
     output_path = config.config.output
     if os.path.exists(output_path):
         shutil.rmtree(output_path)
