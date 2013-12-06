@@ -1,3 +1,17 @@
+def cached_func(f):
+    """
+    Used for cache property funcs in class to work with Jinja2.
+    """
+    func_name = f.__name__
+    property_name = "_%s" % func_name
+
+    def wraps(self):
+        if not hasattr(self, property_name):
+            setattr(self, property_name, f(self))
+        return getattr(self, property_name)
+    return wraps
+
+
 class Pagination(object):
     def __init__(self, page, posts, per_page, get_permalink):
         self.total_items = posts

@@ -10,7 +10,7 @@ from catsup.logger import logger
 from catsup.options import g
 from catsup.parser import markdown
 from catsup.utils import to_unicode, ObjectDict
-from .utils import Pagination
+from .utils import cached_func, Pagination
 
 
 class CatsupPage(object):
@@ -140,9 +140,9 @@ class Post(CatsupPage):
 
     def __init__(self, filename, ext):
         self.meta = ObjectDict()
-        path = os.path.join(g.source, "%s%s" % (filename, ext))
+        self.path = os.path.join(g.source, "%s%s" % (filename, ext))
         self.filename = filename
-        self.parse(path)
+        self.parse()
         self.add_archive_and_tags()
 
     def add_archive_and_tags(self):
@@ -159,7 +159,28 @@ class Post(CatsupPage):
     def get_permalink_args(self):
         return self.meta
 
-    def create_description(self):
+    @property
+    @cached_func
+    def datetime(self):
+        if "time" in self.meta:
+            return datetime.strptime(
+                self.meta.pop('time'), "%Y-%m-%d %H:%M")
+        elif self.DATE_RE.match(self.filename[:10]):
+            return datetime.strptime(
+                self.filename[:10], "%Y-%m-%d"
+            )
+        else:
+            st_ctime = os.stat(self.path).st_ctime
+            return datetime.fromtimestamp(st_ctime)
+
+    @property
+    @cached_func
+    def date(self):
+        return self.datetime.strftime("%Y-%m-%d")
+
+    @property
+    @cached_func
+    def description(self):
         description = self.meta.get(
             "description",
             self.md
@@ -172,16 +193,27 @@ class Post(CatsupPage):
         if len(description) > 150:
             description = description[:150]
         description = description.strip()
-        description = to_unicode(description)
         return escape_html(description)
 
-    def parse(self, path):
-        st_ctime = os.stat(path).st_ctime
+    @property
+    @cached_func
+    def allow_comment(self):
+        if self.meta.get("comment", None) == "disabled":
+            return False
+        else:
+            return g.config.comment.allow
+
+    @property
+    @cached_func
+    def type(self):
+        return self.meta.get("type", "post")
+
+    def parse(self):
         try:
-            with open(path, "r") as f:
+            with open(self.path, "r") as f:
                 lines = f.readlines()
         except IOError:
-            logger.error("Can't open file %s" % path)
+            logger.error("Can't open file %s" % self.path)
             exit(1)
 
         def invailed_post():
@@ -204,23 +236,6 @@ class Post(CatsupPage):
                 self.md = to_unicode('\n'.join(lines[i + 1:]))
                 self.content = markdown(self.md)
 
-                if "time" in self.meta:
-                    self.datetime = datetime.strptime(
-                        self.meta.pop('time'), "%Y-%m-%d %H:%M")
-                elif self.DATE_RE.match(self.filename[:10]):
-                    self.datetime = datetime.strptime(
-                        self.filename[:10], "%Y-%m-%d"
-                    )
-                else:
-                    self.datetime = datetime.fromtimestamp(st_ctime)
-                self.date = self.datetime.strftime("%Y-%m-%d")
-                self.description = self.create_description()
-                if self.meta.get("comment", None) == "disabled":
-                    self.allow_comment = False
-                else:
-                    self.allow_comment = g.config.comment.allow
-
-                self.type = self.meta.pop("type", "post")
                 self.tags = []
                 return
 
