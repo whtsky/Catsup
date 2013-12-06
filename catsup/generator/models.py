@@ -9,7 +9,7 @@ from houdini import escape_html
 from catsup.logger import logger
 from catsup.options import g
 from catsup.parser import markdown
-from catsup.utils import to_unicode, ObjectDict
+from catsup.utils import html_to_raw_text, to_unicode, ObjectDict
 from .utils import cached_func, Pagination
 
 
@@ -183,17 +183,16 @@ class Post(CatsupPage):
     def description(self):
         description = self.meta.get(
             "description",
-            self.md
-        )
-        if "***" in description:
-            description = description.split("***")[0]
-            description = description.replace("\n", "  ")
-        else:
-            description = description.split("\n")[0]
+            self.content
+        ).replace("\n", "")
+        description = html_to_raw_text(description)
+        if "<br" in description:
+            description = description.split("<br")[0]
+        elif "</p" in description:
+            description = description.split("</p")[0]
         if len(description) > 150:
             description = description[:150]
-        description = description.strip()
-        return escape_html(description)
+        return description.strip()
 
     @property
     @cached_func
@@ -202,6 +201,11 @@ class Post(CatsupPage):
             return False
         else:
             return g.config.comment.allow
+
+    @property
+    @cached_func
+    def title(self):
+        return self.meta.get("title", "")
 
     @property
     @cached_func
@@ -222,7 +226,7 @@ class Post(CatsupPage):
 
         title = lines.pop(0)
         if title.startswith("#"):
-            self.title = escape_html(title[1:].strip())
+            self.meta["title"] = escape_html(title[1:].strip())
         else:
             invailed_post()
 
@@ -233,8 +237,9 @@ class Post(CatsupPage):
                 self.meta[name] = value.strip()
 
             elif line.strip().startswith('---'):
-                self.md = to_unicode('\n'.join(lines[i + 1:]))
-                self.content = markdown(self.md)
+                self.content = markdown(
+                    to_unicode('\n'.join(lines[i + 1:]))
+                )
 
                 self.tags = []
                 return

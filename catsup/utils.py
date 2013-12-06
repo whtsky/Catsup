@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 import subprocess
 
@@ -16,6 +17,13 @@ py3k = py >= (3, 0, 0)
 if py3k:
     basestring = str
     unicode = str
+
+
+HTML_TAG_RE = re.compile("<.*?>")
+
+
+def html_to_raw_text(html):
+    return "".join(HTML_TAG_RE.split(html))
 
 
 def static_url(f):
