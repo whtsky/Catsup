@@ -5,6 +5,7 @@ import catsup.parser
 
 from catsup.logger import logger
 from catsup.generator.renderer import Renderer
+from catsup.reader import get_reader
 from catsup.options import g
 from catsup.utils import smart_copy
 from .models import *
@@ -36,15 +37,6 @@ class Generator(object):
             base_url=self.base_url
         )
 
-    def load_post(self, filename, ext):
-        logger.info('Loading file %s' % filename)
-
-        post = Post(filename, ext)
-        if post.type == "page":
-            self.pages.append(post)
-        else:
-            self.posts.append(post)
-
     def load_posts(self):
         self.posts = []
         self.pages = []
@@ -55,8 +47,16 @@ class Generator(object):
             if f.startswith("."):  # hidden file
                 continue
             filename, ext = os.path.splitext(f)
-            if ext.lower() in ['.md', '.markdown']:
-                self.load_post(filename, ext)
+            ext = ext.lower()[1:]
+            reader = get_reader(ext)
+            if reader is not None:
+                logger.info('Loading file %s' % filename)
+                path = os.path.join(g.source, f)
+                post = reader(path)
+                if post.type == "page":
+                    self.pages.append(post)
+                else:
+                    self.posts.append(post)
             else:
                 self.static_files.append(f)
         self.posts.sort(

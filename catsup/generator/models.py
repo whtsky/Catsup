@@ -4,12 +4,9 @@ import os
 import re
 
 from datetime import datetime
-from houdini import escape_html
 
-from catsup.logger import logger
 from catsup.options import g
-from catsup.parser import markdown
-from catsup.utils import html_to_raw_text, to_unicode, ObjectDict
+from catsup.utils import html_to_raw_text
 from .utils import cached_func, Pagination
 
 
@@ -138,11 +135,11 @@ class Archives(CatsupPage):
 class Post(CatsupPage):
     DATE_RE = re.compile('\d{4}\-\d{2}\-\d{2}')
 
-    def __init__(self, filename, ext):
-        self.meta = ObjectDict()
-        self.path = os.path.join(g.source, "%s%s" % (filename, ext))
-        self.filename = filename
-        self.parse()
+    def __init__(self, path, meta, content):
+        self.path = path
+        self.meta = meta
+        self.content = content
+        self.tags = []
         self.add_archive_and_tags()
 
     def add_archive_and_tags(self):
@@ -164,14 +161,23 @@ class Post(CatsupPage):
     def datetime(self):
         if "time" in self.meta:
             return datetime.strptime(
-                self.meta.pop('time'), "%Y-%m-%d %H:%M")
-        elif self.DATE_RE.match(self.filename[:10]):
-            return datetime.strptime(
-                self.filename[:10], "%Y-%m-%d"
+                self.meta["time"], "%Y-%m-%d %H:%M"
+            )
+        elif "date" in self.meta:
+            return datetime.strftime(
+                self.meta["date"], "%Y-%m-%d"
             )
         else:
-            st_ctime = os.stat(self.path).st_ctime
-            return datetime.fromtimestamp(st_ctime)
+            if "-" in self.path:
+                import os.path
+                filename, _ = os.path.splitext(self.path)
+                filename = os.path.basename(filename)
+                if self.DATE_RE.match(filename[:10]):
+                    return datetime.strptime(
+                        filename[:10], "%Y-%m-%d"
+                    )
+        st_ctime = os.stat(self.path).st_ctime
+        return datetime.fromtimestamp(st_ctime)
 
     @property
     @cached_func
@@ -211,40 +217,6 @@ class Post(CatsupPage):
     @cached_func
     def type(self):
         return self.meta.get("type", "post")
-
-    def parse(self):
-        try:
-            with open(self.path, "r") as f:
-                lines = f.readlines()
-        except IOError:
-            logger.error("Can't open file %s" % self.path)
-            exit(1)
-
-        def invailed_post():
-            logger.error("%s is not a vailed catsup post" % self.filename)
-            exit(1)
-
-        title = lines.pop(0)
-        if title.startswith("#"):
-            self.meta["title"] = escape_html(title[1:].strip())
-        else:
-            invailed_post()
-
-        for i, line in enumerate(lines):
-            if ':' in line:  # property
-                name, value = line.split(':', 1)
-                name = name.strip().lstrip('-').strip().lower()
-                self.meta[name] = value.strip()
-
-            elif line.strip().startswith('---'):
-                self.content = markdown(
-                    to_unicode('\n'.join(lines[i + 1:]))
-                )
-
-                self.tags = []
-                return
-
-        invailed_post()
 
 
 class Page(CatsupPage):

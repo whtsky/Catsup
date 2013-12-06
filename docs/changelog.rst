@@ -4,6 +4,7 @@ Changelog
 Version 0.3.0
 --------------
 
++ Add multi-format post support
 + Correct the url for Twitter Card Support
 + Drop file-based cache system.
 + Improve description creator
