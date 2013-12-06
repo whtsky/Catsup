@@ -15,11 +15,7 @@ g.catsup_path = os.path.abspath(os.path.dirname(__file__))
 g.public_templates_path = os.path.join(g.catsup_path, 'templates')
 g.cwdpath = os.path.abspath('.')
 
-try:
-    import catsup
-except ImportError:
-    import site
-    site.addsitedir(os.path.dirname(g.catsup_path))
+import catsup
 
 doc = """catsup v%s
 
@@ -33,7 +29,6 @@ Usage:
     catsup webhook [-s <file>|--settings=<file>] [-p <port>|--port=<port>]
     catsup watch [-s <file>|--settings=<file>]
     catsup themes
-    catsup clean [-s <file>|--settings=<file>]
     catsup install <theme>
     catsup -h | --help
     catsup --version
@@ -145,10 +140,8 @@ def server(settings, port):
         -p --port=<port>        specify the server port. [default: 8888]
     """
     import catsup.server
-    from catsup.options import g
-    g.enable_cache = False
-    server = catsup.server.PreviewServer(settings, port)
-    server.run()
+    preview_server = catsup.server.PreviewServer(settings, port)
+    preview_server.run()
 
 
 @parguments.command
@@ -204,29 +197,6 @@ def themes():
     """
     import catsup.parser.themes
     catsup.parser.themes.list()
-
-
-@parguments.command
-def clean(settings):
-    """
-    Usage:
-        catsup clean [-s <file>|--settings=<file>]
-
-    Options:
-        -s --settings=<file>    specify a setting file. [default: config.json]
-        -h --help               Show this screen and exit.
-    """
-    import shutil
-    import catsup.parser.config
-    import catsup.cache
-    config = catsup.parser.config(settings)
-
-    catsup.cache.remove_cache_path()
-    logger.info("Removed cache folder.")
-    output_path = config.config.output
-    if os.path.exists(output_path):
-        shutil.rmtree(output_path)
-        logger.info("Removed output folder.")
 
 
 @parguments.command

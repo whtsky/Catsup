@@ -6,13 +6,11 @@ from catsup.utils import mkdir, static_url, url_for, urljoin
 
 
 class Renderer(object):
-    def __init__(self, templates_path, generator, bytecode_cache=None):
+    def __init__(self, templates_path, generator):
         self.env = Environment(
             loader=FileSystemLoader(templates_path),
             autoescape=False
         )
-        if bytecode_cache is not None:
-            self.env.bytecode_cache = bytecode_cache
         config = generator.config
 
         self.env.globals.update(

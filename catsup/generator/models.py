@@ -2,12 +2,10 @@
 
 import os
 import re
-import pickle
 
 from datetime import datetime
 from houdini import escape_html
 
-from catsup.cache import get_cache_path
 from catsup.logger import logger
 from catsup.options import g
 from catsup.parser import markdown
@@ -174,23 +172,11 @@ class Post(CatsupPage):
         if len(description) > 150:
             description = description[:150]
         description = description.strip()
+        description = to_unicode(description)
         return escape_html(description)
 
     def parse(self, path):
         st_ctime = os.stat(path).st_ctime
-        if g.enable_cache:
-            cache_path = get_cache_path(path)
-            cache_folder = os.path.dirname(cache_path)
-            if os.path.exists(cache_folder):
-                if os.path.exists(cache_path):
-                    with open(cache_path, "rb") as f:
-                        cache = pickle.load(f)
-                    if cache["st_ctime"] == st_ctime:
-                        self.__dict__.update(cache["post"])
-                        return
-            else:
-                os.makedirs(cache_folder)
-
         try:
             with open(path, "r") as f:
                 lines = f.readlines()
@@ -236,13 +222,6 @@ class Post(CatsupPage):
 
                 self.type = self.meta.pop("type", "post")
                 self.tags = []
-                cache = {
-                    "st_ctime": st_ctime,
-                    "post": self.__dict__
-                }
-                if g.enable_cache:
-                    with open(cache_path, "wb") as f:
-                        pickle.dump(cache, f)
                 return
 
         invailed_post()
