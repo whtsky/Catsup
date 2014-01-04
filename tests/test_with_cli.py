@@ -24,6 +24,7 @@ def test_build():
     build(settings="config.json")
     assert output_exist("feed.xml")
     assert output_exist("index.html")
+    assert output_exist("page.html")
     assert output_exist("sitemap.txt")
     assert output_exist("should-exist")
     assert not output_exist(".should-not-exist")

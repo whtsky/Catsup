@@ -164,6 +164,12 @@ class Post(CatsupPage):
             tag.add_post(self)
             self.tags.append(tag)
 
+    @property
+    def permalink(self):
+        if "permalink" in self.meta:
+            return self.meta.permalink
+        return super(Post, self).permalink
+
     def get_permalink_args(self):
         return self.meta
 
