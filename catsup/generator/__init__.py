@@ -7,7 +7,7 @@ from catsup.generator.renderer import Renderer
 from catsup.reader import get_reader
 from catsup.options import g
 from catsup.utils import smart_copy
-from .models import *
+from catsup.models import *
 
 
 class Generator(object):
