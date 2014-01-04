@@ -5,11 +5,15 @@ Version 0.3.0
 --------------
 
 + Add multi-format post support
++ Add ``config.config.static_source``
++ Add ``config.config.static_output``
++ Support Non-meta post.
++ Support TXT format post.
 + Correct the url for Twitter Card Support
 + Drop file-based cache system.
 + Improve description creator
-+ Add ``config.config.static_source``
-+ Add ``config.config.static_output``
+
++ Reorganize code.
 
 Version 0.2.1
 --------------
