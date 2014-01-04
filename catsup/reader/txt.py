@@ -1,7 +1,7 @@
 from houdini import escape_html
 
 from catsup.models import Post
-from catsup.utils import ObjectDict
+from catsup.utils import ObjectDict, to_unicode
 from catsup.reader.utils import open_file, not_valid
 
 
@@ -13,7 +13,6 @@ def parse_meta(lines, path=None):
         return parse_liquid_meta(lines, path)
     else:
         not_valid(path)
-    return False
 
 
 def parse_liquid_meta(lines, path=None):
@@ -23,7 +22,10 @@ def parse_liquid_meta(lines, path=None):
 
 def parse_catsup_meta(lines, path=None):
     meta = ObjectDict()
-    meta.title = escape_html(lines.pop(0)[1:].strip())
+    title_line = lines.pop(0)
+    if title_line[0] != "#":
+        not_valid(path)
+    meta.title = escape_html(title_line[1:].strip())
     for line in lines:
         if not line:
             continue
@@ -40,6 +42,9 @@ def text_reader(path):
 
     lines = []
     firstline = post_file.readline().strip()
+
+    no_meta = False
+
     lines.append(firstline)
     for l in post_file:
         l = l.strip()
@@ -48,9 +53,18 @@ def text_reader(path):
         elif l:
             lines.append(l)
     else:
-        not_valid(path)
-    meta = parse_meta(lines, path)
-    content = "".join(post_file)
+        no_meta = True
+    if no_meta:
+        import os
+        p, _ = os.path.splitext(path)
+        filename = os.path.basename(p)
+        meta = ObjectDict(
+            title=filename
+        )
+        content = "\n".join(lines)
+    else:
+        meta = parse_meta(lines, path)
+        content = "".join(post_file)
     return meta, content
 
 
@@ -60,5 +74,5 @@ def txt_reader(path):
     return Post(
         path=path,
         meta=meta,
-        content=content
+        content=to_unicode(content)
     )
