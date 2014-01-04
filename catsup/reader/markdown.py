@@ -1,14 +1,13 @@
 import misaka as m
+from houdini import escape_html
 
 from pygments import highlight
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name
 from pygments.util import ClassNotFound
-from houdini import escape_html
 
-from catsup.generator.models import Post
+from catsup.models import Post
 from catsup.utils import to_unicode
-
 from catsup.reader.txt import text_reader
 
 

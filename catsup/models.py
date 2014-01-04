@@ -6,7 +6,21 @@ from datetime import datetime
 
 from catsup.options import g
 from catsup.utils import html_to_raw_text
-from .utils import cached_func, Pagination
+from .utils import Pagination
+
+
+def cached_func(f):
+    """
+    Used for cache property funcs in class to work with Jinja2.
+    """
+    func_name = f.__name__
+    property_name = "_%s" % func_name
+
+    def wraps(self):
+        if not hasattr(self, property_name):
+            setattr(self, property_name, f(self))
+        return getattr(self, property_name)
+    return wraps
 
 
 class CatsupPage(object):
