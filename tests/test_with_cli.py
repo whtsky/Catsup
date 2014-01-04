@@ -40,3 +40,10 @@ def test_init():
 def test_reinit():
     from catsup.cli import init
     init("./")
+
+
+def test_generate_without_post():
+    from catsup.cli import clean, build
+    clean(settings="config2.json")
+    build(settings="config2.json")
+    assert not output_exist("page.html")

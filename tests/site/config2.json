@@ -1,0 +1,70 @@
+{
+    "site": {
+        "name": "blogname",
+        "description": "Just another catsup blog",
+        "url": "http://blog.com/"
+    },
+
+    "author": {
+        "name": "nickname",
+        "email": "name@exmaple.com",
+        "twitter": "twitter"
+    },
+
+    "config": {
+        "source": "noposts",
+        "static_source": "static",
+        "output": "deploy",
+        "static_output": "deploy/static",
+        "static_prefix": "/static/",
+        "analytics": ""
+    },
+
+    "permalink": {
+        "page": "/page/{page}/",
+        "post": "/{title}/",
+        "tag": "/tag/{name}/",
+        "tags": "/tag/index.html",
+        "archive": "/archive/{year}/",
+        "archives": "/archive/index.html",
+        "feed": "/feed.xml"
+    },
+
+    "comment": {
+        "allow": true,
+        "system": "disqus",
+        "shortname": "catsup"
+    },
+
+    "deploy": {
+        "default": "rsync",
+
+        "git": {
+            "repo": "repo url here",
+            "branch": "master",
+            "delete": true
+        },
+
+        "rsync": {
+            "ssh_port": 22,
+            "ssh_user": "username",
+            "ssh_host": "123.45.6.78",
+            "document_root": "~/website.com/",
+            "delete": true
+        }
+    },
+
+    "theme": {
+        "name": "sealscript",
+        "vars": {
+            "github": "whtsky",
+            "links": [
+                {
+                    "name": "catsup",
+                    "url": "https://github.com/whtsky/catsup",
+                    "description": "Awesome!"
+                }
+            ]
+        }
+    }
+}
