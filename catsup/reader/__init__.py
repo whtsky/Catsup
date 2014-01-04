@@ -1,4 +1,5 @@
 from .markdown import markdown_reader
+from .txt import txt_reader
 
 READERS = dict()
 
@@ -16,3 +17,4 @@ def get_reader(ext):
 
 
 register_reader(["md", "markdown"], markdown_reader)
+register_reader("txt", txt_reader)
