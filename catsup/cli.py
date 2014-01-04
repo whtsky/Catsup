@@ -28,6 +28,7 @@ Usage:
     catsup server [-s <file>|--settings=<file>] [-p <port>|--port=<port>]
     catsup webhook [-s <file>|--settings=<file>] [-p <port>|--port=<port>]
     catsup watch [-s <file>|--settings=<file>]
+    catsup clean [-s <file>|--settings=<file>]
     catsup themes
     catsup install <theme>
     catsup -h | --help
@@ -185,6 +186,24 @@ def watch(settings):
     while True:
         pass
 
+
+@parguments.command
+def clean(settings):
+    """
+    Usage:
+        catsup clean [-s <file>|--settings=<file>]
+
+    Options:
+        -h --help               Show this screen and exit.
+        -s --settings=<file>    specify a setting file. [default: config.json]
+    """
+    import shutil
+    import catsup.parser.config
+    config = catsup.parser.config(settings)
+
+    for path in [config.config.static_output, config.config.output]:
+        if os.path.exists(path):
+            shutil.rmtree(path)
 
 @parguments.command
 def themes():
