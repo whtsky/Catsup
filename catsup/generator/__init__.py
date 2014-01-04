@@ -1,6 +1,5 @@
 import time
 import os
-import tempfile
 import catsup.parser
 
 from catsup.logger import logger
@@ -130,8 +129,6 @@ class Generator(object):
             "Loaded config and %s posts in %.3fs" %
             (len(self.posts), finish_loading - started_loading)
         )
-        if self.local:
-            g.output = self.config.config.output = tempfile.mkdtemp()
         if self.posts:
             self.generate_feed()
             self.generate_pages()
