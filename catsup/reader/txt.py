@@ -1,5 +1,6 @@
 from houdini import escape_html
 
+from catsup.generator.models import Post
 from catsup.utils import ObjectDict
 from catsup.reader.utils import open_file, not_valid
 
