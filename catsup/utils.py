@@ -112,6 +112,9 @@ def mkdir(path):
 
 
 def smart_copy(source, target):
+    if not os.path.exists(source):
+        return
+
     def copy_file(source, target):
         if os.path.exists(target):
             if os.path.getsize(source) == os.path.getsize(target):

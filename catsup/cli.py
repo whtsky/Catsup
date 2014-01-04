@@ -205,6 +205,7 @@ def clean(settings):
         if os.path.exists(path):
             shutil.rmtree(path)
 
+
 @parguments.command
 def themes():
     """
