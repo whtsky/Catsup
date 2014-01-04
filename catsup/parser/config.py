@@ -1,14 +1,11 @@
-import sys
 import os
 import ujson
-
-from parguments.cli import prompt_bool
 
 from catsup.logger import logger
 from catsup.options import g
 from catsup.utils import update_nested_dict, urljoin, ObjectDict
 
-from .utils import add_slash, create_config_file
+from .utils import add_slash
 
 import catsup.parser.themes
 
@@ -20,13 +17,9 @@ def parse(path):
     try:
         f = open(path, 'r')
     except IOError:
-        print("Can't find config file %s" % path)
-
-        if prompt_bool("Create a new config file", default=True):
-            create_config_file()
-        else:
-            logger.error("Can't find config file. Exiting..")
-        sys.exit(0)
+        logger.error("Can't find config file."
+                     "Run `catsup init` to generate a new config file.")
+        exit(1)
     return update_nested_dict(ObjectDict(), ujson.load(f))
 
 

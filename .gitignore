@@ -45,3 +45,4 @@ docs/_build/
 lib/
 include/
 htmlcov
+tests/site/deploy

@@ -23,11 +23,12 @@ def create_config_file(path=None):
     config_path = os.path.join(current_dir, 'config.json')
 
     if os.path.exists(config_path):
-        print('These is a config.json in current directory(%s), '
-              'Have you run `catsup init` before?' % current_dir)
-        return
+        from catsup.logger import logger
+        logger.warning("Config file already exist.")
+        exit(1)
 
     mkdir("posts")
+    mkdir("static")
 
     template = get_template()
 
