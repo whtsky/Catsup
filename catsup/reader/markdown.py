@@ -50,7 +50,7 @@ def markdown_reader(path):
         exit(1)
 
     def invailed_post():
-        logger.error("%s is not a vailed catsup post" % self.filename)
+        logger.error("%s is not a vailed catsup post" % path)
         exit(1)
 
     title = lines.pop(0)
@@ -77,4 +77,3 @@ def markdown_reader(path):
             )
 
     invailed_post()
-
