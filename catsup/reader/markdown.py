@@ -6,9 +6,7 @@ from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name
 from pygments.util import ClassNotFound
 
-from catsup.models import Post
-from catsup.utils import to_unicode
-from catsup.reader.txt import text_reader
+from catsup.reader.html import html_reader
 
 
 class CatsupRender(m.HtmlRenderer, m.SmartyPants):
@@ -40,10 +38,7 @@ md = m.Markdown(CatsupRender(flags=m.HTML_USE_XHTML),
 
 
 def markdown_reader(path):
-    meta, raw_content = text_reader(path)
-    html = md.render(to_unicode(raw_content))
-    return Post(
-        path=path,
-        meta=meta,
-        content=html
-    )
+    post = html_reader(path)
+    post.content = md.render(post.content)
+    return post
+

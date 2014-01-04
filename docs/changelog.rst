@@ -10,10 +10,10 @@ Version 0.3.0
 + Support Non-meta post.
 + Support customize permalink for post
 + Support TXT format post.
++ Support HTML format post.
 + Correct the url for Twitter Card Support
 + Drop file-based cache system.
 + Improve description creator
-
 + Reorganize code.
 
 Version 0.2.1
