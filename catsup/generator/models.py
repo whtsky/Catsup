@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import os
 import re
 
 from datetime import datetime
@@ -140,18 +139,16 @@ class Post(CatsupPage):
         self.meta = meta
         self.content = content
         self.tags = []
-        self.add_archive_and_tags()
 
     def add_archive_and_tags(self):
-        if self.type != "page":
-            year = self.datetime.strftime("%Y")
-            g.archives.get(year).add_post(self)
+        year = self.datetime.strftime("%Y")
+        g.archives.get(year).add_post(self)
 
-            for tag in self.meta.pop("tags", "").split(","):
-                tag = tag.strip()
-                tag = g.tags.get(tag)
-                tag.add_post(self)
-                self.tags.append(tag)
+        for tag in self.meta.pop("tags", "").split(","):
+            tag = tag.strip()
+            tag = g.tags.get(tag)
+            tag.add_post(self)
+            self.tags.append(tag)
 
     def get_permalink_args(self):
         return self.meta
@@ -159,6 +156,7 @@ class Post(CatsupPage):
     @property
     @cached_func
     def datetime(self):
+        import os
         if "time" in self.meta:
             return datetime.strptime(
                 self.meta["time"], "%Y-%m-%d %H:%M"

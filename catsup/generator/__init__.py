@@ -91,6 +91,7 @@ class Generator(object):
 
     def generate_posts(self):
         for post in self.posts:
+            post.add_archive_and_tags()
             post.render(self.renderer)
         for page in self.pages:
             page.render(self.renderer)
