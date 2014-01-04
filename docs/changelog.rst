@@ -8,6 +8,8 @@ Version 0.3.0
 + Correct the url for Twitter Card Support
 + Drop file-based cache system.
 + Improve description creator
++ Add ``config.config.static_source``
++ Add ``config.config.static_output``
 
 Version 0.2.1
 --------------

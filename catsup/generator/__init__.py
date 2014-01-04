@@ -19,7 +19,20 @@ class Generator(object):
         self.base_url = base_url
         g.generator = self
 
+        self.posts = []
+        self.pages = []
+        self.non_post_files = []
+        self.archives = []
+        self.tags = []
+        self.caches = []
+        self.config = {}
+        self.renderer = None
+        self.reset()
+
     def reset(self):
+        self.posts = []
+        self.pages = []
+        self.non_post_files = []
         self.archives = g.archives = Archives()
         self.tags = g.tags = Tags()
         self.load_config()
@@ -38,11 +51,6 @@ class Generator(object):
         )
 
     def load_posts(self):
-        self.posts = []
-        self.pages = []
-
-        self.static_files = []
-
         for f in os.listdir(g.source):
             if f.startswith("."):  # hidden file
                 continue
@@ -58,7 +66,7 @@ class Generator(object):
                 else:
                     self.posts.append(post)
             else:
-                self.static_files.append(f)
+                self.non_post_files.append(f)
         self.posts.sort(
             key=lambda x: x.datetime,
             reverse=True
@@ -98,25 +106,21 @@ class Generator(object):
         NotFound().render(self.renderer)
 
     def copy_static_files(self):
-        static_path = os.path.join(
-            self.config.config.output,
-            "static"
-        )
+        static_path = self.config.config.static_output
 
         smart_copy(
             os.path.join(g.theme.path, 'static'),
             static_path
         )
-        for f in self.static_files:
-            source = os.path.join(
-                self.config.config.source,
-                f
+        smart_copy(
+            self.config.config.static_source,
+            static_path
+        )
+        for f in self.non_post_files:
+            smart_copy(
+                os.path.join(g.source, f),
+                os.path.join(self.config.config.output, f)
             )
-            target = os.path.join(
-                self.config.config.output,
-                f
-            )
-            smart_copy(source, target)
 
     def generate(self):
         started_loading = time.time()
