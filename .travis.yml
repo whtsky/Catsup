@@ -6,7 +6,9 @@ python:
 
 install: python setup.py install
 
-script: nosetests
+script: coverage run setup.py -q nosetests
+
+after_success: coveralls
 
 notifications:
   email: false

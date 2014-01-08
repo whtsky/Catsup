@@ -1,0 +1,5 @@
+[run]
+include = catsup/*
+omit =
+  deploy
+  server
