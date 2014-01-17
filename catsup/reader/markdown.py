@@ -1,4 +1,5 @@
 import misaka as m
+
 from houdini import escape_html
 
 from pygments import highlight
@@ -6,7 +7,9 @@ from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name
 from pygments.util import ClassNotFound
 
-from catsup.reader.html import html_reader
+from catsup.models import Post
+from catsup.utils import ObjectDict
+from catsup.reader.utils import split_content, parse_meta
 
 
 class CatsupRender(m.HtmlRenderer, m.SmartyPants):
@@ -38,7 +41,13 @@ md = m.Markdown(CatsupRender(flags=m.HTML_USE_XHTML),
 
 
 def markdown_reader(path):
-    post = html_reader(path)
-    post.content = md.render(post.content)
-    return post
-
+    meta, content = split_content(path)
+    if not meta:
+        meta = ObjectDict()
+    else:
+        meta = parse_meta(meta, path)
+    return Post(
+        path=path,
+        meta=meta,
+        content=md.render(content)
+    )

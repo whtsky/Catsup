@@ -4,10 +4,9 @@ import ujson
 from catsup.logger import logger
 from catsup.options import g
 from catsup.utils import update_nested_dict, urljoin, ObjectDict
+from catsup.parser.themes import find_theme
 
 from .utils import add_slash
-
-import catsup.parser.themes
 
 
 def parse(path):
@@ -34,7 +33,7 @@ def load(path=None, local=False, base_url=None):
         user_config = parse(path)
         config = update_nested_dict(config, user_config)
         os.chdir(os.path.abspath(os.path.dirname(path)))
-    g.theme = catsup.parser.themes.find(config)
+    g.theme = find_theme(config)
     g.source = config.config.source
     g.output = config.config.output
     g.permalink = config.permalink

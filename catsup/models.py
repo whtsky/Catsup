@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import re
 
 from datetime import datetime
@@ -171,7 +172,13 @@ class Post(CatsupPage):
         return super(Post, self).permalink
 
     def get_permalink_args(self):
-        return self.meta
+        args = self.meta.copy()
+        args.update(
+            title=self.title,
+            datetime=self.datetime,
+            type=self.type
+        )
+        return args
 
     @property
     @cached_func
@@ -229,7 +236,12 @@ class Post(CatsupPage):
     @property
     @cached_func
     def title(self):
-        return self.meta.get("title", "")
+        if "title" in self.meta:
+            return self.meta.get("title")
+        else:
+            p, _ = os.path.splitext(self.path)
+            filename = os.path.basename(p)
+            return filename
 
     @property
     @cached_func

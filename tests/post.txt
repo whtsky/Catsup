@@ -1,8 +1,7 @@
-# Hello, World!
-
-- tags: Hello, World
-- time: 2014-01-04 20:56
-
+---
+title: Hello, World!
+tags: Hello, World
+time: 2014-01-04 20:56
 ---
 
 Hi!

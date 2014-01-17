@@ -131,11 +131,11 @@ class Generator(object):
             (len(self.posts), finish_loading - started_loading)
         )
         if self.posts:
-            self.generate_feed()
-            self.generate_pages()
             self.generate_posts()
             self.generate_tags()
             self.generate_archives()
+            self.generate_feed()
+            self.generate_pages()
         else:
             logger.warning("Can't find any post.")
         self.generate_other_pages()
