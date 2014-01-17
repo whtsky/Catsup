@@ -1,4 +1,4 @@
-catsup
+Catsup
 ----------------
 
 .. image:: https://pypip.in/d/catsup/badge.png
