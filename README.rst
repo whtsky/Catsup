@@ -2,7 +2,7 @@ catsup
 ----------------
 
 .. image:: https://pypip.in/d/catsup/badge.png
-        :target: https://crate.io/packages/catsup/
+        :target: https://pypi.python.org/pypi/catsup/
 
 Catsup is a lightweight static website generator which aims to be simple and elegant.
 Documentation is available at RTFD: https://catsup.readthedocs.org/en/latest/
@@ -10,11 +10,11 @@ Documentation is available at RTFD: https://catsup.readthedocs.org/en/latest/
 Quick Start
 ===============
 
-First, install catsup via pip ::
+First, install Catsup via pip ::
 
     $ pip install catsup
 
-Then, craete a new catsup site ::
+Then, create a new Catsup site ::
 
     $ mkdir site
     $ cd site
