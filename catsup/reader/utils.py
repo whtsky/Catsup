@@ -19,7 +19,6 @@ def parse_meta(lines, path=None):
 def parse_yaml_meta(lines, path=None):
     title_line = lines.pop(0)
     if not title_line.startswith("---"):
-        print(title_line)
         not_valid(path)
     meta = yaml.load("\n".join(lines))
     return update_nested_dict(ObjectDict(), meta)

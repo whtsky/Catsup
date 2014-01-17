@@ -17,7 +17,7 @@ g.cwdpath = os.path.abspath('.')
 
 import catsup
 
-doc = """catsup v%s
+doc = """Catsup v%s
 
 Usage:
     catsup init [<path>]
