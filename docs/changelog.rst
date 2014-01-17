@@ -11,6 +11,7 @@ Version 0.3.0
 + Support customize permalink for post
 + Support TXT format post.
 + Support HTML format post.
++ Rewrite `catsup install`
 + Correct the url for Twitter Card Support
 + Drop file-based cache system.
 + Improve description creator

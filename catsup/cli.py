@@ -215,21 +215,21 @@ def themes():
     Options:
         -h --help               Show this screen and exit.
     """
-    import catsup.parser.themes
-    catsup.parser.themes.list()
+    from catsup.parser.themes import list_themes
+    list_themes()
 
 
 @parguments.command
-def install(theme):
+def install(name):
     """
     Usage:
-        catsup install <theme>
+        catsup install <name>
 
     Options:
         -h --help               Show this screen and exit.
     """
-    import catsup.parser.themes
-    catsup.parser.themes.install(path=theme)
+    from catsup.themes.install import install_theme
+    install_theme(name=name)
 
 
 def main():
