@@ -10,6 +10,9 @@ Catsup
 .. image:: https://coveralls.io/repos/whtsky/catsup/badge.png?branch=develop
         :target: https://coveralls.io/r/whtsky/catsup?branch=develop
 
+.. image:: https://badge.waffle.io/whtsky/catsup.png?label=ready
+        :target: http://waffle.io/whtsky/catsup
+
 Catsup is a lightweight static website generator which aims to be simple and elegant.
 Documentation is available at RTFD: https://catsup.readthedocs.org/en/latest/
 

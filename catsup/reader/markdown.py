@@ -42,6 +42,7 @@ md = m.Markdown(CatsupRender(flags=m.HTML_USE_XHTML),
 
 def markdown_reader(path):
     meta, content = split_content(path)
+    content = content.replace("\n", "  \n")
     if not meta:
         meta = ObjectDict()
     else:
