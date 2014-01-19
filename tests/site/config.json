@@ -1,32 +1,39 @@
 {
     "site": {
         "name": "blogname",
-        "url": "http://blog.com"
+        "description": "Just another catsup blog",
+        "url": "http://blog.com/"
     },
 
     "author": {
-        "name": "name",
+        "name": "nickname",
+        "email": "name@exmaple.com",
         "twitter": "twitter"
     },
 
     "config": {
         "source": "posts",
+        "static_source": "static",
         "output": "deploy",
-        "static": "deploy/static",
+        "static_output": "deploy/static",
         "static_prefix": "/static/",
-        "feed": "/feed.xml",
-        "per_page": 3,
-        "posts_on_feed": 5,
-        "analytics": "",
-        "display_summary": false,
-        "escape_md": false
+        "analytics": ""
+    },
+
+    "permalink": {
+        "page": "/page/{page}/",
+        "post": "/{title}/",
+        "tag": "/tag/{name}/",
+        "tags": "/tag/index.html",
+        "archive": "/archive/{year}/",
+        "archives": "/archive/index.html",
+        "feed": "/feed.xml"
     },
 
     "comment": {
         "allow": true,
         "system": "disqus",
-        "disqus": "catsup",
-        "duoshuo": "catsup"
+        "shortname": "catsup"
     },
 
     "deploy": {
@@ -50,7 +57,6 @@
     "theme": {
         "name": "sealscript",
         "vars": {
-            "description": "a blog",
             "github": "whtsky",
             "links": [
                 {

@@ -3,7 +3,6 @@ from __future__ import with_statement
 
 import sys
 import os
-import shutil
 
 from catsup.logger import logger
 from catsup.options import g
@@ -34,7 +33,7 @@ def read_theme(path):
     return theme
 
 
-def find(config=None, theme_name=''):
+def find_theme(config=None, theme_name='', silence=False):
     if not theme_name:
         theme_name = config.theme.name
     theme_name = theme_name.lower()
@@ -47,15 +46,17 @@ def find(config=None, theme_name=''):
         if theme:
             return theme
 
-    raise Exception("Can't find theme: %s" % theme_name)
+    if not silence:
+        logger.error("Can't find theme: {name}".format(name=theme_name))
+        exit(1)
 
 
-def list():
+def list_themes():
     theme_gallery = [
         os.path.abspath('themes'),
         os.path.join(g.catsup_path, 'themes'),
     ]
-    themes = set()
+    themes = ()
     for path in theme_gallery:
         if not os.path.exists(path):
             continue
@@ -74,58 +75,3 @@ def list():
             'HomePage: %s' % theme.homepage
         ]))
     print("\n--------\n".join(themes_text))
-
-
-def install(path):
-    try:
-        theme = find(theme_name=path)
-    except:
-        pass
-    else:
-        # Update theme
-        if not os.path.exists(os.path.join(theme.path, '.git')):
-            logger.warn("%s is not installed via git."
-                        "Can't update it." % theme.name)
-        else:
-            logger.info("Updating theme %s" % theme.name)
-            call('git pull', cwd=theme.path)
-        sys.exit(0)
-
-    themes_path = os.path.abspath('themes')
-
-    logger.info('Installing theme from %s' % path)
-
-    if not os.path.exists(themes_path):
-        os.makedirs(themes_path)
-
-    if os.path.exists(path):
-        theme = read_theme(path)
-        if not theme:
-            sys.exit(1)
-        name = theme.name
-        logger.info("Found theme %s" % name)
-
-        install_path = os.path.join(themes_path, name)
-
-        shutil.copytree(path, install_path)
-
-    elif path.lower().endswith('.git'):  # a git repo
-        os.chdir(themes_path)
-        repo_folder = path.split('/')[-1][:-4]
-        if os.path.exists(repo_folder):
-            shutil.rmtree(repo_folder)
-        os.system('git clone %s' % path)
-        theme = read_theme(repo_folder)
-        if not theme:
-            shutil.rmtree(repo_folder)
-            sys.exit(0)
-        if os.path.exists(theme.name):
-            shutil.rmtree(theme.name)
-
-        os.rename(repo_folder, theme.name)
-
-    else:
-        logger.error("Can't install theme from %s." % path)
-        sys.exit(1)
-
-    logger.info('Theme %s successfully installed' % theme.name)

@@ -3,10 +3,17 @@
 Post Syntax
 =============
 
-Overview
------------
+Catsup currently supports 3 types of post: :ref:`Markdown <post-markdown-syntax>`, :ref:`Text <post-text-syntax>` and :ref:`HTML <post-html-syntax>`.
 
-A post's extension should be either ``.md`` or ``.markdown`` .
+.. _post-markdown-syntax:
+
+Markdown Post
+--------------
+
+Overview
+~~~~~~~~~
+
+Post's extension should be either ``.md`` or ``.markdown`` .
 
 A sample post looks like ::
 
@@ -29,21 +36,80 @@ A sample post looks like ::
 A post consists of three parts:
 
 + Title
-+ Meta
++ :ref:`Meta <post-meta>`
 + Content
 
 Title
---------
+~~~~~~~~~~~~~~~~~~~~~~
 
 Title should always on the first line and starts with ``#``
+
+Content
+~~~~~~~~~~~~~~~~~~~~~~
+
+Everything below the separator is the content. Content should be written in Markdown.
+
+Code Highlight
+~~~~~~~~~~~~~~~~~~~~~~
+
+Catsup supports GitHub's style code highlight, like this ::
+
+    ```python
+    print("Hello World!")
+    ```
+
+.. _post-text-syntax:
+
+Text Post
+--------------
+
+Sometimes you may just want to write something without considering the syntax. Then you should use Text Post.
+
+Text post's extension should be ``.txt`` .
+
+The simplest text post looks like ::
+
+    Hello!
+    This is a text post.
+
+If you want to write meta in a text post, write the meta in YAML format ::
+
+    ---
+    title: Hello, World!
+    tags: Hello, World
+    time: 2014-01-04 20:56
+    ---
+
+    Hello, World! I'm a text post.
+
+
+.. _post-html-syntax:
+
+HTML Post
+--------------
+
+HTML post is like :ref:`Text Post <post-text-syntax>`, but you can use HTML in the content.
+
+HTML post's extension should be ``.txt`` .
+
+A HTML post looks like ::
+
+    ---
+    title: Hello, World!
+    tags: Hello, World
+    time: 2014-01-04 20:56
+    ---
+
+    <p>I'm writing HTML in catsup</p>
+
 
 .. _post-meta:
 
 Meta
--------
+--------
 
-Meta is some information about the post. It's below title and above the separator.
-
+Meta is some information about the post.
+Note that meta is optional, and if your post have meta, remember to put a :ref:`separator <post-separator>` below the meta.
 
 + time: When the post is written. like ``2013-08-25 11:10``
 + tags: Tags of the post. Separated by comma, like ``Python, Program``
@@ -52,8 +118,10 @@ Meta is some information about the post. It's below title and above the separato
 + comment: Set to ``disabled`` to forbid comment
 + permalink: Permalink to the post, link ``/this-post``
 
+.. _post-separator:
+
 The separator
----------------
+----------------
 
 The separator separates meta and content. It should be at least *three* ``-`` ::
 
@@ -62,21 +130,6 @@ The separator separates meta and content. It should be at least *three* ``-`` ::
 It's okay to make it longer ::
 
     ----------------
-
-Content
------------
-
-Everything below the separator is the content. Content should be written in Markdown.
-
-Code Highlight
------------------
-
-Catsup supports GitHub's style code highlight, like this ::
-
-    ```python
-    print("Hello World!")
-    ```
-
 
 Page
 --------

@@ -1,16 +1,27 @@
+# -*- coding: utf-8 -*-
+
 import os
 import re
-import pickle
 
 from datetime import datetime
-from houdini import escape_html
 
-from catsup.cache import get_cache_path
-from catsup.logger import logger
 from catsup.options import g
-from catsup.parser import markdown
-from catsup.utils import to_unicode, ObjectDict
+from catsup.utils import html_to_raw_text
 from .utils import Pagination
+
+
+def cached_func(f):
+    """
+    Used for cache property funcs in class to work with Jinja2.
+    """
+    func_name = f.__name__
+    property_name = "_%s" % func_name
+
+    def wraps(self):
+        if not hasattr(self, property_name):
+            setattr(self, property_name, f(self))
+        return getattr(self, property_name)
+    return wraps
 
 
 class CatsupPage(object):
@@ -138,98 +149,104 @@ class Archives(CatsupPage):
 class Post(CatsupPage):
     DATE_RE = re.compile('\d{4}\-\d{2}\-\d{2}')
 
-    def __init__(self, filename, ext):
-        self.meta = ObjectDict()
-        path = os.path.join(g.source, "%s%s" % (filename, ext))
-        self.filename = filename
-        self.parse(path)
-        self.add_archive_and_tags()
+    def __init__(self, path, meta, content):
+        self.path = path
+        self.meta = meta
+        self.content = content
+        self.tags = []
 
     def add_archive_and_tags(self):
-        if self.type != "page":
-            year = self.datetime.strftime("%Y")
-            g.archives.get(year).add_post(self)
+        year = self.datetime.strftime("%Y")
+        g.archives.get(year).add_post(self)
 
-            for tag in self.meta.pop("tags", "").split(","):
-                tag = tag.strip()
-                tag = g.tags.get(tag)
-                tag.add_post(self)
-                self.tags.append(tag)
+        for tag in self.meta.pop("tags", "").split(","):
+            tag = tag.strip()
+            tag = g.tags.get(tag)
+            tag.add_post(self)
+            self.tags.append(tag)
+
+    @property
+    def permalink(self):
+        if "permalink" in self.meta:
+            return self.meta.permalink
+        return super(Post, self).permalink
 
     def get_permalink_args(self):
-        return self.meta
+        args = self.meta.copy()
+        args.update(
+            title=self.title,
+            datetime=self.datetime,
+            type=self.type
+        )
+        return args
 
-    def parse(self, path):
-        cache_path = get_cache_path(path)
-        st_ctime = os.stat(path).st_ctime
-        cache_folder = os.path.dirname(cache_path)
-        if os.path.exists(cache_folder):
-            if os.path.exists(cache_path):
-                with open(cache_path, "rb") as f:
-                    cache = pickle.load(f)
-                if cache["st_ctime"] == st_ctime:
-                    self.__dict__.update(cache["post"])
-                    return
+    @property
+    @cached_func
+    def datetime(self):
+        import os
+        if "time" in self.meta:
+            return datetime.strptime(
+                self.meta["time"], "%Y-%m-%d %H:%M"
+            )
+        elif "date" in self.meta:
+            return datetime.strftime(
+                self.meta["date"], "%Y-%m-%d"
+            )
         else:
-            os.makedirs(cache_folder)
-
-        try:
-            with open(path, "r") as f:
-                lines = f.readlines()
-        except IOError:
-            logger.error("Can't open file %s" % path)
-            exit(1)
-
-        def invailed_post():
-            logger.error("%s is not a vailed catsup post" % self.filename)
-            exit(1)
-
-        title = lines.pop(0)
-        if title.startswith("#"):
-            self.title = escape_html(title[1:].strip())
-        else:
-            invailed_post()
-
-        for i, line in enumerate(lines):
-            if ':' in line:  # property
-                name, value = line.split(':', 1)
-                name = name.strip().lstrip('-').strip().lower()
-                self.meta[name] = value.strip()
-
-            elif line.strip().startswith('---'):
-                self.md = to_unicode('\n'.join(lines[i + 1:]))
-                self.content = markdown(self.md)
-
-                if "time" in self.meta:
-                    self.datetime = datetime.strptime(
-                        self.meta.pop('time'), "%Y-%m-%d %H:%M")
-                elif self.DATE_RE.match(self.filename[:10]):
-                    self.datetime = datetime.strptime(
-                        self.filename[:10], "%Y-%m-%d"
+            if "-" in self.path:
+                import os.path
+                filename, _ = os.path.splitext(self.path)
+                filename = os.path.basename(filename)
+                if self.DATE_RE.match(filename[:10]):
+                    return datetime.strptime(
+                        filename[:10], "%Y-%m-%d"
                     )
-                else:
-                    self.datetime = datetime.fromtimestamp(st_ctime)
-                self.date = self.datetime.strftime("%Y-%m-%d")
-                self.description = escape_html(self.meta.get(
-                    "description",
-                    self.md[:200]
-                ))
-                if self.meta.get("comment", None) == "disabled":
-                    self.allow_comment = False
-                else:
-                    self.allow_comment = g.config.comment.allow
+        st_ctime = os.stat(self.path).st_ctime
+        return datetime.fromtimestamp(st_ctime)
 
-                self.type = self.meta.pop("type", "post")
-                self.tags = []
-                cache = {
-                    "st_ctime": st_ctime,
-                    "post": self.__dict__
-                }
-                with open(cache_path, "wb") as f:
-                    pickle.dump(cache, f)
-                return
+    @property
+    @cached_func
+    def date(self):
+        return self.datetime.strftime("%Y-%m-%d")
 
-        invailed_post()
+    @property
+    @cached_func
+    def description(self):
+        description = self.meta.get(
+            "description",
+            self.content
+        ).replace("\n", "")
+        description = html_to_raw_text(description)
+        if "<br" in description:
+            description = description.split("<br")[0]
+        elif "</p" in description:
+            description = description.split("</p")[0]
+        if len(description) > 150:
+            description = description[:150]
+        return description.strip()
+
+    @property
+    @cached_func
+    def allow_comment(self):
+        if self.meta.get("comment", None) == "disabled":
+            return False
+        else:
+            return g.config.comment.allow
+
+    @property
+    @cached_func
+    def title(self):
+        if "title" in self.meta:
+            return self.meta.get("title")
+        else:
+            p, _ = os.path.splitext(self.path)
+            filename = os.path.basename(p)
+            return filename
+
+    @property
+    @cached_func
+    def type(self):
+        return self.meta.get("type", "post")
 
 
 class Page(CatsupPage):

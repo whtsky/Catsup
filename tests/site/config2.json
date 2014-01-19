@@ -12,7 +12,7 @@
     },
 
     "config": {
-        "source": "posts",
+        "source": "noposts",
         "static_source": "static",
         "output": "deploy",
         "static_output": "deploy/static",

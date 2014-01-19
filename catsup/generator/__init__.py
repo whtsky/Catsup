@@ -1,26 +1,37 @@
 import time
 import os
-import tempfile
 import catsup.parser
 
 from catsup.logger import logger
 from catsup.generator.renderer import Renderer
+from catsup.reader import get_reader
 from catsup.options import g
 from catsup.utils import smart_copy
-from .models import *
+from catsup.models import *
 
 
 class Generator(object):
     def __init__(self, config_path, local=False, base_url=None):
         self.config_path = config_path
         self.local = local
-        if local:
-            from catsup.cache import bytecode_cache
-            bytecode_cache.clear()
+
         self.base_url = base_url
         g.generator = self
 
+        self.posts = []
+        self.pages = []
+        self.non_post_files = []
+        self.archives = []
+        self.tags = []
+        self.caches = []
+        self.config = {}
+        self.renderer = None
+        self.reset()
+
     def reset(self):
+        self.posts = []
+        self.pages = []
+        self.non_post_files = []
         self.archives = g.archives = Archives()
         self.tags = g.tags = Tags()
         self.load_config()
@@ -38,29 +49,23 @@ class Generator(object):
             base_url=self.base_url
         )
 
-    def load_post(self, filename, ext):
-        logger.info('Loading file %s' % filename)
-
-        post = Post(filename, ext)
-        if post.type == "page":
-            self.pages.append(post)
-        else:
-            self.posts.append(post)
-
     def load_posts(self):
-        self.posts = []
-        self.pages = []
-
-        self.static_files = []
-
         for f in os.listdir(g.source):
             if f.startswith("."):  # hidden file
                 continue
             filename, ext = os.path.splitext(f)
-            if ext.lower() in ['.md', '.markdown']:
-                self.load_post(filename, ext)
+            ext = ext.lower()[1:]
+            reader = get_reader(ext)
+            if reader is not None:
+                logger.info('Loading file %s' % filename)
+                path = os.path.join(g.source, f)
+                post = reader(path)
+                if post.type == "page":
+                    self.pages.append(post)
+                else:
+                    self.posts.append(post)
             else:
-                self.static_files.append(f)
+                self.non_post_files.append(f)
         self.posts.sort(
             key=lambda x: x.datetime,
             reverse=True
@@ -86,6 +91,7 @@ class Generator(object):
 
     def generate_posts(self):
         for post in self.posts:
+            post.add_archive_and_tags()
             post.render(self.renderer)
         for page in self.pages:
             page.render(self.renderer)
@@ -100,25 +106,21 @@ class Generator(object):
         NotFound().render(self.renderer)
 
     def copy_static_files(self):
-        static_path = os.path.join(
-            self.config.config.output,
-            "static"
-        )
+        static_path = self.config.config.static_output
 
         smart_copy(
             os.path.join(g.theme.path, 'static'),
             static_path
         )
-        for f in self.static_files:
-            source = os.path.join(
-                self.config.config.source,
-                f
+        smart_copy(
+            self.config.config.static_source,
+            static_path
+        )
+        for f in self.non_post_files:
+            smart_copy(
+                os.path.join(g.source, f),
+                os.path.join(self.config.config.output, f)
             )
-            target = os.path.join(
-                self.config.config.output,
-                f
-            )
-            smart_copy(source, target)
 
     def generate(self):
         started_loading = time.time()
@@ -128,14 +130,12 @@ class Generator(object):
             "Loaded config and %s posts in %.3fs" %
             (len(self.posts), finish_loading - started_loading)
         )
-        if self.local:
-            g.output = self.config.config.output = tempfile.mkdtemp()
         if self.posts:
-            self.generate_feed()
-            self.generate_pages()
             self.generate_posts()
             self.generate_tags()
             self.generate_archives()
+            self.generate_feed()
+            self.generate_pages()
         else:
             logger.warning("Can't find any post.")
         self.generate_other_pages()

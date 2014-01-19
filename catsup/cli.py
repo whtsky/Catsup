@@ -15,13 +15,9 @@ g.catsup_path = os.path.abspath(os.path.dirname(__file__))
 g.public_templates_path = os.path.join(g.catsup_path, 'templates')
 g.cwdpath = os.path.abspath('.')
 
-try:
-    import catsup
-except ImportError:
-    import site
-    site.addsitedir(os.path.dirname(g.catsup_path))
+import catsup
 
-doc = """catsup v%s
+doc = """Catsup v%s
 
 Usage:
     catsup init [<path>]
@@ -32,8 +28,8 @@ Usage:
     catsup server [-s <file>|--settings=<file>] [-p <port>|--port=<port>]
     catsup webhook [-s <file>|--settings=<file>] [-p <port>|--port=<port>]
     catsup watch [-s <file>|--settings=<file>]
-    catsup themes
     catsup clean [-s <file>|--settings=<file>]
+    catsup themes
     catsup install <theme>
     catsup -h | --help
     catsup --version
@@ -145,8 +141,8 @@ def server(settings, port):
         -p --port=<port>        specify the server port. [default: 8888]
     """
     import catsup.server
-    server = catsup.server.PreviewServer(settings, port)
-    server.run()
+    preview_server = catsup.server.PreviewServer(settings, port)
+    preview_server.run()
 
 
 @parguments.command
@@ -192,6 +188,25 @@ def watch(settings):
 
 
 @parguments.command
+def clean(settings):
+    """
+    Usage:
+        catsup clean [-s <file>|--settings=<file>]
+
+    Options:
+        -h --help               Show this screen and exit.
+        -s --settings=<file>    specify a setting file. [default: config.json]
+    """
+    import shutil
+    import catsup.parser.config
+    config = catsup.parser.config(settings)
+
+    for path in [config.config.static_output, config.config.output]:
+        if os.path.exists(path):
+            shutil.rmtree(path)
+
+
+@parguments.command
 def themes():
     """
     Usage:
@@ -200,43 +215,21 @@ def themes():
     Options:
         -h --help               Show this screen and exit.
     """
-    import catsup.parser.themes
-    catsup.parser.themes.list()
+    from catsup.parser.themes import list_themes
+    list_themes()
 
 
 @parguments.command
-def clean(settings):
+def install(name):
     """
     Usage:
-        catsup clean [-s <file>|--settings=<file>]
-
-    Options:
-        -s --settings=<file>    specify a setting file. [default: config.json]
-        -h --help               Show this screen and exit.
-    """
-    import catsup.parser.config
-    import shutil
-    config = catsup.parser.config(settings)
-    if os.path.exists(".catsup-cache"):
-        shutil.rmtree(".catsup-cache")
-        logger.info("Removed cache folder.")
-    output_path = config.config.output
-    if os.path.exists(output_path):
-        shutil.rmtree(output_path)
-        logger.info("Removed output folder.")
-
-
-@parguments.command
-def install(theme):
-    """
-    Usage:
-        catsup install <theme>
+        catsup install <name>
 
     Options:
         -h --help               Show this screen and exit.
     """
-    import catsup.parser.themes
-    catsup.parser.themes.install(path=theme)
+    from catsup.themes.install import install_theme
+    install_theme(name=name)
 
 
 def main():

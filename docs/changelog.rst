@@ -1,6 +1,23 @@
 Changelog
 ==========
 
+Version 0.3.0
+--------------
+
++ Add multi-format post support
++ Add ``config.config.static_source``
++ Add ``config.config.static_output``
++ Support Non-meta post.
++ Support customize permalink for post
++ Support TXT format post.
++ Support HTML format post.
++ Support YAML format meta.
++ Rewrite `catsup install`
++ Correct the url for Twitter Card Support
++ Drop file-based cache system.
++ Improve description creator
++ Reorganize code.
+
 Version 0.2.1
 --------------
 

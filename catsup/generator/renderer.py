@@ -1,7 +1,6 @@
 import os
 
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound
-from catsup.cache import bytecode_cache
 from catsup.options import g
 from catsup.utils import mkdir, static_url, url_for, urljoin
 
@@ -10,8 +9,7 @@ class Renderer(object):
     def __init__(self, templates_path, generator):
         self.env = Environment(
             loader=FileSystemLoader(templates_path),
-            autoescape=False,
-            bytecode_cache=bytecode_cache
+            autoescape=False
         )
         config = generator.config
 
@@ -51,21 +49,22 @@ class Renderer(object):
             pass
 
     def render_to(self, template, permalink, **kwargs):
+        html = self.render(template, **kwargs)
+        if not html:
+            return
         permalink, output_name = urljoin(
             g.base_url,
             permalink
         ), permalink
         kwargs.setdefault("permalink", permalink)
-        html = self.render(template, **kwargs)
-        if html:
-            self.rendered_permalinks.append(permalink)
-            if output_name.endswith("/") or "." not in output_name:
-                output_name = output_name.rstrip("/")
-                output_name += '/index.html'
-            output_path = os.path.join(g.output, output_name.lstrip("/"))
-            mkdir(os.path.dirname(output_path))
-            with open(output_path, "w") as f:
-                f.write(html)
+        self.rendered_permalinks.append(permalink)
+        if output_name.endswith("/") or "." not in output_name:
+            output_name = output_name.rstrip("/")
+            output_name += '/index.html'
+        output_path = os.path.join(g.output, output_name.lstrip("/"))
+        mkdir(os.path.dirname(output_path))
+        with open(output_path, "w") as f:
+            f.write(html)
 
     def render_sitemap(self):
         with open(os.path.join(g.output, "sitemap.txt"), "w") as f:

@@ -1,0 +1,17 @@
+<ul>
+    {% for post in pagination.items %}
+    <li><a href="{{ url_for(post) }}">{{ post.title }}</a></li>
+    {% endfor %}
+</ul>
+
+<div>
+    {% if pagination.has_prev %}
+    <a id="prev" href="{{ pagination.prev_permalink }}">Prev</a>
+    {% endif %}
+
+    <span>Page {{ pagination.page }} of {{ pagination.pages }}</span>
+
+    {% if pagination.has_next %}
+    <a id="next" href="{{ pagination.next_permalink }}">Next</a>
+    {% endif %}
+</div>

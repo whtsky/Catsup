@@ -10,14 +10,14 @@ If you are using OS X , make sure you have installed the *Command Line Tools* .
 
 Install using pip
 -------------------------
-Install catsup via pip is easy ::
+Install Catsup via pip is easy ::
 
     (sudo) pip install catsup
 
 
 Upgrade from older version
 -------------------------------
-It's also easy to upgrade your catsup ::
+It's also easy to upgrade your Catsup ::
 
     (sudo) pip install catsup --upgrade
 
@@ -38,7 +38,7 @@ Install with git can always have the latest code ::
 
 Cann’t find Python.h ?
 -----------------------
-Catsup uses misaka as the markdown engine.It requires C compiler.On Ubuntu, you may run ::
+Catsup uses misaka as the markdown engine. It requires C compiler.On Ubuntu, you may run ::
 
     (sudo) apt-get install python-dev
 

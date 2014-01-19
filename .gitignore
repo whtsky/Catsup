@@ -44,3 +44,5 @@ docs/_build/
 .Python
 lib/
 include/
+htmlcov
+tests/site/deploy

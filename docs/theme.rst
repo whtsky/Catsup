@@ -6,17 +6,9 @@ Overview
 
 Install a theme ::
 
-    catsup install git_repo
-
-For instance, install `Theme Clean <https://github.com/whtsky/catsup-theme-clean>`_ ::
-
-    catsup install git@github.com:whtsky/catsup-theme-clean.git
-
-Update a installed theme ::
-
     catsup install theme_name
 
-For instance, update clean ::
+For instance, install `Theme Clean <https://github.com/whtsky/catsup-theme-clean>`_ ::
 
     catsup install clean
 

@@ -1,8 +1,13 @@
 import os
 import datetime
+import shutil
 
 from catsup.logger import logger
 from catsup.utils import call
+
+
+RSYNC_COMMAND = "rsync -avze 'ssh -p {ssh_port}' {args}" \
+                " {deploy_dir}/ {ssh_user}@{ssh_host}:{document_root}"
 
 
 def git(config):
@@ -18,7 +23,6 @@ def git(config):
     if os.path.exists(dot_git_path) and \
             _call('git remote -v | grep %s' % config.deploy.git.repo) == 0:
         if os.path.exists(dot_git_path):
-            import shutil
             shutil.rmtree(dot_git_path)
         _call('git init', silence=True)
         _call('git remote add origin %s' % config.deploy.git.repo)
@@ -44,8 +48,7 @@ def rsync(config):
         args = "--delete"
     else:
         args = ""
-    cmd = "rsync -avze 'ssh -p {ssh_port}' {args}" \
-          " {deploy_dir}/ {ssh_user}@{ssh_host}:{document_root}".format(
+    cmd = RSYNC_COMMAND.format(
         ssh_port=config.deploy.rsync.ssh_port,
         args=args,
         deploy_dir=config.config.output,
