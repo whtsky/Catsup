@@ -8,7 +8,7 @@ setup(
     version=catsup.__version__,
     author='whtsky',
     author_email='whtsky@me.com',
-    url='https://github.com/whtsky/catsup',
+    url='https://github.com/whtsky/Catsup',
     packages=find_packages(),
     description='Catsup: a lightweight static site generator',
     long_description=open('README.rst').read(),
