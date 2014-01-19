@@ -88,7 +88,7 @@ If you want to write meta in a text post, write the meta in YAML format ::
 HTML Post
 --------------
 
-HTML post is like :ref:`Text <post-text-syntax>`, but you can use HTML in the content.
+HTML post is like :ref:`Text Post <post-text-syntax>`, but you can use HTML in the content.
 
 HTML post's extension should be ``.txt`` .
 
