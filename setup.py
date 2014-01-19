@@ -14,6 +14,7 @@ setup(
     url='https://github.com/whtsky/Catsup',
     packages=find_packages(),
     description='Catsup: a lightweight static site generator',
+    keywords="catsup, blog, site, static, static blog, static site, generator",
     long_description=long_description,
     entry_points={
         'console_scripts': ['catsup= catsup.cli:main'],
