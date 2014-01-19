@@ -4,8 +4,8 @@ Catsup
 .. image:: https://pypip.in/d/catsup/badge.png
         :target: https://pypi.python.org/pypi/catsup/
 
-.. image:: https://travis-ci.org/whtsky/catsup.png?branch=develop
-        :target: https://travis-ci.org/whtsky/catsup
+.. image:: https://travis-ci.org/whtsky/Catsup.png?branch=develop
+        :target: https://travis-ci.org/whtsky/Catsup
 
 .. image:: https://coveralls.io/repos/whtsky/catsup/badge.png?branch=develop
         :target: https://coveralls.io/r/whtsky/catsup?branch=develop
