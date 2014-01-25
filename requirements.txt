@@ -11,4 +11,3 @@ PyYAML==3.10
 tornado==3.2
 ujson==1.33
 watchdog==0.7.0
-requests==2.2.0
