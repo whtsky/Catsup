@@ -1,19 +1,21 @@
-import requests
+import urllib2
+import ujson
 
 from catsup.logger import logger
 
 
 def search_github(name):
     repo_name = "catsup-theme-{name}".format(name=name)
-    response = requests.get("https://api.github.com/search/repositories?q={repo_name}".format(repo_name=repo_name), headers={
-        "User-Agent": "Catsup Theme Finder"
-    })
+    url = "https://api.github.com/search/repositories?q=" + repo_name
+    request = urllib2.Request(url)
+    request.add_header("User-Agent", "Catsup Theme Finder")
     try:
-        response.raise_for_status()
-    except requests.HTTPError:
-        logger.warning("Error when connecting to GitHub.")
+        response = urllib2.urlopen(request)
+    except urllib2.HTTPError as e:
+        logger.warning("Error when connecting to GitHub: {}".format(e.msg))
         return None
-    json = response.json()
+    content = response.read()
+    json = ujson.loads(content)
     if json["total_count"] == 0:
         return None
     for item in json["items"]:

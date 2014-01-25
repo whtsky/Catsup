@@ -1,6 +1,11 @@
 Changelog
 ==========
 
+Version 0.3.1
+--------------
+
++ Fix a bug on ``catsup install``
+
 Version 0.3.0
 --------------
 

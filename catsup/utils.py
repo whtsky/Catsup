@@ -96,12 +96,11 @@ def update_nested_dict(a, b):
     return a
 
 
-def call(cmd, silence=False, **kwargs):
+def call(cmd, silence=True, **kwargs):
     from catsup.options import g
-    if 'cwd' not in kwargs:
-        kwargs['cwd'] = g.cwdpath
-    if silence and 'stdout' not in kwargs:
-        kwargs["stdout"] = subprocess.PIPE
+    kwargs.setdefault("cwd", g.cwdpath)
+    if silence:
+        kwargs.setdefault("stdout", subprocess.PIPE)
     kwargs.setdefault("shell", True)
     return subprocess.call(cmd, **kwargs)
 

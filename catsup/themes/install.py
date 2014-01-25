@@ -28,7 +28,7 @@ def install_from_git(clone_url):
         shutil.rmtree(theme.name)
 
     os.rename(tmp_dir, theme.name)
-    logger.info("Installed theme {name}".format(name=name))
+    logger.info("Installed theme {name}".format(name=theme.name))
 
 
 def search_and_install(name):
@@ -53,8 +53,11 @@ def install_theme(name):
             logger.info("Updating theme %s" % theme.name)
             call("git pull", cwd=theme.path)
         exit(0)
-
     if ".git" in name or "//" in name:
         install_from_git(name)
     else:
-        search_github(name)
+        item = search_github(name)
+        if not item:
+            logger.error("Can't find {} on GitHub.".format(name))
+            exit(1)
+        install_from_git(item["clone_url"])
