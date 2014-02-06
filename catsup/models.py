@@ -151,11 +151,21 @@ class Post(CatsupPage):
 
     def __init__(self, path, meta, content):
         self.path = path
-        self.filename, _ = os.path.splitext(os.path.basename(path))
         self.meta = meta
         self.content = content
         self.tags = []
-        self.date = self.datetime.strftime("%Y-%m-%d")
+
+        filename, _ = os.path.splitext(os.path.basename(path))
+        if self.DATE_RE.match(filename[:10]):
+            self.meta.setdefault("date", filename[:10])
+            self.filename = filename[11:]
+        else:
+            self.filename = filename
+
+        if "date" in self.meta:
+            self.date = self.meta.date
+        else:
+            self.date = self.datetime.strftime("%Y-%m-%d")
 
     def add_archive_and_tags(self):
         year = self.datetime.strftime("%Y")
@@ -177,8 +187,7 @@ class Post(CatsupPage):
         args = self.meta.copy()
         args.update(
             title=self.title,
-            datetime=self.datetime,
-            type=self.type
+            datetime=self.datetime
         )
         return args
 
@@ -188,21 +197,12 @@ class Post(CatsupPage):
         import os
         if "time" in self.meta:
             return datetime.strptime(
-                self.meta["time"], "%Y-%m-%d %H:%M"
+                self.meta.time, "%Y-%m-%d %H:%M"
             )
         elif "date" in self.meta:
-            return datetime.strftime(
-                self.meta["date"], "%Y-%m-%d"
+            return datetime.strptime(
+                self.meta.date, "%Y-%m-%d"
             )
-        else:
-            if "-" in self.path:
-                import os.path
-                filename, _ = os.path.splitext(self.path)
-                filename = os.path.basename(filename)
-                if self.DATE_RE.match(filename[:10]):
-                    return datetime.strptime(
-                        filename[:10], "%Y-%m-%d"
-                    )
         st_ctime = os.stat(self.path).st_ctime
         return datetime.fromtimestamp(st_ctime)
 
@@ -241,9 +241,8 @@ class Post(CatsupPage):
             return filename
 
     @property
-    @cached_func
     def type(self):
-        return self.meta.get("type", "post")
+        return self.meta.type
 
 
 class Page(CatsupPage):

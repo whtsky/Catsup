@@ -1,6 +1,11 @@
 Changelog
 ==========
 
+Version 0.3.3
+--------------
+
++ Improve Post Model
+
 Version 0.3.2
 --------------
 
