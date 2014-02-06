@@ -1,6 +1,12 @@
 Changelog
 ==========
 
+Version 0.3.2
+--------------
+
++ Fix Post meta bug
++ Code improvement
+
 Version 0.3.1
 --------------
 

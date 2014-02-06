@@ -1,3 +1,5 @@
+# -*- coding:utf-8 -*-
+
 from .markdown import markdown_reader
 from .txt import txt_reader
 from .html import html_reader

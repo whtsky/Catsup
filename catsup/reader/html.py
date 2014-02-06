@@ -1,6 +1,9 @@
+
+
 from catsup.models import Post
 from catsup.utils import to_unicode, ObjectDict
-from catsup.reader.utils import split_content, parse_yaml_meta
+from catsup.reader.meta import parse_yaml_meta
+from catsup.reader.utils import split_content
 
 
 def html_reader(path):

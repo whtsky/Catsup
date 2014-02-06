@@ -151,9 +151,11 @@ class Post(CatsupPage):
 
     def __init__(self, path, meta, content):
         self.path = path
+        self.filename, _ = os.path.splitext(os.path.basename(path))
         self.meta = meta
         self.content = content
         self.tags = []
+        self.date = self.datetime.strftime("%Y-%m-%d")
 
     def add_archive_and_tags(self):
         year = self.datetime.strftime("%Y")
@@ -203,11 +205,6 @@ class Post(CatsupPage):
                     )
         st_ctime = os.stat(self.path).st_ctime
         return datetime.fromtimestamp(st_ctime)
-
-    @property
-    @cached_func
-    def date(self):
-        return self.datetime.strftime("%Y-%m-%d")
 
     @property
     @cached_func
