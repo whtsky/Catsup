@@ -9,7 +9,8 @@ from pygments.util import ClassNotFound
 
 from catsup.models import Post
 from catsup.utils import ObjectDict
-from catsup.reader.utils import split_content, parse_meta
+from catsup.reader.meta import parse_meta
+from catsup.reader.utils import split_content
 
 
 class CatsupRender(m.HtmlRenderer, m.SmartyPants):

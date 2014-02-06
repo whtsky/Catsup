@@ -45,10 +45,3 @@ def test_md_reader():
     post_path = os.path.join(BASE_DIR, "2013-02-11-test.md")
     post = markdown_reader(post_path)
     assert post.path == post_path
-    assert post.content.strip() == to_unicode("""<p>Hi!
-I&#39;m happy to use Catsup!
-中文测试</p>
-
-<hr/>
-<div class="highlight"><pre><span class="k">print</span><span class="p">(</span><span class="s">&quot;Hello, World!&quot;</span><span class="p">)</span>
-</pre></div>""").strip()
