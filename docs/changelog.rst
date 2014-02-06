@@ -1,6 +1,12 @@
 Changelog
 ==========
 
+Version 0.3.3
+--------------
+
++ Improve Post Model
++ Change default post permalink
+
 Version 0.3.2
 --------------
 

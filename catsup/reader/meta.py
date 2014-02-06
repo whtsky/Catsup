@@ -8,7 +8,9 @@ from catsup.utils import update_nested_dict, ObjectDict
 
 
 def read_base_meta(path):
-    meta = ObjectDict()
+    meta = ObjectDict(
+        type="post"
+    )
     if path:
         pass
     return meta
