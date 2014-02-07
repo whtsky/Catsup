@@ -10,20 +10,6 @@ from catsup.utils import html_to_raw_text
 from .utils import Pagination
 
 
-def cached_func(f):
-    """
-    Used for cache property funcs in class to work with Jinja2.
-    """
-    func_name = f.__name__
-    property_name = "_%s" % func_name
-
-    def wraps(self):
-        if not hasattr(self, property_name):
-            setattr(self, property_name, f(self))
-        return getattr(self, property_name)
-    return wraps
-
-
 class CatsupPage(object):
     @property
     def class_name(self):
@@ -194,7 +180,6 @@ class Post(CatsupPage):
         return args
 
     @property
-    @cached_func
     def datetime(self):
         import os
         if "time" in self.meta:
@@ -209,23 +194,23 @@ class Post(CatsupPage):
         return datetime.fromtimestamp(st_ctime)
 
     @property
-    @cached_func
     def description(self):
-        description = self.meta.get(
-            "description",
-            self.content
-        ).replace("\n", "")
-        description = html_to_raw_text(description)
-        if "<br" in description:
-            description = description.split("<br")[0]
-        elif "</p" in description:
-            description = description.split("</p")[0]
-        if len(description) > 150:
-            description = description[:150]
-        return description.strip()
+        if "description" not in self.meta:
+            description = self.meta.get(
+                "description",
+                self.content
+            ).replace("\n", "")
+            description = html_to_raw_text(description)
+            if "<br" in description:
+                description = description.split("<br")[0]
+            elif "</p" in description:
+                description = description.split("</p")[0]
+            if len(description) > 150:
+                description = description[:150]
+            self.meta.description = description.strip()
+        return self.meta.description
 
     @property
-    @cached_func
     def allow_comment(self):
         if self.meta.get("comment", None) == "disabled":
             return False
@@ -233,14 +218,8 @@ class Post(CatsupPage):
             return g.config.comment.allow
 
     @property
-    @cached_func
     def title(self):
-        if "title" in self.meta:
-            return self.meta.get("title")
-        else:
-            p, _ = os.path.splitext(self.path)
-            filename = os.path.basename(p)
-            return filename
+        return self.meta.get("title", self.filename)
 
     @property
     def type(self):

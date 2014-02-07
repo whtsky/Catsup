@@ -1,6 +1,12 @@
 Changelog
 ==========
 
+Version 0.3.4
+--------------
+
++ Change default post permalink
++ Drop cache property
+
 Version 0.3.3
 --------------
 

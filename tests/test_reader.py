@@ -27,7 +27,7 @@ def test_txt_reader():
     post_path = os.path.join(BASE_DIR, "post.txt")
     post = txt_reader(post_path)
     assert post.path == post_path
-    assert post.date == "2014-01-04"
+    assert post.date == post.datetime.strftime("%Y-%m-%d") == "2014-01-04"
     assert post.datetime == datetime.datetime(2014, 1, 4, 20, 56)
     assert post.title == "Hello, World!"
     assert post.content == to_unicode("<br />Hi!<br />I&#39;m happy to use Catsup!<br />中文测试<br />")
@@ -45,3 +45,4 @@ def test_md_reader():
     post_path = os.path.join(BASE_DIR, "2013-02-11-test.md")
     post = markdown_reader(post_path)
     assert post.path == post_path
+    assert post.date == post.datetime.strftime("%Y-%m-%d") == "2013-02-11"
