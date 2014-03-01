@@ -1,6 +1,11 @@
 Changelog
 ==========
 
+Version 0.3.5
+--------------
+
++ Fix a theme install bug
+
 Version 0.3.4
 --------------
 

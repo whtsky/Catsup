@@ -27,7 +27,7 @@ def install_from_git(clone_url):
     if os.path.exists(theme.name):
         shutil.rmtree(theme.name)
 
-    os.rename(tmp_dir, theme.name)
+    shutil.move(tmp_dir, theme.name)
     logger.info("Installed theme {name}".format(name=theme.name))
 
 
