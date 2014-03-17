@@ -1,6 +1,11 @@
 Changelog
 ==========
 
+Version 0.3.6
+--------------
+
++ Load tags and archives before rendering any page
+
 Version 0.3.5
 --------------
 
