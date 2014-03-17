@@ -81,6 +81,10 @@ class Generator(object):
             generator=self
         )
 
+    def add_archives_and_tags(self):
+        for post in self.posts:
+            post.add_archive_and_tags()
+
     def generate_feed(self):
         feed = Feed(self.posts)
         feed.render(self.renderer)
@@ -91,7 +95,6 @@ class Generator(object):
 
     def generate_posts(self):
         for post in self.posts:
-            post.add_archive_and_tags()
             post.render(self.renderer)
         for page in self.pages:
             page.render(self.renderer)
@@ -125,6 +128,7 @@ class Generator(object):
     def generate(self):
         started_loading = time.time()
         self.reset()
+        self.add_archives_and_tags()
         finish_loading = time.time()
         logger.info(
             "Loaded config and %s posts in %.3fs" %
