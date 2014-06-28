@@ -27,7 +27,7 @@ class CatsupRender(m.HtmlRenderer, m.SmartyPants):
     def autolink(self, link, is_email):
         if is_email:
             s = '<a href="mailto:{link}">{link}</a>'
-        elif link.endswith(('.jpg', '.png', '.git', '.jpeg')):
+        elif link.endswith(('.jpg', '.png', '.gif', '.jpeg')):
             s = '<a href="{link}"><img src="{link}" /></a>'
         else:
             s = '<a href="{link}">{link}</a>'
