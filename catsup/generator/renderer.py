@@ -62,6 +62,7 @@ class Renderer(object):
             output_name = output_name.rstrip("/")
             output_name += '/index.html'
         output_path = os.path.join(g.output, output_name.lstrip("/"))
+        output_path = output_path.encode("utf-8")
         mkdir(os.path.dirname(output_path))
         with open(output_path, "w") as f:
             f.write(html)
