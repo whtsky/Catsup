@@ -56,7 +56,7 @@ def list_themes():
         os.path.abspath('themes'),
         os.path.join(g.catsup_path, 'themes'),
     ]
-    themes = ()
+    themes = []
     for path in theme_gallery:
         if not os.path.exists(path):
             continue
@@ -64,11 +64,11 @@ def list_themes():
         for name in names:
             theme_path = os.path.join(path, name)
             if os.path.isdir(theme_path):
-                themes.add(name)
+                themes.append(name)
     print('Available themes: \n')
     themes_text = []
     for name in themes:
-        theme = find(theme_name=name)
+        theme = find_theme(theme_name=name)
         themes_text.append("\n".join([
             'Name: %s' % theme.name,
             'Author: %s' % theme.author,
