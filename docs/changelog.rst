@@ -1,6 +1,11 @@
 Changelog
 ==========
 
+Version 0.3.9
+--------------
+
++ Fix theme search under Python 3
+
 Version 0.3.8
 --------------
 
