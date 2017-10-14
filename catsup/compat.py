@@ -6,4 +6,6 @@ py3k = py >= (3, 0, 0)
 if py3k:
     basestring = str
     unicode = str
-
+else:
+    basestring = basestring
+    unicode = unicode

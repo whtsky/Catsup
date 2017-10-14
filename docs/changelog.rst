@@ -1,6 +1,11 @@
 Changelog
 ==========
 
+Version 0.3.11
+--------------
+
++ Fix Python 2 support
+
 Version 0.3.10
 --------------
 
