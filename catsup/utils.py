@@ -11,13 +11,8 @@ except ImportError:
 
 from tornado.util import ObjectDict
 
-py = sys.version_info
-py3k = py >= (3, 0, 0)
-
-if py3k:
-    basestring = str
-    unicode = str
-
+from catsup.logger import logger
+from catsup.compat import py3k, basestring, unicode
 
 HTML_TAG_RE = re.compile("<.*?>")
 
@@ -33,7 +28,6 @@ def static_url(f):
         import os
         import hashlib
 
-        from catsup.logger import logger
 
         def get_hash(path):
             path = os.path.join(g.theme.path, 'static', path)

@@ -8,7 +8,7 @@ try:
 except ImportError:
     curses = None
 
-from catsup.utils import py3k
+from catsup.compat import py3k
 
 if py3k:
     unicode = str

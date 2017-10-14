@@ -5,6 +5,7 @@ Version 0.3.10
 --------------
 
 + Ignore ``__pycache__`` folder when finding themes
++ Use force push in git deploy to avoid conflicts
 
 Version 0.3.9
 --------------
