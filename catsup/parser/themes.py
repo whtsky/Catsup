@@ -6,7 +6,7 @@ import os
 
 from catsup.logger import logger
 from catsup.options import g
-from catsup.utils import call, ObjectDict
+from catsup.utils import ObjectDict
 
 
 def read_theme(path):

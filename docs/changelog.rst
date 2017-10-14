@@ -1,6 +1,13 @@
 Changelog
 ==========
 
+Version 0.3.7
+--------------
+
++ Fix git deploy
++ Supports tag in Unicode
++ Fix ``catsup themes``
+
 Version 0.3.6
 --------------
 
