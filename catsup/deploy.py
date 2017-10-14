@@ -24,17 +24,18 @@ def git(config):
             _call('git remote -v | grep %s' % config.deploy.git.repo) == 0:
         if os.path.exists(dot_git_path):
             shutil.rmtree(dot_git_path)
-        _call('git init', silence=True)
-        _call('git remote add origin %s' % config.deploy.git.repo)
-        if config.deploy.git.branch != 'master':
-            _call('git branch -m %s' % config.deploy.git.branch, silence=True)
-        _call('git pull origin %s' % config.deploy.git.branch)
+    _call('git init', silence=True)
+    _call('git remote add origin %s' % config.deploy.git.repo)
+    if config.deploy.git.branch != 'master':
+        _call('git branch -m %s' % config.deploy.git.branch, silence=True)
+    _call('git pull origin %s' % config.deploy.git.branch)
+    if config.deploy.git.delete:
         _call('rm -rf *')
 
-        from catsup.generator import Generator
+    from catsup.generator import Generator
 
-        generator = Generator(config.path)
-        generator.generate()
+    generator = Generator(config.path)
+    generator.generate()
 
     _call('git add .', silence=True)
     _call('git commit -m "Update at %s"' % str(datetime.datetime.utcnow()),
