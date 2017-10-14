@@ -20,15 +20,15 @@ def git(config):
 
     dot_git_path = os.path.join(cwd, '.git')
 
-    if os.path.exists(dot_git_path) and \
-            _call('git remote -v | grep %s' % config.deploy.git.repo) == 0:
-        if os.path.exists(dot_git_path):
+    if os.path.exists(dot_git_path):
+        if _call('git remote -v | grep %s' % config.deploy.git.repo) == 0:
             shutil.rmtree(dot_git_path)
-    _call('git init', silence=True)
-    _call('git remote add origin %s' % config.deploy.git.repo)
-    if config.deploy.git.branch != 'master':
-        _call('git branch -m %s' % config.deploy.git.branch, silence=True)
-    _call('git pull origin %s' % config.deploy.git.branch)
+    if os.path.exists(dot_git_path):
+        _call('git init', silence=True)
+        _call('git remote add origin %s' % config.deploy.git.repo)
+
+    _call('git branch -m %s' % config.deploy.git.branch, silence=True)
+    _call('git pull origin %s' % config.deploy.git.branch, silence=True)
     if config.deploy.git.delete:
         _call('rm -rf *')
 
@@ -36,6 +36,8 @@ def git(config):
 
     generator = Generator(config.path)
     generator.generate()
+
+    
 
     _call('git add .', silence=True)
     _call('git commit -m "Update at %s"' % str(datetime.datetime.utcnow()),

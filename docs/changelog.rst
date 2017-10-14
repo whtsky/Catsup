@@ -1,6 +1,12 @@
 Changelog
 ==========
 
+Version 0.3.8
+--------------
+
++ Always run ``git branch -m`` in git deploy
+
+
 Version 0.3.7
 --------------
 
