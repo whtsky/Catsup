@@ -1,6 +1,11 @@
 Changelog
 ==========
 
+Version 0.3.10
+--------------
+
++ Ignore ``__pycache__`` folder when finding themes
+
 Version 0.3.9
 --------------
 

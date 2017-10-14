@@ -22,7 +22,7 @@
 
     "permalink": {
         "page": "/page/{page}/",
-        "post": "/{datetime.year}/{datetime.month}/{filename}/",
+        "post": "/{filename}/",
         "tag": "/tag/{name}/",
         "tags": "/tag/index.html",
         "archive": "/archive/{year}/",

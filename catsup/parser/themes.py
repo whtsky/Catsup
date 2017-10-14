@@ -62,6 +62,8 @@ def list_themes():
             continue
         names = os.listdir(path)
         for name in names:
+            if name == '__pycache__':
+                continue
             theme_path = os.path.join(path, name)
             if os.path.isdir(theme_path):
                 themes.append(name)
