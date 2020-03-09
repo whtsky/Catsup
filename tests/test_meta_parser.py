@@ -1,4 +1,4 @@
-from nose.tools import raises
+from pytest import raises
 from catsup.reader.meta import parse_meta, parse_catsup_meta, parse_yaml_meta
 
 
@@ -14,14 +14,14 @@ def test_catsup_meta_parser():
     assert meta.tags == "hello, world"
 
 
-@raises(SystemExit)
 def test_catsup_meta_parser_error_1():
-    parse_catsup_meta(["fsdaf-,-,-,-", "fdsa- 0,"])
+    with raises(SystemExit):
+        parse_catsup_meta(["fsdaf-,-,-,-", "fdsa- 0,"])
 
 
-@raises(SystemExit)
 def test_catsup_meta_parser_error_2():
-    parse_catsup_meta(["#fsdaf-,-,-,-", "fdsa- 0,"])
+    with raises(SystemExit):
+        parse_catsup_meta(["#fsdaf-,-,-,-", "fdsa- 0,"])
 
 
 def test_base_meta():
@@ -41,6 +41,6 @@ def test_meta_parser():
     assert meta.tags == "hello, world"
 
 
-@raises(SystemExit)
 def test_parse_unknown_meta():
-    parse_meta(["fdsjaklfdsjaklfdsjaklfjdsklfjsa"])
+    with raises(SystemExit):
+        parse_meta(["fdsjaklfdsjaklfdsjaklfjdsklfjsa"])

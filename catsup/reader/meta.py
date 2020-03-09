@@ -8,9 +8,7 @@ from catsup.utils import update_nested_dict, ObjectDict
 
 
 def read_base_meta(path):
-    meta = ObjectDict(
-        type="post"
-    )
+    meta = ObjectDict(type="post")
     if path:
         pass
     return meta
@@ -44,7 +42,7 @@ def parse_catsup_meta(lines, path=None):
             continue
         if ":" not in line:
             not_valid(path)
-        name, value = line.split(':', 1)
-        name = name.strip().lstrip('-').strip().lower()
+        name, value = line.split(":", 1)
+        name = name.strip().lstrip("-").strip().lower()
         meta[name] = value.strip()
     return meta

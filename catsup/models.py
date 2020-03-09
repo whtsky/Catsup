@@ -58,10 +58,7 @@ class Tags(CatsupPage):
         self.tags_dict = tags
 
     def get(self, name):
-        return self.tags_dict.setdefault(
-            name,
-            Tag(name)
-        )
+        return self.tags_dict.setdefault(name, Tag(name))
 
     def render(self, renderer, **kwargs):
         for tag in self.tags:
@@ -72,10 +69,7 @@ class Tags(CatsupPage):
     def tags(self):
         if not hasattr(self, "_tags"):
             self._tags = list(self.tags_dict.values())
-            self._tags.sort(
-                key=lambda x: x.count,
-                reverse=True
-            )
+            self._tags.sort(key=lambda x: x.count, reverse=True)
         return self._tags
 
     def __iter__(self):
@@ -107,10 +101,7 @@ class Archives(CatsupPage):
         self.archives_dict = archives
 
     def get(self, year):
-        return self.archives_dict.setdefault(
-            year,
-            Archive(year)
-        )
+        return self.archives_dict.setdefault(year, Archive(year))
 
     def render(self, renderer, **kwargs):
         for tag in self.archives:
@@ -121,10 +112,7 @@ class Archives(CatsupPage):
     def archives(self):
         if not hasattr(self, "_archives"):
             self._archives = list(self.archives_dict.values())
-            self._archives.sort(
-                key=lambda x: x.year,
-                reverse=True
-            )
+            self._archives.sort(key=lambda x: x.year, reverse=True)
         return self._archives
 
     def __iter__(self):
@@ -133,7 +121,7 @@ class Archives(CatsupPage):
 
 
 class Post(CatsupPage):
-    DATE_RE = re.compile('\d{4}\-\d{2}\-\d{2}')
+    DATE_RE = re.compile("\d{4}\-\d{2}\-\d{2}")
 
     def __init__(self, path, meta, content):
         self.path = path
@@ -173,33 +161,24 @@ class Post(CatsupPage):
 
     def get_permalink_args(self):
         args = self.meta.copy()
-        args.update(
-            title=self.title,
-            datetime=self.datetime
-        )
+        args.update(title=self.title, datetime=self.datetime)
         return args
 
     @property
     def datetime(self):
         import os
+
         if "time" in self.meta:
-            return datetime.strptime(
-                self.meta.time, "%Y-%m-%d %H:%M"
-            )
+            return datetime.strptime(self.meta.time, "%Y-%m-%d %H:%M")
         elif "date" in self.meta:
-            return datetime.strptime(
-                self.meta.date, "%Y-%m-%d"
-            )
+            return datetime.strptime(self.meta.date, "%Y-%m-%d")
         st_ctime = os.stat(self.path).st_ctime
         return datetime.fromtimestamp(st_ctime)
 
     @property
     def description(self):
         if "description" not in self.meta:
-            description = self.meta.get(
-                "description",
-                self.content
-            ).replace("\n", "")
+            description = self.meta.get("description", self.content).replace("\n", "")
             description = html_to_raw_text(description)
             if "<br" in description:
                 description = description.split("<br")[0]
@@ -252,7 +231,7 @@ class Page(CatsupPage):
                 page=page,
                 posts=self.posts,
                 per_page=self.per_page,
-                get_permalink=self.get_permalink
+                get_permalink=self.get_permalink,
             )
             self.render(renderer=renderer, pagination=pagination)
 

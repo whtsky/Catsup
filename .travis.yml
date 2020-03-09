@@ -1,18 +1,21 @@
 language: python
 python:
-  - 2.7
-  - 3.3
-  - 3.4
   - 3.5
   - 3.6
+  - 3.7
+  - 3.8
+  - nightly
+
+cache: pip
 
 install:
-  - python setup.py install
-  - pip install -r dev-requirements.txt
+  - python -m pip install -U pip wheel setuptools
+  - python -m pip install poetry
+  - poetry install
 
-script: coverage run setup.py -q nosetests
+script: poetry run pytest --cov=catsup --cov-report xml --cov-report term-missing
 
-after_success: coveralls
+after_success: poetry run codecov
 
 notifications:
   email: false

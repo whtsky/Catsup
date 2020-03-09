@@ -1,5 +1,3 @@
-
-
 from catsup.models import Post
 from catsup.utils import to_unicode, ObjectDict
 from catsup.reader.meta import parse_yaml_meta
@@ -12,8 +10,4 @@ def html_reader(path):
         meta = ObjectDict()
     else:
         meta = parse_yaml_meta(meta, path)
-    return Post(
-        path=path,
-        meta=meta,
-        content=to_unicode(content)
-    )
+    return Post(path=path, meta=meta, content=to_unicode(content))

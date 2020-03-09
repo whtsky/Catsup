@@ -1,13 +1,13 @@
 {
-    "site": {
-        "name": "blogname",
-        "description": "Just another catsup blog",
-        "url": "http://blog.com/"
-    },
+  "site": {
+    "name": "blogname",
+    "description": "Just another catsup blog",
+    "url": "http://blog.com/"
+  },
 
-    "author": {
-        "name": "nickname",
-        "email": "name@exmaple.com",
-        "twitter": "twitter"
-    }
+  "author": {
+    "name": "nickname",
+    "email": "name@exmaple.com",
+    "twitter": "twitter"
+  }
 }

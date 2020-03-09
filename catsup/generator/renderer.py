@@ -8,8 +8,7 @@ from catsup.utils import mkdir, static_url, url_for, urljoin
 class Renderer(object):
     def __init__(self, templates_path, generator):
         self.env = Environment(
-            loader=FileSystemLoader(templates_path),
-            autoescape=False
+            loader=FileSystemLoader(templates_path), autoescape=False
         )
         config = generator.config
 
@@ -23,13 +22,11 @@ class Renderer(object):
             g=g,
             pages=generator.pages,
             static_url=static_url,
-            url_for=url_for
+            url_for=url_for,
         )
 
-        catsup_filter_path = os.path.join(
-            g.catsup_path, "templates", 'filters.py'
-        )
-        theme_filter_path = os.path.join(g.theme.path, 'filters.py')
+        catsup_filter_path = os.path.join(g.catsup_path, "templates", "filters.py")
+        theme_filter_path = os.path.join(g.theme.path, "filters.py")
         self.load_filters_from_pyfile(catsup_filter_path)
         self.load_filters_from_pyfile(theme_filter_path)
         self.rendered_permalinks = []
@@ -52,15 +49,12 @@ class Renderer(object):
         html = self.render(template, **kwargs)
         if not html:
             return
-        permalink, output_name = urljoin(
-            g.base_url,
-            permalink
-        ), permalink
+        permalink, output_name = urljoin(g.base_url, permalink), permalink
         kwargs.setdefault("permalink", permalink)
         self.rendered_permalinks.append(permalink)
         if output_name.endswith("/") or "." not in output_name:
             output_name = output_name.rstrip("/")
-            output_name += '/index.html'
+            output_name += "/index.html"
         output_path = os.path.join(g.output, output_name.lstrip("/"))
         output_path = output_path.encode("utf-8")
         mkdir(os.path.dirname(output_path))

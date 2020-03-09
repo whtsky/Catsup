@@ -25,7 +25,4 @@ def search_github(name):
         return None
     for item in json["items"]:
         if item["name"] == repo_name:
-            return {
-                "name": item["name"],
-                "clone_url": item["clone_url"]
-            }
+            return {"name": item["name"], "clone_url": item["clone_url"]}

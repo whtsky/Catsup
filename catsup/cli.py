@@ -1,10 +1,4 @@
-import sys
 import os
-
-major = sys.version_info[0]
-if major < 3:
-    reload(sys)
-    sys.setdefaultencoding('utf-8')
 
 from catsup.options import g
 from catsup.logger import logger, enable_pretty_logging
@@ -13,7 +7,8 @@ enable_pretty_logging()
 
 import catsup
 
-doc = """Catsup v%s
+doc = (
+    """Catsup v%s
 
 Usage:
     catsup init [<path>]
@@ -37,7 +32,9 @@ Options:
     -o --output=<dir>       specify a output folder. [default: .]
     -p --port=<port>        specify the server port. [default: 8888]
     -g --global             install theme to global theme folder.
-""" % catsup.__version__
+"""
+    % catsup.__version__
+)
 
 from parguments import Parguments
 
@@ -54,6 +51,7 @@ def init(path):
         -h --help               Show this screen and exit.
     """
     from catsup.parser.utils import create_config_file
+
     create_config_file(path)
 
 
@@ -68,6 +66,7 @@ def build(settings):
         -s --settings=<file>    specify a setting file. [default: config.json]
     """
     from catsup.generator import Generator
+
     generator = Generator(settings)
     generator.generate()
 
@@ -84,10 +83,11 @@ def deploy(settings):
     """
     import catsup.parser
     import catsup.deploy
+
     config = catsup.parser.config(settings)
-    if config.deploy.default == 'git':
+    if config.deploy.default == "git":
         catsup.deploy.git(config)
-    elif config.deploy.default == 'rsync':
+    elif config.deploy.default == "rsync":
         catsup.deploy.rsync(config)
     else:
         logger.error("Unknown deploy: %s" % config.deploy.default)
@@ -105,6 +105,7 @@ def git(settings):
     """
     import catsup.parser.config
     import catsup.deploy
+
     config = catsup.parser.config(settings)
     catsup.deploy.git(config)
 
@@ -121,6 +122,7 @@ def rsync(settings):
     """
     import catsup.parser.config
     import catsup.deploy
+
     config = catsup.parser.config(settings)
     catsup.deploy.rsync(config)
 
@@ -137,6 +139,7 @@ def server(settings, port):
         -p --port=<port>        specify the server port. [default: 8888]
     """
     import catsup.server
+
     preview_server = catsup.server.PreviewServer(settings, port)
     preview_server.run()
 
@@ -153,6 +156,7 @@ def webhook(settings, port):
         -p --port=<port>        specify the server port. [default: 8888]
     """
     import catsup.server
+
     server = catsup.server.WebhookServer(settings, port)
     server.run()
 
@@ -184,7 +188,7 @@ def watch(settings):
 
 
 @parguments.command
-def clean(settings):
+def clean(settings: str):
     """
     Usage:
         catsup clean [-s <file>|--settings=<file>]
@@ -195,6 +199,7 @@ def clean(settings):
     """
     import shutil
     import catsup.parser.config
+
     config = catsup.parser.config(settings)
 
     for path in [config.config.static_output, config.config.output]:
@@ -212,6 +217,7 @@ def themes():
         -h --help               Show this screen and exit.
     """
     from catsup.parser.themes import list_themes
+
     list_themes()
 
 
@@ -225,6 +231,7 @@ def install(name):
         -h --help               Show this screen and exit.
     """
     from catsup.themes.install import install_theme
+
     install_theme(name=name)
 
 

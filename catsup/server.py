@@ -74,8 +74,7 @@ class CatsupServer(object):
         application = self.application
         application.settings["log_function"] = lambda x: None
         application.settings["static_handler_class"] = StaticFileHandler
-        http_server = tornado.httpserver.HTTPServer(application,
-                                                    io_loop=self.ioloop)
+        http_server = tornado.httpserver.HTTPServer(application, io_loop=self.ioloop)
         http_server.listen(self.port)
         logger.info("Start server at port %s" % self.port)
         self.ioloop.start()
@@ -85,20 +84,13 @@ class PreviewServer(CatsupServer):
     def __init__(self, settings, port):
         super(PreviewServer, self).__init__(settings, port)
         self.generator = Generator(
-            settings,
-            local=True,
-            base_url="http://127.0.0.1:%s/" % port
+            settings, local=True, base_url="http://127.0.0.1:%s/" % port
         )
 
     @property
     def application(self):
-        params = {
-            "path": g.output,
-            "default_filename": "index.html"
-        }
-        return tornado.web.Application([
-            (r"/(.*)", StaticFileHandler, params),
-        ])
+        params = {"path": g.output, "default_filename": "index.html"}
+        return tornado.web.Application([(r"/(.*)", StaticFileHandler, params),])
 
     def prepare(self):
         # Reload server when catsup modified.
@@ -118,20 +110,12 @@ class WebhookServer(CatsupServer):
     def application(self):
         git_path = ""
         for path in ["", self.generator.config.config.source]:
-            path = os.path.abspath(os.path.join(
-                g.cwdpath,
-                path
-            ))
+            path = os.path.abspath(os.path.join(g.cwdpath, path))
             if os.path.exists(os.path.join(path, ".git")):
                 git_path = path
                 break
         if not git_path:
             logger.error("Can't find git repository.")
             exit(1)
-        params = {
-            "path": git_path,
-            "generate": self.generate
-        }
-        return tornado.web.Application([
-            (r"/.*?", WebhookHandler, params),
-        ])
+        params = {"path": git_path, "generate": self.generate}
+        return tornado.web.Application([(r"/.*?", WebhookHandler, params),])

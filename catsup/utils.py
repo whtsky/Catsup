@@ -1,18 +1,12 @@
 import os
 import re
-import sys
 import subprocess
 
-try:
-    from urllib.parse import urljoin
-    assert urljoin
-except ImportError:
-    from urlparse import urljoin
+from urllib.parse import urljoin
 
 from tornado.util import ObjectDict
 
 from catsup.logger import logger
-from catsup.compat import py3k, basestring, unicode
 
 HTML_TAG_RE = re.compile("<.*?>")
 
@@ -23,60 +17,53 @@ def html_to_raw_text(html):
 
 def static_url(f):
     from catsup.options import g
+
     caches_class = g.generator.caches["static_url"]
     if f not in caches_class:
         import os
         import hashlib
 
-
         def get_hash(path):
-            path = os.path.join(g.theme.path, 'static', path)
+            path = os.path.join(g.theme.path, "static", path)
             if not os.path.exists(path):
                 logger.warn("%s does not exist." % path)
                 return
 
-            with open(path, 'rb') as f:
+            with open(path, "rb") as f:
                 return hashlib.md5(f.read()).hexdigest()
 
         hsh = get_hash(f)
-        url = urljoin(
-            g.static_prefix,
-            '%s?v=%s' % (f, hsh)
-        )
+        url = urljoin(g.static_prefix, "%s?v=%s" % (f, hsh))
         caches_class[f] = url
     return caches_class[f]
 
 
 def url_for(obj):
     from catsup.options import g
+
     caches_class = g.generator.caches["url_for"]
     key = id(obj)
     if key not in caches_class:
         from catsup.models import CatsupPage
 
-        url = ''
-        if obj == 'index':
+        url = ""
+        if obj == "index":
             url = g.base_url
         elif isinstance(obj, CatsupPage):
             url = obj.permalink
         elif isinstance(obj, str):
             url = g.permalink[obj]
-        caches_class[key] = urljoin(
-            g.base_url,
-            url
-        )
+        caches_class[key] = urljoin(g.base_url, url)
     return caches_class[key]
 
 
 def to_unicode(value):
-    if isinstance(value, unicode):
+    if isinstance(value, str):
         return value
-    if isinstance(value, basestring):
-        return value.decode('utf-8')
     if isinstance(value, int):
         return str(value)
     if isinstance(value, bytes):
-        return value.decode('utf-8')
+        return value.decode("utf-8")
     return value
 
 
@@ -92,6 +79,7 @@ def update_nested_dict(a, b):
 
 def call(cmd, silence=True, **kwargs):
     from catsup.options import g
+
     kwargs.setdefault("cwd", g.cwdpath)
     if silence:
         kwargs.setdefault("stdout", subprocess.PIPE)

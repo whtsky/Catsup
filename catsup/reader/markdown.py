@@ -19,7 +19,7 @@ class CatsupRender(m.HtmlRenderer, m.SmartyPants):
             lexer = get_lexer_by_name(lang, stripall=True)
         except ClassNotFound:
             text = escape_html(text.strip())
-            return '\n<pre><code>%s</code></pre>\n' % text
+            return "\n<pre><code>%s</code></pre>\n" % text
         else:
             formatter = HtmlFormatter()
             return highlight(text, lexer, formatter)
@@ -27,18 +27,21 @@ class CatsupRender(m.HtmlRenderer, m.SmartyPants):
     def autolink(self, link, is_email):
         if is_email:
             s = '<a href="mailto:{link}">{link}</a>'
-        elif link.endswith(('.jpg', '.png', '.gif', '.jpeg')):
+        elif link.endswith((".jpg", ".png", ".gif", ".jpeg")):
             s = '<a href="{link}"><img src="{link}" /></a>'
         else:
             s = '<a href="{link}">{link}</a>'
         return s.format(link=link)
 
-md = m.Markdown(CatsupRender(flags=m.HTML_USE_XHTML),
-                extensions=m.EXT_FENCED_CODE |
-                m.EXT_NO_INTRA_EMPHASIS |
-                m.EXT_AUTOLINK |
-                m.EXT_STRIKETHROUGH |
-                m.EXT_SUPERSCRIPT)
+
+md = m.Markdown(
+    CatsupRender(flags=m.HTML_USE_XHTML),
+    extensions=m.EXT_FENCED_CODE
+    | m.EXT_NO_INTRA_EMPHASIS
+    | m.EXT_AUTOLINK
+    | m.EXT_STRIKETHROUGH
+    | m.EXT_SUPERSCRIPT,
+)
 
 
 def markdown_reader(path):
@@ -48,8 +51,4 @@ def markdown_reader(path):
         meta = ObjectDict()
     else:
         meta = parse_meta(meta, path)
-    return Post(
-        path=path,
-        meta=meta,
-        content=md.render(content)
-    )
+    return Post(path=path, meta=meta, content=md.render(content))

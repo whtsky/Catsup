@@ -16,30 +16,25 @@ def read_theme(path):
     """
     if not os.path.exists(path):
         return
-    theme_file = os.path.join(path, 'theme.py')
+    theme_file = os.path.join(path, "theme.py")
     if not os.path.exists(theme_file):
         logger.warn("%s is not a catsup theme." % path)
         return
     theme = ObjectDict(
-        name='',
-        author='',
-        homepage='',
-        path=path,
-        post_per_page=5,
-        vars={},
+        name="", author="", homepage="", path=path, post_per_page=5, vars={},
     )
     exec(open(theme_file).read(), {}, theme)
     theme.name = theme.name.lower()
     return theme
 
 
-def find_theme(config=None, theme_name='', silence=False):
+def find_theme(config=None, theme_name="", silence=False):
     if not theme_name:
         theme_name = config.theme.name
     theme_name = theme_name.lower()
     theme_gallery = [
-        os.path.join(os.path.abspath('themes'), theme_name),
-        os.path.join(g.catsup_path, 'themes', theme_name),
+        os.path.join(os.path.abspath("themes"), theme_name),
+        os.path.join(g.catsup_path, "themes", theme_name),
     ]
     for path in theme_gallery:
         theme = read_theme(path)
@@ -53,8 +48,8 @@ def find_theme(config=None, theme_name='', silence=False):
 
 def list_themes():
     theme_gallery = [
-        os.path.abspath('themes'),
-        os.path.join(g.catsup_path, 'themes'),
+        os.path.abspath("themes"),
+        os.path.join(g.catsup_path, "themes"),
     ]
     themes = []
     for path in theme_gallery:
@@ -62,18 +57,22 @@ def list_themes():
             continue
         names = os.listdir(path)
         for name in names:
-            if name == '__pycache__':
+            if name == "__pycache__":
                 continue
             theme_path = os.path.join(path, name)
             if os.path.isdir(theme_path):
                 themes.append(name)
-    print('Available themes: \n')
+    print("Available themes: \n")
     themes_text = []
     for name in themes:
         theme = find_theme(theme_name=name)
-        themes_text.append("\n".join([
-            'Name: %s' % theme.name,
-            'Author: %s' % theme.author,
-            'HomePage: %s' % theme.homepage
-        ]))
+        themes_text.append(
+            "\n".join(
+                [
+                    "Name: %s" % theme.name,
+                    "Author: %s" % theme.author,
+                    "HomePage: %s" % theme.homepage,
+                ]
+            )
+        )
     print("\n--------\n".join(themes_text))

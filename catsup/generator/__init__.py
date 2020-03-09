@@ -37,16 +37,11 @@ class Generator(object):
         self.load_config()
         self.load_posts()
         self.load_renderer()
-        self.caches = {
-            "static_url": {},
-            "url_for": {}
-        }
+        self.caches = {"static_url": {}, "url_for": {}}
 
     def load_config(self):
         self.config = g.config = catsup.parser.config(
-            self.config_path,
-            local=self.local,
-            base_url=self.base_url
+            self.config_path, local=self.local, base_url=self.base_url
         )
 
     def load_posts(self):
@@ -57,7 +52,7 @@ class Generator(object):
             ext = ext.lower()[1:]
             reader = get_reader(ext)
             if reader is not None:
-                logger.info('Loading file %s' % filename)
+                logger.info("Loading file %s" % filename)
                 path = os.path.join(g.source, f)
                 post = reader(path)
                 if post.type == "page":
@@ -66,20 +61,14 @@ class Generator(object):
                     self.posts.append(post)
             else:
                 self.non_post_files.append(f)
-        self.posts.sort(
-            key=lambda x: x.datetime,
-            reverse=True
-        )
+        self.posts.sort(key=lambda x: x.datetime, reverse=True)
 
     def load_renderer(self):
         templates_path = [
             g.public_templates_path,
-            os.path.join(g.theme.path, 'templates')
+            os.path.join(g.theme.path, "templates"),
         ]
-        self.renderer = Renderer(
-            templates_path=templates_path,
-            generator=self
-        )
+        self.renderer = Renderer(templates_path=templates_path, generator=self)
 
     def add_archives_and_tags(self):
         for post in self.posts:
@@ -111,18 +100,11 @@ class Generator(object):
     def copy_static_files(self):
         static_path = self.config.config.static_output
 
-        smart_copy(
-            os.path.join(g.theme.path, 'static'),
-            static_path
-        )
-        smart_copy(
-            self.config.config.static_source,
-            static_path
-        )
+        smart_copy(os.path.join(g.theme.path, "static"), static_path)
+        smart_copy(self.config.config.static_source, static_path)
         for f in self.non_post_files:
             smart_copy(
-                os.path.join(g.source, f),
-                os.path.join(self.config.config.output, f)
+                os.path.join(g.source, f), os.path.join(self.config.config.output, f)
             )
 
     def generate(self):
@@ -131,8 +113,8 @@ class Generator(object):
         self.add_archives_and_tags()
         finish_loading = time.time()
         logger.info(
-            "Loaded config and %s posts in %.3fs" %
-            (len(self.posts), finish_loading - started_loading)
+            "Loaded config and %s posts in %.3fs"
+            % (len(self.posts), finish_loading - started_loading)
         )
         if self.posts:
             self.generate_posts()
@@ -147,10 +129,9 @@ class Generator(object):
         self.renderer.render_sitemap()
         finish_generating = time.time()
         logger.info(
-            "Generated %s posts in %.3fs" %
-            (len(self.posts), finish_generating - finish_loading)
+            "Generated %s posts in %.3fs"
+            % (len(self.posts), finish_generating - finish_loading)
         )
         logger.info(
-            "Generating finished in %.3fs" %
-            (finish_generating - started_loading)
+            "Generating finished in %.3fs" % (finish_generating - started_loading)
         )
