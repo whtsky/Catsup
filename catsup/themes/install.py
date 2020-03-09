@@ -14,15 +14,14 @@ def install_from_git(clone_url):
     mkdir(THEMES_PATH)
     os.chdir(THEMES_PATH)
     tmp_dir = tempfile.mkdtemp()
-    os.system('git clone {clone_url} {tmp_dir}'.format(
-        clone_url=clone_url,
-        tmp_dir=tmp_dir
-    ))
+    os.system(
+        "git clone {clone_url} {tmp_dir}".format(clone_url=clone_url, tmp_dir=tmp_dir)
+    )
     theme = read_theme(tmp_dir)
     if not theme:
-        logger.error("{clone_url} is not a Catsup theme repo.".format(
-            clone_url=clone_url
-        ))
+        logger.error(
+            "{clone_url} is not a Catsup theme repo.".format(clone_url=clone_url)
+        )
         shutil.rmtree(tmp_dir)
     if os.path.exists(theme.name):
         shutil.rmtree(theme.name)
@@ -46,9 +45,8 @@ def install_theme(name):
     theme = find_theme(theme_name=name, silence=True)
     if theme:
         # Update theme
-        if not os.path.exists(os.path.join(theme.path, '.git')):
-            logger.warn("%s is not installed via git."
-                        "Can't update it." % theme.name)
+        if not os.path.exists(os.path.join(theme.path, ".git")):
+            logger.warn("%s is not installed via git." "Can't update it." % theme.name)
         else:
             logger.info("Updating theme %s" % theme.name)
             call("git pull", cwd=theme.path)
