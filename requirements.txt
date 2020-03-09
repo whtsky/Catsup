@@ -1,5 +1,5 @@
 argh==0.24.1
-docopt==0.6.1
+docopt==0.6.2
 houdini.py==0.1.0
 Jinja2==2.7.2
 MarkupSafe==0.18
