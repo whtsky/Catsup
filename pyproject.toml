@@ -14,7 +14,7 @@ catsup = "catsup.cli:main"
 
 [tool.poetry.dependencies]
 python = "^3.5"
-docopt = "==0.6.1"
+docopt = "==0.6.2"
 "houdini.py" = "==0.1.0"
 jinja2 = "==2.7.2"
 misaka = "==1.0.2"

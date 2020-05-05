@@ -146,7 +146,7 @@ description = "Pythonic argument parser, that will make you smile"
 name = "docopt"
 optional = false
 python-versions = "*"
-version = "0.6.1"
+version = "0.6.2"
 
 [[package]]
 category = "main"
@@ -483,7 +483,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["pathlib2", "unittest2", "jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "a680d6c793f27488f5a0db390cf665a03b4a78b4a5009a48799e31db336266c5"
+content-hash = "07156de0556eebb6f64f257a00c5b084d61cf0989885ad2448ee48ae014cffbd"
 python-versions = "^3.5"
 
 [metadata.files]
@@ -568,7 +568,7 @@ coveralls = [
     {file = "coveralls-1.11.1.tar.gz", hash = "sha256:67188c7ec630c5f708c31552f2bcdac4580e172219897c4136504f14b823132f"},
 ]
 docopt = [
-    {file = "docopt-0.6.1.tar.gz", hash = "sha256:71ad940a773fbc23be6093e9476ad57b2ecec446946a28d30127501f3b29aa35"},
+    {file = "docopt-0.6.2.tar.gz", hash = "sha256:49b3a825280bd66b3aa83585ef59c4a8c82f2c8a522dbe754a8bc8d08c85c491"},
 ]
 "houdini.py" = [
     {file = "houdini.py-0.1.0.tar.gz", hash = "sha256:cabd10734a859c34c3707ecb99b93cb78547a9128cbfabbe3f4d5628e822f666"},
