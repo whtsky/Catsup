@@ -454,7 +454,7 @@ description = "Filesystem events monitoring"
 name = "watchdog"
 optional = false
 python-versions = "*"
-version = "0.7.0"
+version = "0.7.1"
 
 [package.dependencies]
 PyYAML = ">=3.09"
@@ -483,7 +483,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["pathlib2", "unittest2", "jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "6c173080253c3ac650e495adec1d08a47017f750723521edbae94e596b0ebd48"
+content-hash = "4076649f96f548dc7d91d53e7b349ab06cfcb9c655e84a0003d149e84f5eb380"
 python-versions = "^3.5"
 
 [metadata.files]
@@ -758,7 +758,7 @@ urllib3 = [
     {file = "urllib3-1.25.9.tar.gz", hash = "sha256:3018294ebefce6572a474f0604c2021e33b3fd8006ecd11d62107a5d2a963527"},
 ]
 watchdog = [
-    {file = "watchdog-0.7.0.tar.gz", hash = "sha256:8d89934fede6ec0dfe4d128606e36b989ba0b27b6cf74bd042b818b554625240"},
+    {file = "watchdog-0.7.1.tar.gz", hash = "sha256:54ca64fdf0a2fb23cecba6349f9587e62fd31840ae22a71898a65adb8c6b52f9"},
 ]
 wcwidth = [
     {file = "wcwidth-0.1.9-py2.py3-none-any.whl", hash = "sha256:cafe2186b3c009a04067022ce1dcd79cb38d8d65ee4f4791b8888d6599d1bbe1"},
