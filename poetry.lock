@@ -299,8 +299,8 @@ category = "main"
 description = "Pygments is a syntax highlighting package written in Python."
 name = "pygments"
 optional = false
-python-versions = "*"
-version = "1.6"
+python-versions = ">=3.5"
+version = "2.6.1"
 
 [[package]]
 category = "dev"
@@ -483,7 +483,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["pathlib2", "unittest2", "jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "6c173080253c3ac650e495adec1d08a47017f750723521edbae94e596b0ebd48"
+content-hash = "1394eeb5235bd83288c5d800aa555b99a2ab7b59b9e52b5a853e5b0b4c48285a"
 python-versions = "^3.5"
 
 [metadata.files]
@@ -654,9 +654,8 @@ py = [
     {file = "py-1.8.1.tar.gz", hash = "sha256:5e27081401262157467ad6e7f851b7aa402c5852dbcb3dae06768434de5752aa"},
 ]
 pygments = [
-    {file = "Pygments-1.6-py2.6.egg", hash = "sha256:8f2d2fcef78d32292be95f460fcab6ebe65273a59cda6042fa4657e491b69d14"},
-    {file = "Pygments-1.6-py2.7.egg", hash = "sha256:e34c30aa9941b0b48272a4daca73beded432570c535a229554b187c11e535d7e"},
-    {file = "Pygments-1.6.tar.gz", hash = "sha256:799ed4caf77516e54440806d8d9cd82a7607dfdf4e4fb643815171a4b5c921c0"},
+    {file = "Pygments-2.6.1-py3-none-any.whl", hash = "sha256:ff7a40b4860b727ab48fad6360eb351cc1b33cbf9b15a0f689ca5353e9463324"},
+    {file = "Pygments-2.6.1.tar.gz", hash = "sha256:647344a061c249a3b74e230c739f434d7ea4d8b1d5f3721bc0f3558049b38f44"},
 ]
 pyparsing = [
     {file = "pyparsing-2.4.7-py2.py3-none-any.whl", hash = "sha256:ef9d7589ef3c200abe66653d3f1ab1033c3c419ae9b9bdb1240a85b024efc88b"},
