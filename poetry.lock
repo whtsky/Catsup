@@ -186,7 +186,7 @@ description = "A small but fast and easy to use stand-alone template engine writ
 name = "jinja2"
 optional = false
 python-versions = "*"
-version = "2.7.2"
+version = "2.7.3"
 
 [package.dependencies]
 markupsafe = "*"
@@ -483,7 +483,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["pathlib2", "unittest2", "jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "6c173080253c3ac650e495adec1d08a47017f750723521edbae94e596b0ebd48"
+content-hash = "03195e4e498a937b14172d91318f927aa8c54391ad9cd7a15e3b2f4e9515b0d3"
 python-versions = "^3.5"
 
 [metadata.files]
@@ -582,7 +582,7 @@ importlib-metadata = [
     {file = "importlib_metadata-1.6.0.tar.gz", hash = "sha256:34513a8a0c4962bc66d35b359558fd8a5e10cd472d37aec5f66858addef32c1e"},
 ]
 jinja2 = [
-    {file = "Jinja2-2.7.2.tar.gz", hash = "sha256:310a35fbccac3af13ebf927297f871ac656b9da1d248b1fe6765affa71b53235"},
+    {file = "Jinja2-2.7.3.tar.gz", hash = "sha256:2e24ac5d004db5714976a04ac0e80c6df6e47e98c354cb2c0d82f8879d4f8fdb"},
 ]
 markupsafe = [
     {file = "MarkupSafe-1.1.1-cp27-cp27m-macosx_10_6_intel.whl", hash = "sha256:09027a7803a62ca78792ad89403b1b7a73a01c8cb65909cd876f7fcebd79b161"},
