@@ -39,14 +39,6 @@ docs = ["sphinx", "zope.interface"]
 tests = ["coverage", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "zope.interface"]
 
 [[package]]
-category = "main"
-description = "The ssl.match_hostname() function from Python 3.5"
-name = "backports.ssl-match-hostname"
-optional = false
-python-versions = "*"
-version = "3.7.0.1"
-
-[[package]]
 category = "dev"
 description = "The uncompromising code formatter."
 marker = "python_version >= \"3.6\" and python_version < \"4.0\""
@@ -413,10 +405,7 @@ description = "Tornado is a Python web framework and asynchronous networking lib
 name = "tornado"
 optional = false
 python-versions = "*"
-version = "3.2"
-
-[package.dependencies]
-"backports.ssl_match_hostname" = "*"
+version = "4.5.3"
 
 [[package]]
 category = "dev"
@@ -483,7 +472,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["pathlib2", "unittest2", "jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "6c173080253c3ac650e495adec1d08a47017f750723521edbae94e596b0ebd48"
+content-hash = "cba9a148835daf6796ef4b9867f1ad0a139944fd94010a122fa5d73db18479de"
 python-versions = "^3.5"
 
 [metadata.files]
@@ -502,9 +491,6 @@ atomicwrites = [
 attrs = [
     {file = "attrs-19.3.0-py2.py3-none-any.whl", hash = "sha256:08a96c641c3a74e44eb59afb61a24f2cb9f4d7188748e76ba4bb5edfa3cb7d1c"},
     {file = "attrs-19.3.0.tar.gz", hash = "sha256:f7b7ce16570fe9965acd6d30101a28f62fb4a7f9e926b3bbc9b61f8b04247e72"},
-]
-"backports.ssl-match-hostname" = [
-    {file = "backports.ssl_match_hostname-3.7.0.1.tar.gz", hash = "sha256:bb82e60f9fbf4c080eabd957c39f0641f0fc247d9a16e31e26d594d8f42b9fd2"},
 ]
 black = [
     {file = "black-19.10b0-py36-none-any.whl", hash = "sha256:1b30e59be925fafc1ee4565e5e08abef6b03fe455102883820fe5ee2e4734e0b"},
@@ -719,7 +705,11 @@ toml = [
     {file = "toml-0.10.1.tar.gz", hash = "sha256:926b612be1e5ce0634a2ca03470f95169cf16f939018233a670519cb4ac58b0f"},
 ]
 tornado = [
-    {file = "tornado-3.2.tar.gz", hash = "sha256:c8c2949c8d42af781437e356978f00a42b16a090612573cd7385c62451a00c2b"},
+    {file = "tornado-4.5.3-cp35-cp35m-win32.whl", hash = "sha256:92b7ca81e18ba9ec3031a7ee73d4577ac21d41a0c9b775a9182f43301c3b5f8e"},
+    {file = "tornado-4.5.3-cp35-cp35m-win_amd64.whl", hash = "sha256:b36298e9f63f18cad97378db2222c0e0ca6a55f6304e605515e05a25483ed51a"},
+    {file = "tornado-4.5.3-cp36-cp36m-win32.whl", hash = "sha256:ab587996fe6fb9ce65abfda440f9b61e4f9f2cf921967723540679176915e4c3"},
+    {file = "tornado-4.5.3-cp36-cp36m-win_amd64.whl", hash = "sha256:5ef073ac6180038ccf99411fe05ae9aafb675952a2c8db60592d5daf8401f803"},
+    {file = "tornado-4.5.3.tar.gz", hash = "sha256:6d14e47eab0e15799cf3cdcc86b0b98279da68522caace2bd7ce644287685f0a"},
 ]
 typed-ast = [
     {file = "typed_ast-1.4.1-cp35-cp35m-manylinux1_i686.whl", hash = "sha256:73d785a950fc82dd2a25897d525d003f6378d1cb23ab305578394694202a58c3"},
