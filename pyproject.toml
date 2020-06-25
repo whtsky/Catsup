@@ -22,7 +22,7 @@ parguments = "==0.3.2"
 pygments = "==1.6"
 tornado = "==3.2"
 ujson = "==2.0.3"
-watchdog = "==0.7.0"
+watchdog = "==0.10.3"
 pyyaml = "^5.3"
 
 [tool.poetry.dev-dependencies]
