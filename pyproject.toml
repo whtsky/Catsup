@@ -21,7 +21,7 @@ misaka = "==1.0.2"
 parguments = "==0.3.2"
 pygments = "==1.6"
 tornado = "==3.2"
-ujson = "==2.0.3"
+ujson = "==3.1.0"
 watchdog = "==0.7.0"
 pyyaml = "^5.3"
 
